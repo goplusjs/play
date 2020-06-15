@@ -22,9 +22,7 @@ import (
 
 var hello = `package main
 
-func main() {
-	println("hello Go+")
-}
+println("hello Go+")
 `
 
 var (
