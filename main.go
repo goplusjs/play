@@ -11,13 +11,13 @@ import (
 	"github.com/qiniu/goplus/parser"
 	"github.com/qiniu/goplus/token"
 
-	_ "github.com/qiniu/goplus-play/lib/fmt"
-	_ "github.com/qiniu/goplus-play/lib/log"
+	_ "github.com/qiniu/goplus-play/lib/math"
 	_ "github.com/qiniu/goplus-play/lib/reflect"
 	_ "github.com/qiniu/goplus-play/lib/regexp"
 	_ "github.com/qiniu/goplus-play/lib/strconv"
 	_ "github.com/qiniu/goplus-play/lib/strings"
 	_ "github.com/qiniu/goplus/lib/builtin"
+	_ "github.com/qiniu/goplus/lib/fmt"
 )
 
 var hello = `package main
@@ -43,7 +43,7 @@ func main() {
 			code := ed.Get("value").String()
 			go func() {
 				lines = nil
-				build(code)
+				build(code + "\n")
 			}()
 			return nil
 		}))
