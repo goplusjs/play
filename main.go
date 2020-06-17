@@ -17,7 +17,6 @@ import (
 	_ "github.com/qiniu/goplus-play/lib/strconv"
 	_ "github.com/qiniu/goplus-play/lib/strings"
 	_ "github.com/qiniu/goplus/lib/builtin"
-	_ "github.com/qiniu/goplus/lib/fmt"
 )
 
 var hello = `println("Hello, Go+")
@@ -75,11 +74,11 @@ func main() {
 
 func build(data string) {
 	fset := token.NewFileSet()
-	file, err := parser.ParseFile(fset, "", data, 0)
+	file, err := parser.ParseFile(fset, "main.gop", data, 0)
 	pkg := &ast.Package{
 		Name:  "main",
 		Files: make(map[string]*ast.File)}
-	pkg.Files["main"] = file
+	pkg.Files["main.gop"] = file
 	if err != nil {
 		log.Fatalln("ParseDir failed:", err)
 	}
