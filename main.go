@@ -11,6 +11,7 @@ import (
 	"github.com/qiniu/goplus/parser"
 	"github.com/qiniu/goplus/token"
 
+	_ "github.com/qiniu/goplus-play/lib/fmt"
 	_ "github.com/qiniu/goplus-play/lib/math"
 	_ "github.com/qiniu/goplus-play/lib/reflect"
 	_ "github.com/qiniu/goplus-play/lib/regexp"
