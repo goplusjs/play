@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"strings"
 	"syscall/js"
+	"time"
 
 	"github.com/qiniu/goplus/ast"
 	"github.com/qiniu/goplus/cl"
@@ -39,41 +40,54 @@ var (
 	lines []string
 )
 
-func main() {
-	//	js.Global().Get("document").Call("write", index)
-	js.Global().Get("window").Set("onload", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		ed := js.Global().Get("document").Call("getElementById", "editor")
-		out := js.Global().Get("document").Call("getElementById", "output")
-		ed.Set("value", hello)
-		btn := js.Global().Get("document").Call("getElementById", "run")
-		//ed.Set("value", "OK")
-		btn.Set("onclick", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-			code := ed.Get("value").String()
-			go func() {
-				lines = nil
-				build(code + "\n")
-			}()
-			return nil
-		}))
-		old := js.Global().Get("console").Get("log")
-		js.Global().Get("console").Set("log", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-			_ = out
-			var s []interface{}
-			var info []string
-			for _, arg := range args {
-				s = append(s, arg)
-				info = append(info, arg.String())
-			}
-			lines = append(lines, strings.Join(info, " "))
-			out.Set("value", strings.Join(lines, "\n"))
-			old.Invoke(s...)
-			return nil
-		}))
+func init() {
+	old := js.Global().Get("console").Get("log")
+	js.Global().Get("console").Set("log", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		var s []interface{}
+		var info []string
+		for _, arg := range args {
+			s = append(s, arg)
+			info = append(info, arg.String())
+		}
+		lines = append(lines, strings.Join(info, " "))
+		old.Invoke(s...)
 		return nil
 	}))
 }
 
-func build(data string) {
+func main() {
+	js.Global().Set("gop_ajax", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		switch args[0].String() {
+		case "/compile":
+			source := args[1].Get("data").Get("body").String()
+			err := build(source)
+
+			v := js.Global().Get("Object").New()
+			ev := js.Global().Get("Object").New()
+			ev.Set("Message", strings.Join(lines, "\n"))
+			ev.Set("Kind", "stdout")
+			if err != nil {
+				ev.Set("Kind", "stderr")
+			}
+			ar := js.Global().Get("Array").New()
+			ar.SetIndex(0, ev)
+			v.Set("Events", ar)
+			args[1].Get("success").Invoke(v)
+
+		case "/doc/play":
+		}
+		return nil
+	}))
+}
+
+func build(data string) (e error) {
+	lines = nil
+	defer func() {
+		v := recover()
+		if v != nil {
+			e = fmt.Errorf("build false")
+		}
+	}()
 	fset := token.NewFileSet()
 	file, err := parser.ParseFile(fset, "main.gop", data, 0)
 	pkg := &ast.Package{
@@ -81,18 +95,19 @@ func build(data string) {
 		Files: make(map[string]*ast.File)}
 	pkg.Files["main.gop"] = file
 	if err != nil {
-		log.Fatalln("ParseDir failed:", err)
+		return err
 	}
 	cl.CallBuiltinOp = exec.CallBuiltinOp
 
 	b := exec.NewBuilder(nil)
 	_, err = cl.NewPackage(b.Interface(), pkg, fset, cl.PkgActClMain) // pkgs["main"])
 	if err != nil {
-		log.Fatalln("cl.NewPackage failed:", err)
+		return err
 	}
 	code := b.Resolve()
 	ctx := exec.NewContext(code)
 	ctx.Exec(0, code.Len())
+	return nil
 }
 
 var index = `<html>
