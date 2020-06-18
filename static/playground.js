@@ -536,9 +536,7 @@ function PlaygroundOutput(el) {
         var toy = $(this).val();
         switch (toy) {
         case "rational.txt":
-        		setBody(`package main
-
-a := 1r << 65   // bigint, large than int64
+        		setBody(`a := 1r << 65   // bigint, large than int64
 b := 4/5r       // bigrat
 c := b - 1/3r + 3 * 1/2r
 println(a, b, c)
