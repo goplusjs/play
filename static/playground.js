@@ -549,14 +549,14 @@ println(x)
 `)
 		break;
 		case "hello.txt":
-			setBody(`package main
-
-println("Hello, Go+")
+			setBody(`println("Hello, Go+")
 println(1r << 129)
 println(1/3r + 2/7r * 2)
+
 arr := [1, 3, 5, 7, 11, 13, 17, 19]
 println(arr)
 println([x*x for x <- arr, x > 3])
+
 m := {"Hi": 1, "Go+": 2}
 println(m)
 println({v: k for k, v <- m})

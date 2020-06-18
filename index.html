@@ -85,9 +85,6 @@
 		<div id="banner">
 			<div id="head" itemprop="name">The Go+ Playground</div>
 			<input type="button" value="Run" id="run">
-
-
-			
 			<input type="button" value="Share" id="share">
 			<input type="text" id="shareURL">
 			<label id="embedLabel">
@@ -99,17 +96,19 @@
 				<option value="hello.txt">Hello, Go+</option>
 				<option value="rational.txt">Rational</option>
 			</select>
+      
+      <iframe src="https://ghbtns.com/github-btn.html?user=qiniu&repo=goplus&type=star&count=true&size=large" frameborder="0" scrolling="0" class="github-stars"></iframe>
 			<input type="button" value="About" id="aboutButton">
 		</div>
 		<div id="wrap">
-			<textarea itemprop="description" id="code" name="code" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false">package main
-
-println(&#34;Hello, Go+&#34;)
+			<textarea itemprop="description" id="code" name="code" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false">println(&#34;Hello, Go+&#34;)
 println(1r &lt;&lt; 129)
 println(1/3r + 2/7r * 2)
+
 arr := [1, 3, 5, 7, 11, 13, 17, 19]
 println(arr)
 println([x*x for x &lt;- arr, x &gt; 3])
+
 m := {&#34;Hi&#34;: 1, &#34;Go+&#34;: 2}
 println(m)
 println({v: k for k, v &lt;- m})
@@ -134,7 +133,7 @@ then returns the output.
 <div class="row open-source">
     <div class="col-md-12">
       <h1><i class="fa fa-github"></i> Open Source</h1>
-      <p>Prometheus is 100% open source and community-driven. All components are available under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2 License</a> on <a href="https://github.com/qiniu/goplus">GitHub</a>.</p>
+      <p>GoPlus - The Go+ language for data science. All components are available under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2 License</a> on <a href="https://github.com/qiniu/goplus">GitHub</a>.</p>
       <iframe src="https://ghbtns.com/github-btn.html?user=qiniu&repo=goplus&type=star&count=true&size=large" frameborder="0" scrolling="0" class="github-stars"></iframe>
       <br><br>
       <p>We are a <a href="https://goplus.org/">Goplus</a> source project.</p>
