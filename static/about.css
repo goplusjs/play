@@ -57,10 +57,10 @@
 
 .open-source .github-stars {
   margin-top: 20px;
+  margin-left: 20px;
   width: 200px;
   height: 30px;
 }
-
 @media screen and (max-width: 365px) {
   .open-source img {
     width: 90%;
