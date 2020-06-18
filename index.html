@@ -1,22 +1,141 @@
+<!doctype html>
 <html>
-<meta charset="UTF-8">
+	<head>
+		<title>The Go+ Playground</title>
+		<link rel="stylesheet" href="./static/style.css">
+		<link rel="stylesheet" href="./static/about.css">
+		
+<!--		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>-->
+		<script src="./static/jquery.min.js"></script>
+		<script src="./static/jquery-linedtextarea.js"></script>
+		<script src="./static/playground.js"></script>
+		<script src="./static/playground-embed.js"></script>
+		<script src="goplus-play.js"></script>
+		<script>
+		$(document).ready(function() {
+			playground({
+				'codeEl':       '#code',
+				'outputEl':     '#output',
+				'runEl':        '#run, #embedRun',
+				'fmtEl':        '#fmt',
+				'fmtImportEl':  '#imports',
+				
+				'shareEl':      '#share',
+				'shareURLEl':   '#shareURL',
+				
+				'enableHistory': true,
+				'enableShortcuts': true,
+				'enableVet': true,
+				'toysEl': '.js-playgroundToysEl'
+			});
+			playgroundEmbed({
+				'codeEl':       '#code',
+				
+				'shareEl':      '#share',
+				
+				'embedEl':      '#embed',
+				'embedLabelEl': '#embedLabel',
+				'embedHTMLEl':  '#shareURL'
+			});
+			$('#code').linedtextarea();
+			
+			$('#code').attr('wrap', 'off');
+			var about = $('#about');
+			about.click(function(e) {
+				if ($(e.target).is('a')) {
+					return;
+				}
+				about.hide();
+			});
+			$('#aboutButton').click(function() {
+				if (about.is(':visible')) {
+					about.hide();
+					return;
+				}
+				about.show();
+			})
+			
+			if (readCookie('playgroundImports') == 'true') {
+				$('#imports').attr('checked','checked');
+			}
+			$('#imports').change(function() {
+				createCookie('playgroundImports', $(this).is(':checked') ? 'true' : '');
+			});
+			
+		});
 
-<head>
-<title>Go+</title>
-<script type="text/javascript" src="./goplus-play.js"></script>
-<style>
-.edit {
-  font-size:16px;
-  width:400px;
-  height:400px;
+		function createCookie(name, value) {
+			document.cookie = name+"="+value+"; path=/";
+		}
+
+		function readCookie(name) {
+			var nameEQ = name + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0;i < ca.length;i++) {
+				var c = ca[i];
+				while (c.charAt(0)==' ') c = c.substring(1,c.length);
+				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+			}
+			return null;
+		}
+		</script>
+	</head>
+	<body itemscope itemtype="http://schema.org/CreativeWork">
+		<input type="button" value="Run" id="embedRun">
+		<div id="banner">
+			<div id="head" itemprop="name">The Go+ Playground</div>
+			<input type="button" value="Run" id="run">
+
+
+			
+			<input type="button" value="Share" id="share">
+			<input type="text" id="shareURL">
+			<label id="embedLabel">
+				<input type="checkbox" id="embed">
+				embed
+			</label>
+			
+			<select class="js-playgroundToysEl">
+				<option value="hello.txt">Hello, Go+</option>
+				<option value="rational.txt">Rational</option>
+			</select>
+			<input type="button" value="About" id="aboutButton">
+		</div>
+		<div id="wrap">
+			<textarea itemprop="description" id="code" name="code" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false">package main
+
+func main() {
+	println(&#34;Hello, Go&#43;&#34;)
 }
-</style>
-</head>
+</textarea>
+		</div>
+		<div id="output"></div>
+		<img itemprop="image" src="./static/gopher.png" style="display:none">
+		<div id="about">
+<div class="row open-source">
+<h1>About Go+ Playground</h1>
+<p>
+The Go+ Playground is a web service that runs on
+<a href="https://goplus.org/">goplus.org</a>'s servers.
+The service receives a Go+ program.
+runs the program inside a gopherjs, 
+then returns the output.
+</p>
+</div>
 
-<body>
-<textarea id="editor" class="edit"></textarea>
-<button id="run" type="button">Run</button>
-<textarea id="output" class="edit"></textarea>
-</body>
+<div class="row open-source">
+    <div class="col-md-12">
+      <h1><i class="fa fa-github"></i> Open Source</h1>
+      <p>Prometheus is 100% open source and community-driven. All components are available under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2 License</a> on <a href="https://github.com/qiniu/goplus">GitHub</a>.</p>
+      <iframe src="https://ghbtns.com/github-btn.html?user=qiniu&repo=goplus&type=star&count=true&size=large" frameborder="0" scrolling="0" class="github-stars"></iframe>
+      <br><br>
+      <p>We are a <a href="https://goplus.org/">Goplus</a> source project.</p>
+      <br>
+    </div>
+</div>
 
+
+		</div>
+	</body>
 </html>
+
