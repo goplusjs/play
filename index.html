@@ -104,9 +104,17 @@
 		<div id="wrap">
 			<textarea itemprop="description" id="code" name="code" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false">package main
 
-func main() {
-	println(&#34;Hello, Go&#43;&#34;)
-}
+println(&#34;Hello, Go+&#34;)
+println(1r &lt;&lt; 129)
+println(1/3r + 2/7r * 2)
+arr := [1, 3, 5, 7, 11, 13, 17, 19]
+println(arr)
+println([x*x for x &lt;- arr, x &gt; 3])
+m := {&#34;Hi&#34;: 1, &#34;Go+&#34;: 2}
+println(m)
+println({v: k for k, v &lt;- m})
+println([k for k, _ &lt;- m])
+println([v for v &lt;- m])
 </textarea>
 		</div>
 		<div id="output"></div>
