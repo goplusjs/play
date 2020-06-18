@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"syscall/js"
-	"time"
 
 	"github.com/qiniu/goplus/ast"
 	"github.com/qiniu/goplus/cl"
@@ -40,6 +39,10 @@ var (
 	lines []string
 )
 
+func output() string {
+	return strings.Join(lines, "\n") + "\n"
+}
+
 func init() {
 	old := js.Global().Get("console").Get("log")
 	js.Global().Get("console").Set("log", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -64,10 +67,11 @@ func main() {
 
 			v := js.Global().Get("Object").New()
 			ev := js.Global().Get("Object").New()
-			ev.Set("Message", strings.Join(lines, "\n"))
+			ev.Set("Message", output())
 			ev.Set("Kind", "stdout")
 			if err != nil {
 				ev.Set("Kind", "stderr")
+				ev.Set("Message", err.Error())
 			}
 			ar := js.Global().Get("Array").New()
 			ar.SetIndex(0, ev)
@@ -83,9 +87,9 @@ func main() {
 func build(data string) (e error) {
 	lines = nil
 	defer func() {
-		v := recover()
-		if v != nil {
-			e = fmt.Errorf("build false")
+		err := recover()
+		if err != nil {
+			e = fmt.Errorf("%v", err)
 		}
 	}()
 	fset := token.NewFileSet()
@@ -95,6 +99,7 @@ func build(data string) (e error) {
 		Files: make(map[string]*ast.File)}
 	pkg.Files["main.gop"] = file
 	if err != nil {
+		panic(err)
 		return err
 	}
 	cl.CallBuiltinOp = exec.CallBuiltinOp
@@ -102,6 +107,7 @@ func build(data string) (e error) {
 	b := exec.NewBuilder(nil)
 	_, err = cl.NewPackage(b.Interface(), pkg, fset, cl.PkgActClMain) // pkgs["main"])
 	if err != nil {
+		panic(err)
 		return err
 	}
 	code := b.Resolve()

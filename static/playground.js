@@ -114,7 +114,7 @@ function HTTPTransport(enableVet) {
 	function buildFailed(output, msg) {
 		output({Kind: 'start'});
 		output({Kind: 'stderr', Body: msg});
-		output({Kind: 'system', Body: '\nGo build failed.'});
+		output({Kind: 'system', Body: '\nGo+ build failed.'});
 	}
 
 	var seq = 0;
