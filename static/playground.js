@@ -484,7 +484,7 @@ function PlaygroundOutput(el) {
       sharing = true;
 
       var sharingData = body();
-      js_ajax("/share", {
+      $.ajax("https://goplay.qiniu.com/share", {
         processData: false,
         data: sharingData,
         type: "POST",
@@ -500,7 +500,7 @@ function PlaygroundOutput(el) {
           }
           var path = "/p/" + xhr.responseText;
           var url = origin(window.location) + path;
-
+		
           for (var i = 0; i < shareCallbacks.length; i++) {
             shareCallbacks[i](url);
           }
