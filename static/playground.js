@@ -510,9 +510,9 @@ function PlaygroundOutput(el) {
             shareURL.show().val(url).focus().select();
 
             if (rewriteHistory) {
-              var historyData = {"code": sharingData};
-              window.history.pushState(historyData, "", path);
-              pushedEmpty = false;
+//              var historyData = {"code": sharingData};
+//              window.history.pushState(historyData, "", path);
+//              pushedEmpty = false;
             }
           }
         }
