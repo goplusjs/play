@@ -499,7 +499,8 @@ function PlaygroundOutput(el) {
             window.location = opts.shareRedirect + xhr.responseText;
           }
           var path = "/p/" + xhr.responseText;
-          var url = origin(window.location) + path;
+          //var url = origin(window.location) + path;
+          var url = "https://goplay.qiniu.com"+path;
 		
           for (var i = 0; i < shareCallbacks.length; i++) {
             shareCallbacks[i](url);
@@ -510,10 +511,10 @@ function PlaygroundOutput(el) {
             shareURL.show().val(url).focus().select();
 
             if (rewriteHistory) {
-              //var historyData = {"code": sharingData};
-              //window.history.pushState(historyData, "", path);
-              //pushedEmpty = false;
-            }
+             var historyData = {"code": sharingData};
+             window.history.pushState(historyData, "", path);
+             pushedEmpty = false;
+           }
           }
         }
       });
