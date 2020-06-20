@@ -500,7 +500,8 @@ function PlaygroundOutput(el) {
           }
           var path = "/p/" + xhr.responseText;
           var url = origin(window.location) + path;
-		
+          var url = "https://goplay.qiniu.com" + path;
+
           for (var i = 0; i < shareCallbacks.length; i++) {
             shareCallbacks[i](url);
           }
