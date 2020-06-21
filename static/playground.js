@@ -484,7 +484,7 @@ function PlaygroundOutput(el) {
       sharing = true;
 
       var sharingData = body();
-      $.ajax("https://goplay.qiniu.com/share", {
+      $.ajax("https://play.goplus.org/share", {
         processData: false,
         data: sharingData,
         type: "POST",
@@ -500,8 +500,8 @@ function PlaygroundOutput(el) {
           }
           var path = "/p/" + xhr.responseText;
           //var url = origin(window.location) + path;
-          var url = "https://goplay.qiniu.com"+path;
-		
+          var url = "https://play.goplus.org" + path;
+
           for (var i = 0; i < shareCallbacks.length; i++) {
             shareCallbacks[i](url);
           }
@@ -511,10 +511,10 @@ function PlaygroundOutput(el) {
             shareURL.show().val(url).focus().select();
 
             if (rewriteHistory) {
-             var historyData = {"code": sharingData};
-             window.history.pushState(historyData, "", path);
-             pushedEmpty = false;
-           }
+            var historyData = {"code": sharingData};
+            window.history.pushState(historyData, "", "/goplus-play/"+path);
+            pushedEmpty = false;
+            }
           }
         }
       });
