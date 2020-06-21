@@ -512,7 +512,7 @@ function PlaygroundOutput(el) {
 
             if (rewriteHistory) {
             var historyData = {"code": sharingData};
-            window.history.pushState(historyData, "", "goplus-play");
+            window.history.pushState(historyData, "", "");
             pushedEmpty = false;
             }
           }
