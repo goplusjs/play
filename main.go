@@ -36,26 +36,22 @@ println([v for v <- m])
 `
 
 var (
-	lines []string
+	output []string
 )
 
-func output() string {
-	return strings.Join(lines, "\n") + "\n"
-}
-
 func init() {
-	old := js.Global().Get("console").Get("log")
-	js.Global().Get("console").Set("log", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		var s []interface{}
-		var info []string
-		for _, arg := range args {
-			s = append(s, arg)
-			info = append(info, arg.String())
-		}
-		lines = append(lines, strings.Join(info, " "))
-		old.Invoke(s...)
-		return nil
-	}))
+	// old := js.Global().Get("console").Get("log")
+	// js.Global().Get("console").Set("log", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	// 	var s []interface{}
+	// 	var info []string
+	// 	for _, arg := range args {
+	// 		s = append(s, arg)
+	// 		info = append(info, arg.String())
+	// 	}
+	// 	lines = append(lines, strings.Join(info, " "))
+	// 	old.Invoke(s...)
+	// 	return nil
+	// }))
 }
 
 func main() {
@@ -66,15 +62,17 @@ func main() {
 			err := build(source)
 
 			v := js.Global().Get("Object").New()
+			ar := js.Global().Get("Array").New(2)
 			ev := js.Global().Get("Object").New()
-			ev.Set("Message", output())
+			ev.Set("Message", strings.Join(output, ""))
 			ev.Set("Kind", "stdout")
-			if err != nil {
-				ev.Set("Kind", "stderr")
-				ev.Set("Message", err.Error())
-			}
-			ar := js.Global().Get("Array").New()
 			ar.SetIndex(0, ev)
+			if err != nil {
+				ev1 := js.Global().Get("Object").New()
+				ev1.Set("Kind", "stderr")
+				ev1.Set("Message", err.Error())
+				ar.SetIndex(1, ev1)
+			}
 			v.Set("Events", ar)
 			args[1].Get("success").Invoke(v)
 
@@ -85,11 +83,11 @@ func main() {
 }
 
 func build(data string) (e error) {
-	lines = nil
+	output = nil
 	defer func() {
 		err := recover()
 		if err != nil {
-			e = fmt.Errorf("%v", err)
+			e = fmt.Errorf("[PANIC] %v", err)
 		}
 	}()
 	fset := token.NewFileSet()
@@ -99,7 +97,6 @@ func build(data string) (e error) {
 		Files: make(map[string]*ast.File)}
 	pkg.Files["main.gop"] = file
 	if err != nil {
-		panic(err)
 		return err
 	}
 	cl.CallBuiltinOp = exec.CallBuiltinOp
@@ -107,7 +104,6 @@ func build(data string) (e error) {
 	b := exec.NewBuilder(nil)
 	_, err = cl.NewPackage(b.Interface(), pkg, fset, cl.PkgActClMain) // pkgs["main"])
 	if err != nil {
-		panic(err)
 		return err
 	}
 	code := b.Resolve()
