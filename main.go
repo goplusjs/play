@@ -8,6 +8,7 @@ import (
 	"github.com/qiniu/goplus/ast"
 	"github.com/qiniu/goplus/cl"
 	exec "github.com/qiniu/goplus/exec/bytecode"
+	"github.com/qiniu/goplus/format"
 	"github.com/qiniu/goplus/parser"
 	"github.com/qiniu/goplus/token"
 
@@ -74,6 +75,17 @@ func main() {
 				ar.SetIndex(1, ev1)
 			}
 			v.Set("Events", ar)
+			args[1].Get("success").Invoke(v)
+		case "/fmt":
+			source := args[1].Get("data").Get("body").String()
+			dst, err := format.Source([]byte(source))
+			js.Global().Get("console").Call("log", string(dst), err)
+			v := js.Global().Get("Object").New()
+			if err != nil {
+				v.Set("Error", err.Error())
+			} else {
+				v.Set("Body", string(dst))
+			}
 			args[1].Get("success").Invoke(v)
 
 		case "/doc/play":
