@@ -537,20 +537,21 @@ function PlaygroundOutput(el) {
         var toy = $(this).val();
         switch (toy) {
         case "rational.txt":
-        		setBody(`a := 1r << 65   // bigint, large than int64
-b := 4/5r       // bigrat
-c := b - 1/3r + 3 * 1/2r
+        		setBody(`a := 1r << 65 // bigint, large than int64
+b := 4/5r     // bigrat
+c := b - 1/3r + 3*1/2r
 println(a, b, c)
 
 x := 3.14159265358979323846264338327950288419716939937510582097494459r
 x *= 2
 println(x)
+
 `)
 		break;
 		case "hello.txt":
 			setBody(`println("Hello, Go+")
 println(1r << 129)
-println(1/3r + 2/7r * 2)
+println(1/3r + 2/7r*2)
 
 arr := [1, 3, 5, 7, 11, 13, 17, 19]
 println(arr)
