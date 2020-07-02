@@ -2,6 +2,8 @@ github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 h1:l5lAOZEym3oK3
 github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00/go.mod h1:wJfORRmW1u3UXTncJ5qlYoELFm8eSnnEO6hX4iZ3EWY=
 github.com/qiniu/goplus v0.6.41-0.20200627014401-a031ebddfa3f h1:60UriceFM7qBZv6gd9UFhDtiqxYtpOWurypqyQcfkCg=
 github.com/qiniu/goplus v0.6.41-0.20200627014401-a031ebddfa3f/go.mod h1:p/bMvJU8jV85hla2KKlDBy9dMqSMGdm88MTqz25HMm0=
+github.com/qiniu/goplus v0.6.51-0.20200701135932-787b44a0786f h1:u1ezDmQPdP5trIrVDLx+ZbJYFAft9mK0WFFKyPJxuuc=
+github.com/qiniu/goplus v0.6.51-0.20200701135932-787b44a0786f/go.mod h1:p/bMvJU8jV85hla2KKlDBy9dMqSMGdm88MTqz25HMm0=
 github.com/qiniu/x v1.10.5 h1:7V/CYWEmo9axJULvrJN6sMYh2FdY+esN5h8jwDkA4b0=
 github.com/qiniu/x v1.10.5/go.mod h1:03Ni9tj+N2h2aKnAz+6N0Xfl8FwMEDRC2PAlxekASDs=
 honnef.co/go/js/util v0.0.0-20150216223935-96b8dd9d1621 h1:QBApQyt1KyR3SvDWU8sHcIXeWTSCUamO7xQopvwuLWI=
