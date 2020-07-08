@@ -1,4 +1,4 @@
-module github.com/goplus/goplus-play
+module github.com/goplus/play
 
 go 1.14
 
