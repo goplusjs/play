@@ -5,20 +5,13 @@ import (
 	"strings"
 	"syscall/js"
 
-	"github.com/qiniu/goplus/ast"
-	"github.com/qiniu/goplus/cl"
-	exec "github.com/qiniu/goplus/exec/bytecode"
-	"github.com/qiniu/goplus/format"
-	"github.com/qiniu/goplus/parser"
-	"github.com/qiniu/goplus/token"
-
-	_ "github.com/qiniu/goplus-play/lib/fmt"
-	_ "github.com/qiniu/goplus-play/lib/math"
-	_ "github.com/qiniu/goplus-play/lib/reflect"
-	_ "github.com/qiniu/goplus-play/lib/regexp"
-	_ "github.com/qiniu/goplus-play/lib/strconv"
-	_ "github.com/qiniu/goplus-play/lib/strings"
-	_ "github.com/qiniu/goplus/lib/builtin"
+	"github.com/goplus/gop/ast"
+	"github.com/goplus/gop/cl"
+	exec "github.com/goplus/gop/exec/bytecode"
+	"github.com/goplus/gop/format"
+	_ "github.com/goplus/gop/lib"
+	"github.com/goplus/gop/parser"
+	"github.com/goplus/gop/token"
 )
 
 var hello = `println("Hello, Go+")
