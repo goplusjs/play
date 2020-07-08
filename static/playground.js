@@ -370,7 +370,7 @@ function PlaygroundOutput(el) {
 
       // Share and save
       share(function(url) {
-        window.location.href = url + ".gop?download=true";
+        window.location.href = url + ".go?download=true";
       });
 
       return true;
