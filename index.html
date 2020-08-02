@@ -3,7 +3,7 @@
 	<head>
 		<title>The Go+ Playground</title>
 		<link rel="stylesheet" href="./static/style.css">
-<!--		<link rel="stylesheet" href="./static/about.css">-->
+		<link rel="stylesheet" href="./static/about.css">
 		
 <!--		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>-->
 		<script src="./static/jquery.min.js"></script>
@@ -40,7 +40,21 @@
 			$('#code').linedtextarea();
 			
 			$('#code').attr('wrap', 'off');
-			var about = $('#repl');
+			var repl = $('#repl');
+			repl.click(function(e) {
+				if ($(e.target).is('a')) {
+					return;
+				}
+				repl.hide();
+			});
+			$('#replButton').click(function() {
+				if (repl.is(':visible')) {
+					repl.hide();
+					return;
+				}
+				repl.show();
+			})
+			var about = $('#about');
 			about.click(function(e) {
 				if ($(e.target).is('a')) {
 					return;
@@ -91,12 +105,12 @@
 			<label id="embedLabel">
 				<input type="checkbox" id="embed">
 				embed
-			</label>
-			
+			</label>			
 			<select class="js-playgroundToysEl">
 				<option value="hello.txt">Hello, Go+</option>
 				<option value="rational.txt">Rational</option>
 			</select>
+  		  <input type="button" value="REPL" id="replButton">
       <p></p>  
       <iframe id="iframe" src="https://ghbtns.com/github-btn.html?user=goplus&repo=gop&type=star&count=true&size=large" frameborder="0" scrolling="0" class="github-stars"></iframe>
 			<input type="button" value="About" id="aboutButton">
