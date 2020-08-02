@@ -1,4 +1,5 @@
 #!/bin/sh
-git checkout master -- index.html repl.html loader-repl.js
-git checkout master -- goplus-play.* repl.*
+git checkout master -- *.html
+git checkout master -- *.js
+git checkout master -- *.js.map
 git checkout master -- static
