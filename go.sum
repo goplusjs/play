@@ -8,6 +8,8 @@ github.com/goplus/gop v0.7.3-0.20200720163519-ae29516148e5 h1:i13SS2E7Gqe4vS2Ne5
 github.com/goplus/gop v0.7.3-0.20200720163519-ae29516148e5/go.mod h1:ecsM3AHCUzv3jYf0teNs9HWirOYNzJFMzZqsSNbCL28=
 github.com/goplus/gop v0.7.3 h1:EkSHmZ40okwQ1xGVP3Hq7grMuF07lfW1NfrSgVvaQ7k=
 github.com/goplus/gop v0.7.3/go.mod h1:/+1OwExXHm5kGMw0zk+RHQBzgTYRI95ARRGfr62w/VE=
+github.com/goplus/gop v0.7.5 h1:YXnvV7QoJjFiRDbNWJkywL8XNmD309IoAyqmsFV3hQU=
+github.com/goplus/gop v0.7.5/go.mod h1:/+1OwExXHm5kGMw0zk+RHQBzgTYRI95ARRGfr62w/VE=
 github.com/mattn/go-runewidth v0.0.3/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/peterh/liner v1.2.0/go.mod h1:CRroGNssyjTd/qIG2FyxByd2S8JEAZXBl4qUrZf8GS0=
 github.com/qiniu/goplus v0.6.41-0.20200627014401-a031ebddfa3f h1:60UriceFM7qBZv6gd9UFhDtiqxYtpOWurypqyQcfkCg=
