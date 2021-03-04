@@ -1,4 +1,4 @@
 @echo off
 go mod edit -require=github.com/goplus/gop@latest
-go list --tags js
+go tidy
 gopherjs build -v -m -o goplus-play.js
