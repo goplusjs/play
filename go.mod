@@ -3,7 +3,7 @@ module github.com/goplus/play
 go 1.14
 
 require (
-	github.com/goplus/gop v0.7.18
+	github.com/goplus/gop v0.7.19
 	github.com/goplusjs/gopherjs v1.1.2
 )
 
