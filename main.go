@@ -9,7 +9,6 @@ import (
 	"github.com/goplus/gop/cl"
 	exec "github.com/goplus/gop/exec/bytecode"
 	"github.com/goplus/gop/format"
-	_ "github.com/goplus/gop/lib"
 	"github.com/goplus/gop/parser"
 	"github.com/goplus/gop/token"
 )

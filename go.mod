@@ -7,4 +7,7 @@ require (
 	github.com/goplusjs/gopherjs v1.1.2
 )
 
-replace github.com/goplus/reflectx v0.3.1 => github.com/goplusjs/reflectx v0.3.0-goplus
+replace (
+	github.com/goplus/gop => github.com/visualfc/goplus v0.0.0-20210605123033-4fec792d88e7
+	github.com/goplus/reflectx => github.com/goplusjs/reflectx v0.5.2-goplus
+)
