@@ -6,11 +6,11 @@
 		<link rel="stylesheet" href="./static/about.css">
 		
 <!--		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>-->
-		<script src="./static/jquery.min.js"></script>
+		<script src="./static/jquery-3.5.1.min.js"></script>
 		<script src="./static/jquery-linedtextarea.js"></script>
 		<script src="./static/playground.js"></script>
 		<script src="./static/playground-embed.js"></script>
- 		<script src="./goplus-play.js"></script>
+		<script src="./goplus-play.js"></script>
 		<script>
 		$(document).ready(function() {
 			playground({
@@ -40,20 +40,6 @@
 			$('#code').linedtextarea();
 			
 			$('#code').attr('wrap', 'off');
-			var repl = $('#repl');
-			repl.click(function(e) {
-				if ($(e.target).is('a')) {
-					return;
-				}
-				repl.hide();
-			});
-			$('#replButton').click(function() {
-				if (repl.is(':visible')) {
-					repl.hide();
-					return;
-				}
-				repl.show();
-			})
 			var about = $('#about');
 			about.click(function(e) {
 				if ($(e.target).is('a')) {
@@ -105,12 +91,12 @@
 			<label id="embedLabel">
 				<input type="checkbox" id="embed">
 				embed
-			</label>			
+			</label>
+			
 			<select class="js-playgroundToysEl">
 				<option value="hello.txt">Hello, Go+</option>
 				<option value="rational.txt">Rational</option>
 			</select>
-  		  <input type="button" value="REPL" id="replButton">
       <p></p>  
       <iframe id="iframe" src="https://ghbtns.com/github-btn.html?user=goplus&repo=gop&type=star&count=true&size=large" frameborder="0" scrolling="0" class="github-stars"></iframe>
 			<input type="button" value="About" id="aboutButton">
@@ -133,9 +119,6 @@ println([v for v &lt;- m])
 		</div>
 		<div id="output"></div>
 		<img itemprop="image" src="./static/gopher.png" style="display:none">
-		<div id="repl">
-				<iframe id="replframe" src="./repl.html" frameborder="0" scrolling="auto" width="100%" height="100%"></iframe>
-		</div>
 		<div id="about">
 <div class="row open-source">
 <h1>About Go+ Playground</h1>
@@ -155,6 +138,7 @@ then returns the output.
       <iframe src="https://ghbtns.com/github-btn.html?user=goplus&repo=gop&type=star&count=true&size=large" frameborder="0" scrolling="0" class="github-stars"></iframe>
     </div>
 </div>
+
 
 		</div>
 	</body>

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gopherjs/gopherjs/js"
+	"github.com/goplusjs/gopherjs/js"
 )
 
 func init() {

@@ -12,26 +12,6 @@ a {
 	color: #009;
 }
 #wrap,
-#repl {
-	padding: 5px;
-	margin: 0;
-
-	position: absolute;
-	top: 50px;
-	bottom: 25%;
-	left: 0;
-	right: 0;
-
-	background: #FFD;
-}
-#repl {
-	display: none;
-	z-index: 1;
-	padding: 10px 40px;
-	font-size: 16px;
-	font-family: sans-serif;
-	overflow: auto;
-}
 #about {
 	padding: 5px;
 	margin: 0;
@@ -60,9 +40,6 @@ a {
 }
 #about li {
 	margin-bottom: 1em;
-}
-#repl {
-	
 }
 #code, #output, pre, .lines {
 	/* The default monospace font on OS X is ugly, so specify Menlo
