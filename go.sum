@@ -42,6 +42,10 @@ github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljT
 github.com/visualfc/fastmod v1.3.6/go.mod h1:IpOumy9gVomQ72T+yA7gayE3V1FCNlwr6if3mlqnasY=
 github.com/visualfc/goplus v0.0.0-20210605123033-4fec792d88e7 h1:Gwu8NTZhKM2IcFzAn4OzVEEvxuvTMNhblFqnb5qnsjE=
 github.com/visualfc/goplus v0.0.0-20210605123033-4fec792d88e7/go.mod h1:PdHoUZN3k9Ft4l2gWZYwUZReB7PSQADYIggmgY0m6G4=
+github.com/visualfc/goplus v0.0.0-20210609020340-f2af99994dee h1:GYUHA6vePeOSE1wLHNrUcJoarzNZVnuyHcu0gIYWaq8=
+github.com/visualfc/goplus v0.0.0-20210609020340-f2af99994dee/go.mod h1:PdHoUZN3k9Ft4l2gWZYwUZReB7PSQADYIggmgY0m6G4=
+github.com/visualfc/goplus v0.0.0-20210609021353-85b0ae696c31 h1:eNzBHf4AxL+798sWfvz2dW8iRQT88DEHqTz+MP/B1Dc=
+github.com/visualfc/goplus v0.0.0-20210609021353-85b0ae696c31/go.mod h1:PdHoUZN3k9Ft4l2gWZYwUZReB7PSQADYIggmgY0m6G4=
 github.com/visualfc/goversion v1.0.0/go.mod h1:hk2JexdCD524I4uxWPUf6e++g7ZaCMu6TC7xESs/soc=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
