@@ -8,6 +8,6 @@ require (
 )
 
 replace (
-	github.com/goplus/gop => github.com/visualfc/goplus v0.0.0-20210609034246-546361c19112
-	github.com/goplus/reflectx => github.com/goplusjs/reflectx v0.5.2-goplus
+	github.com/goplus/gop => github.com/visualfc/goplus v0.8.0
+	github.com/goplus/reflectx => github.com/goplusjs/reflectx v0.5.2-0.20210612104842-91df025ac528
 )
