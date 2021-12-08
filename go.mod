@@ -1,13 +1,13 @@
-module github.com/goplus/play
+module github.com/goplusjs/play
 
-go 1.14
+go 1.16
 
 require (
-	github.com/goplus/gop v0.7.19
-	github.com/goplusjs/gopherjs v1.1.2
+	github.com/goplus/gop v1.0.33
+	github.com/goplus/gossa v0.2.6
+	github.com/goplus/gox v1.8.1
+	github.com/goplusjs/gopherjs v1.2.5
+	golang.org/x/tools v0.1.8
 )
 
-replace (
-	github.com/goplus/gop => github.com/visualfc/goplus v0.8.2
-	github.com/goplus/reflectx => github.com/goplusjs/reflectx v0.5.2-0.20210612104842-91df025ac528
-)
+replace github.com/goplus/reflectx => github.com/goplusjs/reflectx v0.5.6
