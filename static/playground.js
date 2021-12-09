@@ -41,11 +41,13 @@ here's a skeleton implementation of a playground transport.
 */
 
 function js_ajax(url,options) {
-	if (gop_ajax != undefined) {
-		gop_ajax(url,options)
-	} else {
-		$.ajax(url,options)
-	}	
+    if (gop_ajax != undefined) {
+        setTimeout(function() {
+            gop_ajax(url,options);
+        },0);
+    } else {
+        $.ajax(url,options)
+    }
 }
 
 // HTTPTransport is the default transport.
@@ -290,7 +292,7 @@ function PlaygroundOutput(el) {
 
 (function() {
   function lineHighlight(error) {
-    var regex = /prog.go:([0-9]+)/g;
+    var regex = /main.gop?:([0-9]+)/g;
     var r = regex.exec(error);
     while (r) {
       $(".lines div").eq(r[1]-1).addClass("lineerror");
@@ -444,13 +446,33 @@ function PlaygroundOutput(el) {
     }
     function loading() {
       lineClear();
-      if (running) running.Kill();
-      output.removeClass("error").text('Waiting for remote server...');
+      //if (running) running.Kill();
+      output.removeClass("error").text('Waiting for compile...');
+    }
+    function setOutput(text) {
+      output.removeClass("error").text(text);
     }
     function run() {
-      loading();
-      running = transport.Run(body(), highlightOutput(PlaygroundOutput(output[0])));
-//      js_ajax("/compile",body())
+        loading();
+ //     running = transport.Run(body(), highlightOutput(PlaygroundOutput(output[0])));
+        var data = {"body": body()};
+        js_ajax("/compile", {
+            data: data,
+            type: "POST",
+            dataType: "json",
+            success: function(data) {
+                setOutput("");
+                if (data.Error) {
+                    setError(data.Error);
+                } else {
+                    data.Kind = "stdout"
+                    highlightOutput(PlaygroundOutput(output[0]))(data);
+                    data.Kind = "end";
+                    data.Body = "";
+                    highlightOutput(PlaygroundOutput(output[0]))(data);
+                }
+            }
+        });
     }
 
     function fmt() {
@@ -539,7 +561,7 @@ function PlaygroundOutput(el) {
         case "hello.txt":
         		setBody(`fields := [
 	"engineering",
-	"STEM education", 
+	"STEM education",
 	"and data science",
 ]
 

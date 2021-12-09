@@ -105,9 +105,10 @@ import (
 
 	_ "github.com/goplus/gossa/pkg/log"
 	//
-	// _ "github.com/goplus/gossa/pkg/math/bits"
-	// _ "github.com/goplus/gossa/pkg/math/cmplx"
-	// _ "github.com/goplus/gossa/pkg/math/rand"
+	_ "github.com/goplus/gossa/pkg/math/bits"
+	_ "github.com/goplus/gossa/pkg/math/cmplx"
+	_ "github.com/goplus/gossa/pkg/math/rand"
+
 	// _ "github.com/goplus/gossa/pkg/mime"
 	// _ "github.com/goplus/gossa/pkg/mime/multipart"
 	// _ "github.com/goplus/gossa/pkg/mime/quotedprintable"

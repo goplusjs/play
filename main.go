@@ -17,21 +17,28 @@ func main() {
 			output = nil
 			source := args[1].Get("data").Get("body").String()
 			err := builder.compile(source)
-
 			v := js.Global().Get("Object").New()
-			ar := js.Global().Get("Array").New(2)
-			ev := js.Global().Get("Object").New()
-			ev.Set("Message", strings.Join(output, ""))
-			ev.Set("Kind", "stdout")
-			ar.SetIndex(0, ev)
 			if err != nil {
-				ev1 := js.Global().Get("Object").New()
-				ev1.Set("Kind", "stderr")
-				ev1.Set("Message", err.Error())
-				ar.SetIndex(1, ev1)
+				v.Set("Error", err.Error())
+			} else {
+				v.Set("Body", strings.Join(output, ""))
 			}
-			v.Set("Events", ar)
 			args[1].Get("success").Invoke(v)
+			// v := js.Global().Get("Object").New()
+			// ar := js.Global().Get("Array").New(2)
+			// ev := js.Global().Get("Object").New()
+			// ev.Set("Message", strings.Join(output, ""))
+			// ev.Set("Kind", "stdout")
+			// ev.Set("Body", strings.Join(output, ""))
+			// ar.SetIndex(0, ev)
+			// if err != nil {
+			// 	ev1 := js.Global().Get("Object").New()
+			// 	ev1.Set("Kind", "stderr")
+			// 	ev1.Set("Message", err.Error())
+			// 	ar.SetIndex(1, ev1)
+			// }
+			// v.Set("Events", ar)
+			// args[1].Get("success").Invoke(v)
 		case "/fmt":
 			source := args[1].Get("data").Get("body").String()
 			dst, err := formatCode([]byte(source))
