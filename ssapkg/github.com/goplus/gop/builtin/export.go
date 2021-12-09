@@ -62,7 +62,7 @@ func init() {
 		},
 		TypedConsts: map[string]gossa.TypedConst{},
 		UntypedConsts: map[string]gossa.UntypedConst{
-			"GopPackage": {"untyped bool", constant.MakeBool(true)},
+			"GopPackage": {"untyped bool", constant.MakeBool(bool(q.GopPackage))},
 		},
 	})
 }
