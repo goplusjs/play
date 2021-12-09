@@ -536,20 +536,19 @@ function PlaygroundOutput(el) {
       $(opts.toysEl).bind('change', function() {
         var toy = $(this).val();
         switch (toy) {
-        case "rational.txt":
-        		setBody(`a := 1r << 65 // bigint, large than int64
-b := 4/5r     // bigrat
-c := b - 1/3r + 3*1/2r
-println(a, b, c)
+        case "hello.txt":
+        		setBody(`fields := [
+	"engineering",
+	"STEM education", 
+	"and data science",
+]
 
-x := 3.14159265358979323846264338327950288419716939937510582097494459r
-x *= 2
-println(x)
-
+println "The Go+ language for", fields.join(", ")
 `)
 		break;
-		case "hello.txt":
+		case "basic.txt":
 			setBody(`println("Hello, Go+")
+
 println(1r << 129)
 println(1/3r + 2/7r*2)
 
@@ -562,6 +561,111 @@ println(m)
 println({v: k for k, v <- m})
 println([k for k, _ <- m])
 println([v for v <- m])
+`)
+		break;
+		case "range.txt":
+			setBody(`a := [1, 3, 5, 7, 11]
+b := [x*x for x <- a, x > 3]
+println(b) // output: [25 49 121]
+
+mapData := {"Hi": 1, "Hello": 2, "Go+": 3}
+reversedMap := {v: k for k, v <- mapData}
+println(reversedMap) // output: map[1:Hi 2:Hello 3:Go+]
+
+sum := 0
+for x <- [1, 3, 5, 7, 11, 13, 17], x > 3 {
+	sum += x
+}
+println(sum)
+`)
+		break;
+		case "rational.txt":
+			setBody(`a := 1r << 65 // bigint, large than int64
+b := 4/5r     // bigrat
+c := b - 1/3r + 3*1/2r
+println(a, b, c)
+`)
+		break;
+		case "slice.txt":
+			setBody(`// in Go we do:
+a := []float64{1, 2, 3.4}
+println a
+
+// in GoPlus we do:
+b := [1, 2, 3.4]
+println b
+
+//slice literal
+c := [1, 3.4] // []float64
+printf "%#v %T\\n", c, c
+
+d := [1] // []int
+printf "%#v %T\\n", d, d
+
+e := [1+2i, "xsw"] // []interface{}
+printf "%#v %T\\n", e, e
+
+f := [1, 3.4, 3+4i] // []complex128
+printf "%#v %T\\n", f, f
+
+g := [5+6i] // []complex128
+printf "%#v %T\\n", g, g
+
+h := ["xsw", 3] // []interface{}
+printf "%#v %T\\n", h, h
+
+empty := [] // []interface{}
+printf "%#v %T\\n", empty, empty
+`)
+		break;
+		case "listmap.txt":
+		setBody(`a := [x*x for x <- [1, 3, 5, 7, 11]]
+println(a)
+b := [x*x for x <- [1, 3, 5, 7, 11], x > 3]
+println(b)
+c := [i+v for i, v <- [1, 3, 5, 7, 11], i%2 == 1]
+println(c)
+d := [k+","+s for k, s <- {"Hello": "xsw", "Hi": "Go+"}]
+println(d)
+
+arr := [1, 2, 3, 4, 5, 6]
+e := [[a, b] for a <- arr, a < b for b <- arr, b > 2]
+println(e)
+
+x := {x: i for i, x <- [1, 3, 5, 7, 11]}
+println(x)
+y := {x: i for i, x <- [1, 3, 5, 7, 11], i%2 == 1}
+println(y)
+z := {v: k for k, v <- {1: "Hello", 3: "Hi", 5: "xsw", 7: "Go+"}, k > 3}
+println(z)
+`)
+		break;
+		case "error.txt":
+		setBody(`import (
+	"strconv"
+)
+
+func add(x, y string) (int, error) {
+	return strconv.atoi(x)? + strconv.atoi(y)?, nil
+}
+
+func addSafe(x, y string) int {
+	return strconv.atoi(x)?:0 + strconv.atoi(y)?:0
+}
+
+// Error handling
+// We reinvent the error handling specification in Go+. We call them ErrWrap expressions:
+
+// expr! // panic if err
+// expr? // return if err
+// expr?:defval // use defval if err
+
+println add("100", "23")!
+
+sum, err := add("10", "abc")
+println sum, err
+
+println addSafe("10", "abc")
 `)
 		break;
         }

@@ -1,59 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 	"syscall/js"
-
-	"github.com/goplus/gop/ast"
-	"github.com/goplus/gop/cl"
-	exec "github.com/goplus/gop/exec/bytecode"
-	"github.com/goplus/gop/format"
-	_ "github.com/goplus/gop/lib"
-	"github.com/goplus/gop/parser"
-	"github.com/goplus/gop/token"
 )
-
-var hello = `println("Hello, Go+")
-println(1r << 129)
-println(1/3r + 2/7r * 2)
-
-arr := [1, 3, 5, 7, 11, 13, 17, 19]
-println(arr)
-println([x*x for x <- arr, x > 3])
-
-m := {"Hi": 1, "Go+": 2}
-println(m)
-println({v: k for k, v <- m})
-println([k for k, _ <- m])
-println([v for v <- m])
-`
 
 var (
 	output []string
 )
 
-func init() {
-	// old := js.Global().Get("console").Get("log")
-	// js.Global().Get("console").Set("log", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-	// 	var s []interface{}
-	// 	var info []string
-	// 	for _, arg := range args {
-	// 		s = append(s, arg)
-	// 		info = append(info, arg.String())
-	// 	}
-	// 	lines = append(lines, strings.Join(info, " "))
-	// 	old.Invoke(s...)
-	// 	return nil
-	// }))
-}
-
 func main() {
+	builder := NewBuilder(0)
 	js.Global().Set("gop_ajax", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {
 		case "/compile":
+			output = nil
 			source := args[1].Get("data").Get("body").String()
-			err := build(source)
+			err := builder.compile(source)
 
 			v := js.Global().Get("Object").New()
 			ar := js.Global().Get("Array").New(2)
@@ -71,8 +34,7 @@ func main() {
 			args[1].Get("success").Invoke(v)
 		case "/fmt":
 			source := args[1].Get("data").Get("body").String()
-			dst, err := format.Source([]byte(source))
-			js.Global().Get("console").Call("log", string(dst), err)
+			dst, err := formatCode([]byte(source))
 			v := js.Global().Get("Object").New()
 			if err != nil {
 				v.Set("Error", err.Error())
@@ -80,41 +42,10 @@ func main() {
 				v.Set("Body", string(dst))
 			}
 			args[1].Get("success").Invoke(v)
-
 		case "/doc/play":
 		}
 		return nil
 	}))
-}
-
-func build(data string) (e error) {
-	output = nil
-	defer func() {
-		err := recover()
-		if err != nil {
-			e = fmt.Errorf("[PANIC] %v", err)
-		}
-	}()
-	fset := token.NewFileSet()
-	file, err := parser.ParseFile(fset, "main.gop", data, 0)
-	pkg := &ast.Package{
-		Name:  "main",
-		Files: make(map[string]*ast.File)}
-	pkg.Files["main.gop"] = file
-	if err != nil {
-		return err
-	}
-	cl.CallBuiltinOp = exec.CallBuiltinOp
-
-	b := exec.NewBuilder(nil)
-	_, err = cl.NewPackage(b.Interface(), pkg, fset, cl.PkgActClMain) // pkgs["main"])
-	if err != nil {
-		return err
-	}
-	code := b.Resolve()
-	ctx := exec.NewContext(code)
-	ctx.Exec(0, code.Len())
-	return nil
 }
 
 var index = `<html>
