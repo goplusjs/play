@@ -1,10 +1,6 @@
 # goplus-play
 Playground of the Go+ language
 
-
-<https://visualfc.github.io/goplusjs-play/>
-
-
 Build for GopherJS
 ```
 go get github.com/goplusjs/gopherjs
