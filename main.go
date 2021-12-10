@@ -11,7 +11,7 @@ var (
 
 func main() {
 	builder := NewBuilder(0)
-	js.Global().Set("gop_ajax", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	jsFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {
 		case "/compile":
 			output = nil
@@ -24,21 +24,6 @@ func main() {
 				v.Set("Body", strings.Join(output, ""))
 			}
 			args[1].Get("success").Invoke(v)
-			// v := js.Global().Get("Object").New()
-			// ar := js.Global().Get("Array").New(2)
-			// ev := js.Global().Get("Object").New()
-			// ev.Set("Message", strings.Join(output, ""))
-			// ev.Set("Kind", "stdout")
-			// ev.Set("Body", strings.Join(output, ""))
-			// ar.SetIndex(0, ev)
-			// if err != nil {
-			// 	ev1 := js.Global().Get("Object").New()
-			// 	ev1.Set("Kind", "stderr")
-			// 	ev1.Set("Message", err.Error())
-			// 	ar.SetIndex(1, ev1)
-			// }
-			// v.Set("Events", ar)
-			// args[1].Get("success").Invoke(v)
 		case "/fmt":
 			source := args[1].Get("data").Get("body").String()
 			dst, err := formatCode([]byte(source))
@@ -52,7 +37,50 @@ func main() {
 		case "/doc/play":
 		}
 		return nil
-	}))
+	})
+	js.Global().Set("gop_ajax", jsFunc)
+	if supportWebWork() {
+		jsLog("init web worker")
+		jsOnMessage := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+			data := args[0].Get("data")
+			method := data.Get("method").String()
+			source := data.Get("body").String()
+			switch method {
+			case "/compile":
+				output = nil
+				err := builder.compile(source)
+				v := js.Global().Get("Object").New()
+				v.Set("Method", method)
+				if err != nil {
+					v.Set("Error", err.Error())
+				} else {
+					v.Set("Body", strings.Join(output, ""))
+				}
+				js.Global().Get("self").Call("postMessage", v)
+			case "/fmt":
+				dst, err := formatCode([]byte(source))
+				v := js.Global().Get("Object").New()
+				v.Set("Method", method)
+				if err != nil {
+					v.Set("Error", err.Error())
+				} else {
+					v.Set("Body", string(dst))
+				}
+				js.Global().Get("self").Call("postMessage", v)
+			}
+			return nil
+		})
+		js.Global().Get("self").Call("addEventListener", "message", jsOnMessage)
+	}
+}
+
+func supportWebWork() bool {
+	proto := js.Global().Get("location").Get("protocol").String()
+	return proto == "http:" || proto == "https:"
+}
+
+func jsLog(args ...interface{}) {
+	js.Global().Get("console").Call("log", args...)
 }
 
 var index = `<html>

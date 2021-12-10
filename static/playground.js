@@ -41,6 +41,10 @@ here's a skeleton implementation of a playground transport.
 */
 
 function js_ajax(url,options) {
+	if (gop_webwork != undefined) {
+		gop_webwork(url, options)
+		return
+	} 
     if (gop_ajax != undefined) {
         setTimeout(function() {
             gop_ajax(url,options);

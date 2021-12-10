@@ -1,2 +1,2 @@
 #!/bin/bash
-gopherjs build -a -v -m -o goplus-play.js
+gopherjs build -a -m -v -o goplus-play.js

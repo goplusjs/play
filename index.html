@@ -10,8 +10,40 @@
 		<script src="./static/jquery-linedtextarea.js"></script>
 		<script src="./static/playground.js"></script>
 		<script src="./static/playground-embed.js"></script>
-		<script src="./goplus-play.js"></script>
+<!--		<script src="./goplus-play.js"></script>-->
 		<script>
+    function loadScript(url, callback) {
+    	var script = document.createElement('script');
+    	script.type = "text/javascript";
+    	if (typeof(callback) != "undefined") {
+    		if (script.readyState) {
+    			script.onreadystatechange = function() {
+    				if (script.readyState == "loaded" || script.readyState == "complete") {
+    					script.onreadystatechange = null;
+    					callback();
+    				}
+    			}
+    		} else {
+    			script.onload = function() {
+    				callback();
+    			}
+    		}
+    	}
+    	script.src = url;
+    	document.head.appendChild(script);
+    }
+    if (window.location.protocol == "http:" || window.location.protocol == "https:") {
+      var worker = new Worker("./goplus-play.js")
+      var gop_webwork = function (url, options) {
+          worker.postMessage({method: url, body: options.data.body});
+          worker.onmessage = function (e) {
+            options.success(e.data)
+          }
+      } 
+    } else {
+      loadScript("./goplus-play.js");
+    }
+    
 		$(document).ready(function() {
 			playground({
 				'codeEl':       '#code',
