@@ -559,6 +559,12 @@ function PlaygroundOutput(el) {
         var toy = $(this).val();
         switch (toy) {
         case "hello.txt":
+            setBody(`// You can edit this code!
+// Click here and start typing.
+
+println "Hello, 世界"`)
+		break;
+        case "hellogop.txt":
         		setBody(`fields := [
 	"engineering",
 	"STEM education",
