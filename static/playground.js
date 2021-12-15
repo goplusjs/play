@@ -562,7 +562,8 @@ function PlaygroundOutput(el) {
             setBody(`// You can edit this code!
 // Click here and start typing.
 
-println "Hello, 世界"`)
+println "Hello, 世界"
+`)
 		break;
         case "hellogop.txt":
         		setBody(`fields := [
