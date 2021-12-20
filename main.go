@@ -16,7 +16,7 @@ func main() {
 		case "/compile":
 			output = nil
 			source := args[1].Get("data").Get("body").String()
-			err := builder.compile(source)
+			_, err := builder.compile(source)
 			v := js.Global().Get("Object").New()
 			if err != nil {
 				v.Set("Error", err.Error())
@@ -40,7 +40,6 @@ func main() {
 	})
 	js.Global().Set("gop_ajax", jsFunc)
 	if supportWebWork() {
-		jsLog("init web worker")
 		jsOnMessage := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 			data := args[0].Get("data")
 			method := data.Get("method").String()
@@ -48,7 +47,7 @@ func main() {
 			switch method {
 			case "/compile":
 				output = nil
-				err := builder.compile(source)
+				_, err := builder.compile(source)
 				v := js.Global().Get("Object").New()
 				v.Set("Method", method)
 				if err != nil {

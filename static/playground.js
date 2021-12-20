@@ -468,7 +468,7 @@ function PlaygroundOutput(el) {
                     data.Kind = "stdout"
                     highlightOutput(PlaygroundOutput(output[0]))(data);
                     data.Kind = "end";
-                    data.Body = "";
+                    data.Body = data.Code;
                     highlightOutput(PlaygroundOutput(output[0]))(data);
                 }
             }
