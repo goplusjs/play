@@ -6,17 +6,17 @@ import (
 	"runtime"
 
 	"github.com/goplus/gop/format"
-	"github.com/goplus/gossa"
-	"github.com/goplus/gossa/gopbuild"
+	"github.com/goplus/igop"
+	"github.com/goplus/igop/gopbuild"
 	"github.com/goplus/reflectx"
 )
 
 type Builder struct {
-	ctx *gossa.Context
+	ctx *igop.Context
 }
 
-func NewBuilder(mode gossa.Mode) *Builder {
-	ctx := gossa.NewContext(mode)
+func NewBuilder(mode igop.Mode) *Builder {
+	ctx := igop.NewContext(mode)
 	if runtime.Compiler == "gopherjs" {
 		sizes := &types.StdSizes{4, 4}
 		ctx.Sizes = sizes
