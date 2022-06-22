@@ -86,7 +86,7 @@ var index = `<html>
 <meta charset="UTF-8">
 
 <head>
-<title>The Go+ Playground</title>
+<title>The iGo+ Playground</title>
 <script type="text/javascript" src="./playground.js"></script>
 <style>
 .edit {
