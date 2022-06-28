@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<head>
+
+<title>The iGo+ Playground</title>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<meta charset="utf-8">
+<meta name="description" content="Go is an open source programming language that makes it easy to build simple, reliable, and efficient software.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="./static/styles.css">
+<script src="./static/jquery-3.5.1.min.js"></script>
+<script src="./static/jquery-linedtextarea.js"></script>
+<script src="./static/playground.js"></script>
+<script src="./static/playground-embed.js"></script>
+<script src="./goplus-play.js"></script>
+<script>
+$(document).ready(function() {
+	playground({
+		'codeEl':       '#code',
+		'outputEl':     '#output',
+		'runEl':        '#run, #embedRun',
+		'fmtEl':        '#fmt',
+		'fmtImportEl':  '#imports',
+		
+		'shareEl':      '#share',
+		'shareURLEl':   '#shareURL',
+		
+		'enableHistory': true,
+		'enableShortcuts': true,
+		'enableVet': true,
+		'toysEl': '.js-playgroundToysEl'
+	});
+	playgroundEmbed({
+		'codeEl':       '#code',
+		
+		'shareEl':      '#share',
+		
+		'embedEl':      '#embed',
+		'embedLabelEl': '#embedLabel',
+		'embedHTMLEl':  '#shareURL'
+	});
+	$('#code').linedtextarea();
+	
+	$('#code').attr('wrap', 'off');
+	var about = $('#about');
+	about.click(function(e) {
+		if ($(e.target).is('a')) {
+			return;
+		}
+		about.hide();
+	});
+	$('#aboutButton').click(function() {
+		if (about.is(':visible')) {
+			about.hide();
+			return;
+		}
+		about.show();
+	})
+	
+	if (readCookie('playgroundImports') == 'true') {
+		$('#imports').attr('checked','checked');
+	}
+	$('#imports').change(function() {
+		createCookie('playgroundImports', $(this).is(':checked') ? 'true' : '');
+	});
+	
+});
+
+function createCookie(name, value) {
+	document.cookie = name+"="+value+"; path=/";
+}
+
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+</script>
+
+<title>Go+ Playground</title>
+</head>
+<body class="Site">
+  
+<div class="PlayPage">
+  <div class="Playground-controls">
+    <h1 class="Playground-title">The iGo+ Playground</h1>
+    <div class="Playground-buttons">
+    <button id="run" class="Button Button--primary js-playgroundRunEl Playground-runButton" title="Run this code [shift-enter]">Run</button>
+    <div class="Playground-secondaryButtons">
+      <button id="fmt" class="Button js-playgroundFmtEl" title="Format this code">Format</button>
+      <button id="share" class="Button js-playgroundShareEl" title="Share this code">Share</button>
+			<input type="text" id="shareURL">
+			<label id="embedLabel">
+				<input type="checkbox" id="embed">
+				embed
+			</label>
+    </div>
+    <input type="text" class="Playground-shareURL js-playgroundShareURLEl" title="Sharing URL" style="display: none;"></input>
+    <select class="Playground-selectExample js-playgroundToysEl" aria-label="Code examples">
+        <option value="hello.txt">Hello, World</option>
+        <option value="hellogop.txt">Hello, Go+</option>
+        <option value="basic.txt">Go+ Basic</option>
+        <option value="range.txt">Range</option>
+        <option value="rational.txt">Rational</option>
+        <option value="slice.txt">Slice literal</option>
+        <option value="listmap.txt">List/Map comprehension</option>
+        <option value="error.txt">Error wrap</option>
+    </select>
+    </div>
+  </div>
+  <div class="Playground-inputContainer">
+    <div id="wrap">
+    <textarea id="code" name="code" class="Playground-input js-playgroundCodeEl" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Try Go">// You can edit this code!
+// Click here and start typing.
+
+println "Hello, 世界"
+</textarea>
+    </div>
+  </div>
+  <div class="Playground-outputContainer js-playgroundOutputEl" id="output">
+    <pre class="Playground-output"><noscript>Hello, 世界</noscript></pre>
+  </div>
+
+<div class="PlayAbout">
+<p><b>About the Playground</b></p>
+<p>
+The iGo+ Playground is a web service that runs on
+<a href="https://goplus.org/">goplus.org</a>'s servers.
+The service receives a Go+ program.
+runs the program inside a gopherjs, 
+then returns the output.
+</p>
+</div>
+
+</body>
+</html>

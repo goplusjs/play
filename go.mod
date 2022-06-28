@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/goplus/gop v1.1.2
-	github.com/goplus/igop v0.7.4
+	github.com/goplus/igop v0.7.6
 	github.com/goplus/reflectx v0.8.10
 	github.com/goplusjs/gopherjs v1.2.5
 )
