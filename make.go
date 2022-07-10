@@ -6,14 +6,21 @@ package main
 import (
 	"bytes"
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 )
 
 func main() {
+	gop, err := getModule("github.com/goplus/gop")
+	check(err)
+	igop, _ := getModule("github.com/goplus/igop")
+	check(err)
+
 	tag, err := getHash()
 	fmt.Println(tag)
 
@@ -23,6 +30,8 @@ func main() {
 	// build index
 	data, err := ioutil.ReadFile("./index_tpl.html")
 	check(err)
+	data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
+	data = bytes.Replace(data, []byte("$iGopVersion"), []byte(igop.Version), 1)
 	data = bytes.Replace(data, []byte("goplus-play.js"), []byte("igop_"+tag+".js"), 1)
 	err = ioutil.WriteFile("./docs/index.html", data, 0755)
 
@@ -67,4 +76,27 @@ func build_wasm(dir, tag string) error {
 	env := os.Environ()
 	cmd.Env = append(env, "GOARCH=wasm", "GOOS=js")
 	return cmd.Run()
+}
+
+type Module struct {
+	Path      string
+	Version   string
+	Time      time.Time
+	Dir       string
+	GoMod     string
+	GoVerison string
+}
+
+func getModule(path string) (*Module, error) {
+	cmd := exec.Command("go", "list", "-m", "-json", path)
+	data, err := cmd.Output()
+	if err != nil {
+		return nil, err
+	}
+	var m Module
+	err = json.Unmarshal(data, &m)
+	if err != nil {
+		return nil, err
+	}
+	return &m, err
 }
