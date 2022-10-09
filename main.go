@@ -16,7 +16,8 @@ func main() {
 		case "/compile":
 			output = nil
 			source := args[1].Get("data").Get("body").String()
-			_, err := builder.compile(source)
+			enabeGop := args[1].Get("data").Get("goplus").Bool()
+			_, err := builder.compile(source, enabeGop)
 			v := js.Global().Get("Object").New()
 			if err != nil {
 				v.Set("Error", err.Error())
@@ -26,7 +27,8 @@ func main() {
 			args[1].Get("success").Invoke(v)
 		case "/fmt":
 			source := args[1].Get("data").Get("body").String()
-			dst, err := formatCode([]byte(source))
+			enabeGop := args[1].Get("data").Get("goplus").Bool()
+			dst, err := formatCode([]byte(source), enabeGop)
 			v := js.Global().Get("Object").New()
 			if err != nil {
 				v.Set("Error", err.Error())
@@ -44,10 +46,11 @@ func main() {
 			data := args[0].Get("data")
 			method := data.Get("method").String()
 			source := data.Get("body").String()
+			enabeGop := data.Get("goplus").Bool()
 			switch method {
 			case "/compile":
 				output = nil
-				_, err := builder.compile(source)
+				_, err := builder.compile(source, enabeGop)
 				v := js.Global().Get("Object").New()
 				v.Set("Method", method)
 				if err != nil {
@@ -57,7 +60,7 @@ func main() {
 				}
 				js.Global().Get("self").Call("postMessage", v)
 			case "/fmt":
-				dst, err := formatCode([]byte(source))
+				dst, err := formatCode([]byte(source), enabeGop)
 				v := js.Global().Get("Object").New()
 				v.Set("Method", method)
 				if err != nil {

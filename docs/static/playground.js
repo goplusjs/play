@@ -455,7 +455,7 @@ function PlaygroundOutput(el) {
     function run() {
         loading();
  //     running = transport.Run(body(), highlightOutput(PlaygroundOutput(output[0])));
-        var data = {"body": body()};
+        var data = {"body": body(), "goplus": $(opts.enableGoplus).is(":checked") };
         js_ajax("/compile", {
             data: data,
             type: "POST",
@@ -477,7 +477,7 @@ function PlaygroundOutput(el) {
 
     function fmt() {
       loading();
-      var data = {"body": body()};
+      var data = {"body": body(), "goplus": $(opts.enableGoplus).is(":checked")};
       if ($(opts.fmtImportEl).is(":checked")) {
         data["imports"] = "true";
       }

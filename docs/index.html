@@ -12,7 +12,7 @@
 <script src="./static/jquery-linedtextarea.js"></script>
 <script src="./static/playground.js"></script>
 <script src="./static/playground-embed.js"></script>
-<script src="./igop_81696f8a.js"></script>
+<script src="./igop_1d3dea15.js"></script>
 <script>
 $(document).ready(function() {
 	playground({
@@ -24,6 +24,7 @@ $(document).ready(function() {
 		
 		'shareEl':      '#share',
 		'shareURLEl':   '#shareURL',
+		'enableGoplus': '#enableGoplus',
 		
 		'enableHistory': true,
 		'enableShortcuts': true,
@@ -40,8 +41,9 @@ $(document).ready(function() {
 		'embedHTMLEl':  '#shareURL'
 	});
 	$('#code').linedtextarea();
-	
 	$('#code').attr('wrap', 'off');
+	$('#enableGoplus').attr('checked','checked');
+
 	var about = $('#about');
 	about.click(function(e) {
 		if ($(e.target).is('a')) {
@@ -92,6 +94,7 @@ function readCookie(name) {
     <div class="Playground-buttons">
     <button id="run" class="Button Button--primary js-playgroundRunEl Playground-runButton" title="Run this code [shift-enter]">Run</button>
     <div class="Playground-secondaryButtons">
+      <input type="checkbox" id="enableGoplus">Go+ Mode</input>
       <button id="fmt" class="Button js-playgroundFmtEl" title="Format this code">Format</button>
       <button id="share" class="Button js-playgroundShareEl" title="Share this code">Share</button>
 			<input type="text" id="shareURL">
@@ -128,7 +131,7 @@ println "Hello, 世界"
 
 <div class="PlayAbout">
 <p><b>About the Playground</b></p>
-<p>iGo+ v0.7.6 (gop version v1.1.2)</p>
+<p>iGo+ v0.9.2 (gop version v1.1.3)</p>
 <p>
 The iGo+ Playground is a web service that runs on
 <a href="https://goplus.org/">goplus.org</a>'s servers.
