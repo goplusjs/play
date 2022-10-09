@@ -10,14 +10,13 @@ var (
 )
 
 func main() {
-	builder := NewBuilder(0)
 	jsFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {
 		case "/compile":
 			output = nil
 			source := args[1].Get("data").Get("body").String()
 			enabeGop := args[1].Get("data").Get("goplus").Bool()
-			_, err := builder.compile(source, enabeGop)
+			_, err := runCode(source, enabeGop)
 			v := js.Global().Get("Object").New()
 			if err != nil {
 				v.Set("Error", err.Error())
@@ -50,7 +49,7 @@ func main() {
 			switch method {
 			case "/compile":
 				output = nil
-				_, err := builder.compile(source, enabeGop)
+				_, err := runCode(source, enabeGop)
 				v := js.Global().Get("Object").New()
 				v.Set("Method", method)
 				if err != nil {

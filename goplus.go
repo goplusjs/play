@@ -11,20 +11,12 @@ import (
 	"github.com/goplus/igop/gopbuild"
 )
 
-type Builder struct {
-	ctx *igop.Context
-}
-
-func NewBuilder(mode igop.Mode) *Builder {
-	ctx := igop.NewContext(mode)
+func runCode(src string, enableGoplus bool) (code int, e error) {
+	ctx := igop.NewContext(0)
 	if runtime.Compiler == "gopherjs" {
 		sizes := &types.StdSizes{4, 4}
 		ctx.SetUnsafeSizes(sizes)
 	}
-	return &Builder{ctx: ctx}
-}
-
-func (p *Builder) compile(src string, enableGoplus bool) (code int, e error) {
 	defer func() {
 		err := recover()
 		if err != nil {
@@ -32,13 +24,13 @@ func (p *Builder) compile(src string, enableGoplus bool) (code int, e error) {
 		}
 	}()
 	if enableGoplus {
-		data, err := gopbuild.BuildFile(p.ctx, "main.gop", src)
+		data, err := gopbuild.BuildFile(ctx, "main.gop", src)
 		if err != nil {
 			return 2, err
 		}
 		src = string(data)
 	}
-	code, e = p.ctx.RunFile("main.go", src, nil)
+	code, e = ctx.RunFile("main.go", src, nil)
 	return
 }
 
