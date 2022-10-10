@@ -65,7 +65,6 @@ $(document).ready(function() {
 	$('#imports').change(function() {
 		createCookie('playgroundImports', $(this).is(':checked') ? 'true' : '');
 	});
-	
 });
 
 function createCookie(name, value) {
@@ -113,6 +112,7 @@ function readCookie(name) {
         <option value="slice.txt">Slice literal</option>
         <option value="listmap.txt">List/Map comprehension</option>
         <option value="error.txt">Error wrap</option>
+        <option value="generic.txt">Generic index</option>
     </select>
     </div>
   </div>
