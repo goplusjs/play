@@ -24,6 +24,7 @@ $(document).ready(function() {
 		
 		'shareEl':      '#share',
 		'shareURLEl':   '#shareURL',
+		'enableGoplus': '#enableGoplus',
 		
 		'enableHistory': true,
 		'enableShortcuts': true,
@@ -40,8 +41,9 @@ $(document).ready(function() {
 		'embedHTMLEl':  '#shareURL'
 	});
 	$('#code').linedtextarea();
-	
 	$('#code').attr('wrap', 'off');
+	$('#enableGoplus').attr('checked','checked');
+
 	var about = $('#about');
 	about.click(function(e) {
 		if ($(e.target).is('a')) {
@@ -63,7 +65,6 @@ $(document).ready(function() {
 	$('#imports').change(function() {
 		createCookie('playgroundImports', $(this).is(':checked') ? 'true' : '');
 	});
-	
 });
 
 function createCookie(name, value) {
@@ -92,6 +93,7 @@ function readCookie(name) {
     <div class="Playground-buttons">
     <button id="run" class="Button Button--primary js-playgroundRunEl Playground-runButton" title="Run this code [shift-enter]">Run</button>
     <div class="Playground-secondaryButtons">
+      <input type="checkbox" id="enableGoplus">Go+ Mode</input>
       <button id="fmt" class="Button js-playgroundFmtEl" title="Format this code">Format</button>
       <button id="share" class="Button js-playgroundShareEl" title="Share this code">Share</button>
 			<input type="text" id="shareURL">
@@ -110,6 +112,7 @@ function readCookie(name) {
         <option value="slice.txt">Slice literal</option>
         <option value="listmap.txt">List/Map comprehension</option>
         <option value="error.txt">Error wrap</option>
+        <option value="generic.txt">Generic index</option>
     </select>
     </div>
   </div>

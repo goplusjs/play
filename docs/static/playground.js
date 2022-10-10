@@ -455,7 +455,7 @@ function PlaygroundOutput(el) {
     function run() {
         loading();
  //     running = transport.Run(body(), highlightOutput(PlaygroundOutput(output[0])));
-        var data = {"body": body()};
+        var data = {"body": body(), "goplus": $(opts.enableGoplus).is(":checked") };
         js_ajax("/compile", {
             data: data,
             type: "POST",
@@ -477,7 +477,7 @@ function PlaygroundOutput(el) {
 
     function fmt() {
       loading();
-      var data = {"body": body()};
+      var data = {"body": body(), "goplus": $(opts.enableGoplus).is(":checked")};
       if ($(opts.fmtImportEl).is(":checked")) {
         data["imports"] = "true";
       }
@@ -697,7 +697,33 @@ println sum, err
 println addSafe("10", "abc")
 `)
 		break;
-        }
+        case "generic.txt":
+        setBody(`
+package main
+
+import (
+	"fmt"
+)
+
+// The index function returns the index of the first occurrence of v in s,
+// or -1 if not present.
+func index[E comparable](s []E, v E) int {
+	for i, vs := range s {
+		if v == vs {
+			return i
+		}
+	}
+	return -1
+}
+
+func main() {
+	s := []int{1, 3, 5, 2, 4}
+	fmt.Println(index(s, 3))
+	fmt.Println(index(s, 6))
+}
+`)
+		break;
+}
 //        js_ajax("/doc/play/"+toy, {
 //          processData: false,
 //          type: "GET",

@@ -26,11 +26,11 @@ func init() {
 		Interfaces: map[string]reflect.Type{
 			"Error": reflect.TypeOf((*q.Error)(nil)).Elem(),
 		},
-		NamedTypes: map[string]igop.NamedType{
-			"Frame":              {reflect.TypeOf((*q.Frame)(nil)).Elem(), "", ""},
-			"Frames":             {reflect.TypeOf((*q.Frames)(nil)).Elem(), "", "Next"},
-			"Func":               {reflect.TypeOf((*q.Func)(nil)).Elem(), "", "Entry,FileLine,Name,funcInfo,raw"},
-			"TypeAssertionError": {reflect.TypeOf((*q.TypeAssertionError)(nil)).Elem(), "", "Error,RuntimeError"},
+		NamedTypes: map[string]reflect.Type{
+			"Frame":              reflect.TypeOf((*q.Frame)(nil)).Elem(),
+			"Frames":             reflect.TypeOf((*q.Frames)(nil)).Elem(),
+			"Func":               reflect.TypeOf((*q.Func)(nil)).Elem(),
+			"TypeAssertionError": reflect.TypeOf((*q.TypeAssertionError)(nil)).Elem(),
 		},
 		AliasTypes: map[string]reflect.Type{},
 		Funcs: map[string]reflect.Value{
