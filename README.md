@@ -3,10 +3,10 @@ Playground of the Go+ language
 
 Build for GopherJS
 ```
-go get github.com/goplusjs/gopherjs
+go install github.com/gopherjs/gopherjs@master
 git clone https://github.com/goplusjs/play
 cd play
-./build_latest.sh
+./build.sh
 ```
 
 <https://goplusjs.github.io/play/>
