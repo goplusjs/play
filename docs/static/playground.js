@@ -697,6 +697,18 @@ println sum, err
 println addSafe("10", "abc")
 `)
 		break;
+		case "canvas.txt":
+		setBody(`import "syscall/js"
+
+document := js.global.get("document")
+canvas := document.call("getElementById","canvas")
+canvas.set("width",200)
+canvas.set("height",200)
+ctx := canvas.call("getContext","2d")
+ctx.set("fillStyle","rgba(128,0,0,0.3)")
+ctx.call("fillRect",10,10,100,100)
+`)
+		break;
         case "generic.txt":
         setBody(`
 package main

@@ -5,6 +5,7 @@ import (
 	"go/format"
 	"go/types"
 	"runtime"
+	"syscall/js"
 
 	gopformat "github.com/goplus/gop/format"
 	"github.com/goplus/igop"
@@ -30,6 +31,10 @@ func runCode(src string, enableGoplus bool) (code int, e error) {
 		}
 		src = string(data)
 	}
+	document := js.Global().Get("document")
+	canvas := document.Call("getElementById", "canvas")
+	canvas.Set("width", 0)
+	canvas.Set("height", 0)
 	code, e = ctx.RunFile("main.go", src, nil)
 	return
 }

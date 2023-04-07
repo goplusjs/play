@@ -12,7 +12,7 @@
 <script src="./static/jquery-linedtextarea.js"></script>
 <script src="./static/playground.js"></script>
 <script src="./static/playground-embed.js"></script>
-<script src="./igop_75df5708.js"></script>
+<script src="./igop_d4a44be9.js"></script>
 <script>
 $(document).ready(function() {
 	playground({
@@ -112,6 +112,7 @@ function readCookie(name) {
         <option value="slice.txt">Slice literal</option>
         <option value="listmap.txt">List/Map comprehension</option>
         <option value="error.txt">Error wrap</option>
+        <option value="canvas.txt">Canvas (2D Context)</option>
         <option value="generic.txt">Generic index</option>
     </select>
     </div>
@@ -125,6 +126,7 @@ println "Hello, 世界"
 </textarea>
     </div>
   </div>
+  <canvas id="canvas" width="0" height="0"></canvas>
   <div class="Playground-outputContainer js-playgroundOutputEl" id="output">
     <pre class="Playground-output"><noscript>Hello, 世界</noscript></pre>
   </div>
