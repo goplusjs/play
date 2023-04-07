@@ -8,6 +8,8 @@ import (
 	_ "github.com/goplus/igop/pkg/strconv"
 	_ "github.com/goplus/igop/pkg/strings"
 
+	_ "github.com/goplus/igop/pkg/syscall/js"
+
 	// _ "github.com/goplus/igop/pkg/archive/tar"
 	// _ "github.com/goplus/igop/pkg/archive/zip"
 
