@@ -12,6 +12,13 @@ import (
 	"github.com/goplus/igop/gopbuild"
 )
 
+func clearCanvas() {
+	document := js.Global().Get("document")
+	canvas := document.Call("getElementById", "canvas")
+	canvas.Set("width", 0)
+	canvas.Set("height", 0)
+}
+
 func runCode(src string, enableGoplus bool) (code int, e error) {
 	ctx := igop.NewContext(0)
 	if runtime.Compiler == "gopherjs" {
@@ -31,10 +38,7 @@ func runCode(src string, enableGoplus bool) (code int, e error) {
 		}
 		src = string(data)
 	}
-	document := js.Global().Get("document")
-	canvas := document.Call("getElementById", "canvas")
-	canvas.Set("width", 0)
-	canvas.Set("height", 0)
+	clearCanvas()
 	code, e = ctx.RunFile("main.go", src, nil)
 	return
 }
