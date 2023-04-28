@@ -21,6 +21,7 @@ func clearCanvas() {
 
 func runCode(src string, enableGoplus bool) (code int, e error) {
 	ctx := igop.NewContext(0)
+	defer ctx.UnsafeRelease()
 	if runtime.Compiler == "gopherjs" {
 		sizes := &types.StdSizes{4, 4}
 		ctx.SetUnsafeSizes(sizes)
@@ -39,7 +40,15 @@ func runCode(src string, enableGoplus bool) (code int, e error) {
 		src = string(data)
 	}
 	clearCanvas()
-	code, e = ctx.RunFile("main.go", src, nil)
+	interp, err := ctx.LoadInterp("main.go", src)
+	if err != nil {
+		return 2, err
+	}
+	defer interp.UnsafeRelease()
+	code, e = ctx.RunInterp(interp, "main", nil)
+	if pe, ok := e.(igop.PanicError); ok {
+		e = fmt.Errorf("panic: %w", pe)
+	}
 	return
 }
 
