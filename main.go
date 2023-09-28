@@ -16,14 +16,16 @@ func main() {
 			output = nil
 			source := args[1].Get("data").Get("body").String()
 			enabeGop := args[1].Get("data").Get("goplus").Bool()
-			_, err := runCode(source, enabeGop)
-			v := js.Global().Get("Object").New()
-			if err != nil {
-				v.Set("Error", err.Error())
-			} else {
-				v.Set("Body", strings.Join(output, ""))
-			}
-			args[1].Get("success").Invoke(v)
+			go func() {
+				_, err := runCode(source, enabeGop)
+				v := js.Global().Get("Object").New()
+				if err != nil {
+					v.Set("Error", err.Error())
+				} else {
+					v.Set("Body", strings.Join(output, ""))
+				}
+				args[1].Get("success").Invoke(v)
+			}()
 		case "/fmt":
 			source := args[1].Get("data").Get("body").String()
 			enabeGop := args[1].Get("data").Get("goplus").Bool()

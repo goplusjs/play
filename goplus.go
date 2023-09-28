@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"go/format"
 	"go/types"
@@ -45,6 +46,7 @@ func runCode(src string, enableGoplus bool) (code int, e error) {
 		return 2, err
 	}
 	defer interp.UnsafeRelease()
+	ctx.RunContext, _ = context.WithCancel(context.TODO())
 	code, e = ctx.RunInterp(interp, "main", nil)
 	if pe, ok := e.(igop.PanicError); ok {
 		e = fmt.Errorf("panic: %w", pe)
@@ -54,7 +56,7 @@ func runCode(src string, enableGoplus bool) (code int, e error) {
 
 func formatCode(src []byte, enableGoplus bool) ([]byte, error) {
 	if enableGoplus {
-		return gopformat.Source(src, "main.gop")
+		return gopformat.Source(src, false, "main.gop")
 	} else {
 		return format.Source(src)
 	}
