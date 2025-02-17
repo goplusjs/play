@@ -30,12 +30,27 @@ func main() {
 	// build index
 	data, err := ioutil.ReadFile("./index_tpl.html")
 	check(err)
+	// data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
+	// data = bytes.Replace(data, []byte("$iGopVersion"), []byte(igop.Version), 1)
+	// data = bytes.Replace(data, []byte("goplus-play.js"), []byte("igop_"+tag+".js"), 1)
+	// err = ioutil.WriteFile("./docs/index.html", data, 0755)
+
+	data = bytes.Replace(data, []byte("loader.js"), []byte("loader_"+tag+".js"), 1)
 	data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
 	data = bytes.Replace(data, []byte("$iGopVersion"), []byte(igop.Version), 1)
-	data = bytes.Replace(data, []byte("goplus-play.js"), []byte("igop_"+tag+".js"), 1)
 	err = ioutil.WriteFile("./docs/index.html", data, 0755)
 
-	err = build_js("./docs", "igop_"+tag)
+	// build loader.js
+	data, err = ioutil.ReadFile("./loader_tpl.js")
+	check(err)
+
+	data = bytes.Replace(data, []byte("igop"), []byte("igop_"+tag), 2)
+	err = ioutil.WriteFile("./docs/loader_"+tag+".js", data, 0755)
+	check(err)
+
+	// err = build_js("./docs", "igop_"+tag)
+	// check(err)
+	err = build_wasm("./docs", "igop_"+tag)
 	check(err)
 }
 
@@ -72,7 +87,7 @@ func build_js(dir, tag string) error {
 }
 
 func build_wasm(dir, tag string) error {
-	cmd := exec.Command("go", "build", "-o", filepath.Join(dir, tag+".wasm"))
+	cmd := exec.Command("go", "build", "-ldflags", "-checklinkname=0", "-o", filepath.Join(dir, tag+".wasm"))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	env := os.Environ()

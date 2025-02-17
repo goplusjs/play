@@ -75,6 +75,7 @@ func main() {
 		})
 		js.Global().Get("self").Call("addEventListener", "message", jsOnMessage)
 	}
+	select {}
 }
 
 func supportWebWork() bool {
