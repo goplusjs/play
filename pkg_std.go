@@ -10,6 +10,8 @@ import (
 
 	_ "github.com/goplus/igop/pkg/syscall/js"
 
+	_ "github.com/goplus/igop/pkg/runtime"
+
 	// _ "github.com/goplus/igop/pkg/archive/tar"
 	// _ "github.com/goplus/igop/pkg/archive/zip"
 
