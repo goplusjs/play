@@ -1,9 +1,8 @@
 # goplus-play
 Playground of the Go+ language
 
-Build for GopherJS
+Build for Go1.23 wasm.
 ```
-go install github.com/gopherjs/gopherjs@master
 git clone https://github.com/goplusjs/play
 cd play
 ./build.sh
