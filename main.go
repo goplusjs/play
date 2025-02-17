@@ -3,6 +3,8 @@ package main
 import (
 	"strings"
 	"syscall/js"
+
+	"github.com/goplus/igop"
 )
 
 var (
@@ -10,22 +12,21 @@ var (
 )
 
 func main() {
+	ctx := igop.NewContext(0)
 	jsFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {
 		case "/compile":
 			output = nil
 			source := args[1].Get("data").Get("body").String()
 			enabeGop := args[1].Get("data").Get("goplus").Bool()
-			go func() {
-				_, err := runCode(source, enabeGop)
-				v := js.Global().Get("Object").New()
-				if err != nil {
-					v.Set("Error", err.Error())
-				} else {
-					v.Set("Body", strings.Join(output, ""))
-				}
-				args[1].Get("success").Invoke(v)
-			}()
+			_, err := runCode(ctx, source, enabeGop)
+			v := js.Global().Get("Object").New()
+			if err != nil {
+				v.Set("Error", err.Error())
+			} else {
+				v.Set("Body", strings.Join(output, ""))
+			}
+			args[1].Get("success").Invoke(v)
 		case "/fmt":
 			source := args[1].Get("data").Get("body").String()
 			enabeGop := args[1].Get("data").Get("goplus").Bool()
@@ -51,7 +52,7 @@ func main() {
 			switch method {
 			case "/compile":
 				output = nil
-				_, err := runCode(source, enabeGop)
+				_, err := runCode(ctx, source, enabeGop)
 				v := js.Global().Get("Object").New()
 				v.Set("Method", method)
 				if err != nil {

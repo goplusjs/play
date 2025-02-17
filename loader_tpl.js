@@ -3,8 +3,6 @@ go_log = console.log;
 
 var useWasm = true;//location.href.includes("?wasm");
 
-console.log("useWasm =", useWasm);
-
 var script = document.createElement('script');
 if (useWasm) {
     script.src = "wasm_exec.js";
@@ -12,8 +10,8 @@ if (useWasm) {
          // polyfill
         if (!WebAssembly.instantiateStreaming) {
             WebAssembly.instantiateStreaming = async (resp, importObject) => {
-	        const source = await (await resp).arrayBuffer();
-	        return await WebAssembly.instantiate(source, importObject);
+            const source = await (await resp).arrayBuffer();
+            return await WebAssembly.instantiate(source, importObject);
             };
         }
     
@@ -26,7 +24,7 @@ if (useWasm) {
         });
     
         async function run() {
-	    console.clear();
+        console.clear();
             await go.run(inst);
             inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
         }

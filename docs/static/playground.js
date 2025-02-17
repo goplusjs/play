@@ -447,7 +447,7 @@ function PlaygroundOutput(el) {
     function loading() {
       lineClear();
       //if (running) running.Kill();
-      output.removeClass("error").text('Waiting for compile...');
+      output.removeClass("error").text('Waiting for compilation...');
     }
     function setOutput(text) {
       output.removeClass("error").text(text);
