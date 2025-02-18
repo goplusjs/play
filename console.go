@@ -14,7 +14,6 @@ func init() {
 		if len(args) > 0 {
 			output = append(output, args[0].String()+"\n")
 		}
-		fn.Invoke(ar...)
-		return nil
+		return fn.Invoke(ar...)
 	}))
 }
