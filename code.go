@@ -20,7 +20,7 @@ func clearCanvas() {
 	canvas.Set("height", 0)
 }
 
-func runCode(ctx *igop.Context, src string, enableGoplus bool) (code int, e error) {
+func runCode(ctx *igop.Context, src string, enableGoplus bool) (code int, e error, emsg string) {
 	if runtime.Compiler == "gopherjs" {
 		sizes := &types.StdSizes{4, 4}
 		ctx.SetUnsafeSizes(sizes)
@@ -34,24 +34,25 @@ func runCode(ctx *igop.Context, src string, enableGoplus bool) (code int, e erro
 	if enableGoplus {
 		data, err := gopbuild.BuildFile(ctx, "main.gop", src)
 		if err != nil {
-			return 2, err
+			return 2, err, ""
 		}
 		src = string(data)
 	}
 	clearCanvas()
 	interp, err := ctx.LoadInterp("main.go", src)
 	if err != nil {
-		return 2, err
+		return 2, err, ""
 	}
 	defer interp.UnsafeRelease()
 	ctx.RunContext, _ = context.WithCancel(context.TODO())
 	code, err = ctx.RunInterp(interp, "main", nil)
 	if err != nil {
-		output = append(output, err.Error()+"\n")
+		if pe, ok := err.(igop.PanicError); ok {
+			emsg = fmt.Sprintf("panic: %v\n%s\n", pe.Value, pe.Stack())
+		} else {
+			emsg = err.Error()
+		}
 	}
-	// if pe, ok := e.(igop.PanicError); ok {
-	// 	e = fmt.Errorf("panic: %w", pe)
-	// }
 	return
 }
 

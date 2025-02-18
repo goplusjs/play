@@ -19,17 +19,26 @@ func main() {
 			output = nil
 			source := args[1].Get("data").Get("body").String()
 			enableGop := args[1].Get("data").Get("goplus").Bool()
-			code, err := runCode(ctx, source, enableGop)
+			code, err, emsg := runCode(ctx, source, enableGop)
 			v := js.Global().Get("Object").New()
 			v.Set("Status", code)
 			if err != nil {
 				v.Set("Errors", err.Error())
 			} else {
+				var events []interface{}
 				obj := js.Global().Get("Object").New()
 				obj.Set("Message", strings.Join(output, ""))
 				obj.Set("Kind", "stdout")
 				obj.Set("Deply", 0)
-				v.Set("Events", []interface{}{obj})
+				if emsg != "" {
+					obj := js.Global().Get("Object").New()
+					obj.Set("Message", emsg)
+					obj.Set("Kind", "stderr")
+					obj.Set("Deply", 0)
+					events = append(events, obj)
+				}
+				events = append(events, obj)
+				v.Set("Events", events)
 			}
 			args[1].Get("success").Invoke(v)
 		case "/fmt":
@@ -57,7 +66,7 @@ func main() {
 			switch method {
 			case "/compile":
 				output = nil
-				_, err := runCode(ctx, source, enabeGop)
+				_, err, _ := runCode(ctx, source, enabeGop)
 				v := js.Global().Get("Object").New()
 				v.Set("Method", method)
 				if err != nil {
