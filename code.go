@@ -11,6 +11,7 @@ import (
 	gopformat "github.com/goplus/gop/format"
 	"github.com/goplus/igop"
 	"github.com/goplus/igop/gopbuild"
+	_ "github.com/goplus/reflectx/icall/icall4096"
 )
 
 func clearCanvas() {

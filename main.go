@@ -19,7 +19,7 @@ func main() {
 			output = nil
 			source := args[1].Get("data").Get("body").String()
 			enableGop := args[1].Get("data").Get("goplus").Bool()
-			go func() {
+			go func(arg js.Value) {
 				code, err, emsg := runCode(ctx, source, enableGop)
 				v := js.Global().Get("Object").New()
 				v.Set("Status", code)
@@ -41,8 +41,8 @@ func main() {
 					events = append(events, obj)
 					v.Set("Events", events)
 				}
-				args[1].Get("success").Invoke(v)
-			}()
+				arg.Get("success").Invoke(v)
+			}(args[1])
 		case "/fmt":
 			source := args[1].Get("data").Get("body").String()
 			enabeGop := args[1].Get("data").Get("goplus").Bool()
