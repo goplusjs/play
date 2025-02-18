@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"go/format"
-	"go/types"
-	"runtime"
 	"syscall/js"
 
 	gopformat "github.com/goplus/gop/format"
@@ -21,11 +19,21 @@ func clearCanvas() {
 	canvas.Set("height", 0)
 }
 
-func runCode(ctx *igop.Context, src string, enableGoplus bool) (code int, e error, emsg string) {
-	if runtime.Compiler == "gopherjs" {
-		sizes := &types.StdSizes{4, 4}
-		ctx.SetUnsafeSizes(sizes)
+type Context struct {
+	ctx    *igop.Context
+	cancel func()
+}
+
+func NewContext(mode igop.Mode) *Context {
+	ctx := igop.NewContext(mode)
+	return &Context{ctx: ctx}
+}
+
+func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, emsg string) {
+	if c.cancel != nil {
+		c.cancel()
 	}
+	ctx := c.ctx
 	defer func() {
 		err := recover()
 		if err != nil {
@@ -45,7 +53,7 @@ func runCode(ctx *igop.Context, src string, enableGoplus bool) (code int, e erro
 		return 2, err, ""
 	}
 	defer interp.UnsafeRelease()
-	ctx.RunContext, _ = context.WithCancel(context.TODO())
+	ctx.RunContext, c.cancel = context.WithCancel(context.TODO())
 	code, err = ctx.RunInterp(interp, "main", nil)
 	if err != nil {
 		if pe, ok := err.(igop.PanicError); ok {

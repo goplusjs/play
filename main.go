@@ -3,16 +3,10 @@ package main
 import (
 	"strings"
 	"syscall/js"
-
-	"github.com/goplus/igop"
-)
-
-var (
-	output []string
 )
 
 func main() {
-	ctx := igop.NewContext(0)
+	ctx := NewContext(0)
 	jsFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {
 		case "/compile":
@@ -20,7 +14,7 @@ func main() {
 			source := args[1].Get("data").Get("body").String()
 			enableGop := args[1].Get("data").Get("goplus").Bool()
 			go func(arg js.Value) {
-				code, err, emsg := runCode(ctx, source, enableGop)
+				code, err, emsg := ctx.runCode(source, enableGop)
 				v := js.Global().Get("Object").New()
 				v.Set("Status", code)
 				if err != nil {
@@ -68,7 +62,7 @@ func main() {
 			switch method {
 			case "/compile":
 				output = nil
-				_, err, _ := runCode(ctx, source, enabeGop)
+				_, err, _ := ctx.runCode(source, enabeGop)
 				v := js.Global().Get("Object").New()
 				v.Set("Method", method)
 				if err != nil {
