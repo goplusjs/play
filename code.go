@@ -45,10 +45,13 @@ func runCode(ctx *igop.Context, src string, enableGoplus bool) (code int, e erro
 	}
 	defer interp.UnsafeRelease()
 	ctx.RunContext, _ = context.WithCancel(context.TODO())
-	code, e = ctx.RunInterp(interp, "main", nil)
-	if pe, ok := e.(igop.PanicError); ok {
-		e = fmt.Errorf("panic: %w", pe)
+	code, err = ctx.RunInterp(interp, "main", nil)
+	if err != nil {
+		output = append(output, err.Error()+"\n")
 	}
+	// if pe, ok := e.(igop.PanicError); ok {
+	// 	e = fmt.Errorf("panic: %w", pe)
+	// }
 	return
 }
 
