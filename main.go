@@ -18,13 +18,18 @@ func main() {
 		case "/compile":
 			output = nil
 			source := args[1].Get("data").Get("body").String()
-			enabeGop := args[1].Get("data").Get("goplus").Bool()
-			_, err := runCode(ctx, source, enabeGop)
+			enableGop := args[1].Get("data").Get("goplus").Bool()
+			code, err := runCode(ctx, source, enableGop)
 			v := js.Global().Get("Object").New()
+			v.Set("Status", code)
 			if err != nil {
-				v.Set("Error", err.Error())
+				v.Set("Errors", err.Error())
 			} else {
-				v.Set("Body", strings.Join(output, ""))
+				obj := js.Global().Get("Object").New()
+				obj.Set("Message", strings.Join(output, ""))
+				obj.Set("Kind", "stdout")
+				obj.Set("Deply", 0)
+				v.Set("Events", []interface{}{obj})
 			}
 			args[1].Get("success").Invoke(v)
 		case "/fmt":

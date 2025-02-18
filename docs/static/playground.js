@@ -40,20 +40,34 @@ here's a skeleton implementation of a playground transport.
         }
 */
 
+const host = "https://play.goplus.org";
+
+var bIgop = false;
+
+function hasIgop() {
+    if (bIgop) { 
+        return true;
+    }
+    if (typeof gop_ajax === "function") {
+    	console.log("jsplay.goplus.org: ready")
+        bIgop = true;
+    }
+    return bIgop;
+}
+
 function js_ajax(url,options) {
-    if (gop_ajax != undefined) {
-        setTimeout(function() {
-            gop_ajax(url,options);
-        },0);
+    if (hasIgop()) {
+        gop_ajax(url,options);
     } else {
-        $.ajax(url,options)
+    	console.log("pass on play.goplus.org")
+        $.ajax(host+url,options);
     }
 }
 
 // HTTPTransport is the default transport.
 // enableVet enables running vet if a program was compiled and ran successfully.
 // If vet returned any errors, display them before the output of a program.
-function HTTPTransport(enableVet) {
+function HTTPTransport(enableVet, fnIsGop) {
 	'use strict';
 
 	function playback(output, data) {
@@ -127,7 +141,7 @@ function HTTPTransport(enableVet) {
 			var playing;
 			js_ajax('/compile', {
 				type: 'POST',
-				data: {'version': 2, 'body': body, 'withVet': enableVet},
+				data: {'version': 2, 'body': body, 'withVet': enableVet, 'goplus': fnIsGop()},
 				dataType: 'json',
 				success: function(data) {
 					if (seq != cur) return;
@@ -325,7 +339,10 @@ function PlaygroundOutput(el) {
   //  enableVet - enable running vet and displaying its errors
   function playground(opts) {
     var code = $(opts.codeEl);
-    var transport = opts['transport'] || new HTTPTransport(opts['enableVet']);
+    function isGoplus() {
+    	return $(opts.enableGoplus).is(":checked")
+    }
+    var transport = opts['transport'] || new HTTPTransport(opts['enableVet'],isGoplus);
     var running;
 
     // autoindent helpers.
@@ -454,25 +471,28 @@ function PlaygroundOutput(el) {
     }
     function run() {
         loading();
- //     running = transport.Run(body(), highlightOutput(PlaygroundOutput(output[0])));
-        var data = {"body": body(), "goplus": $(opts.enableGoplus).is(":checked") };
-        js_ajax("/compile", {
-            data: data,
-            type: "POST",
-            dataType: "json",
-            success: function(data) {
-                setOutput("");
-                if (data.Error) {
-                    setError(data.Error);
-                } else {
-                    data.Kind = "stdout"
-                    highlightOutput(PlaygroundOutput(output[0]))(data);
-                    data.Kind = "end";
-                    data.Body = data.Code;
-                    highlightOutput(PlaygroundOutput(output[0]))(data);
-                }
-            }
-        });
+        //if (!hasIgop()) {
+        running = transport.Run(body(), highlightOutput(PlaygroundOutput(output[0])));
+//        } else {
+//	       var data = {"body": body(), "goplus": $(opts.enableGoplus).is(":checked") };
+//	       js_ajax("/compile", {
+//	           data: data,
+//	           type: "POST",
+//	           dataType: "json",
+//	           success: function(data) {
+//	               setOutput("");
+//	               if (data.Error) {
+//	                   setError(data.Error);
+//	               } else {
+//	                   data.Kind = "stdout"
+//	                   highlightOutput(PlaygroundOutput(output[0]))(data);
+//	                   data.Kind = "end";
+//	                   data.Body = data.Code;
+//	                   highlightOutput(PlaygroundOutput(output[0]))(data);
+//	               }
+//	           }
+//	       });
+	    //}
     }
 
     function fmt() {
