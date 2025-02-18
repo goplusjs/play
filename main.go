@@ -19,28 +19,30 @@ func main() {
 			output = nil
 			source := args[1].Get("data").Get("body").String()
 			enableGop := args[1].Get("data").Get("goplus").Bool()
-			code, err, emsg := runCode(ctx, source, enableGop)
-			v := js.Global().Get("Object").New()
-			v.Set("Status", code)
-			if err != nil {
-				v.Set("Errors", err.Error())
-			} else {
-				var events []interface{}
-				obj := js.Global().Get("Object").New()
-				obj.Set("Message", strings.Join(output, ""))
-				obj.Set("Kind", "stdout")
-				obj.Set("Deply", 0)
-				if emsg != "" {
+			go func() {
+				code, err, emsg := runCode(ctx, source, enableGop)
+				v := js.Global().Get("Object").New()
+				v.Set("Status", code)
+				if err != nil {
+					v.Set("Errors", err.Error())
+				} else {
+					var events []interface{}
 					obj := js.Global().Get("Object").New()
-					obj.Set("Message", emsg)
-					obj.Set("Kind", "stderr")
+					obj.Set("Message", strings.Join(output, ""))
+					obj.Set("Kind", "stdout")
 					obj.Set("Deply", 0)
+					if emsg != "" {
+						obj := js.Global().Get("Object").New()
+						obj.Set("Message", emsg)
+						obj.Set("Kind", "stderr")
+						obj.Set("Deply", 0)
+						events = append(events, obj)
+					}
 					events = append(events, obj)
+					v.Set("Events", events)
 				}
-				events = append(events, obj)
-				v.Set("Events", events)
-			}
-			args[1].Get("success").Invoke(v)
+				args[1].Get("success").Invoke(v)
+			}()
 		case "/fmt":
 			source := args[1].Get("data").Get("body").String()
 			enabeGop := args[1].Get("data").Get("goplus").Bool()
