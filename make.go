@@ -62,7 +62,8 @@ func check(err error) {
 
 func getHash() (string, error) {
 	h := md5.New()
-	for _, f := range []string{"main.go", "code.go", "console.go", "pkg_std.go", "loader_tpl.js", "go.mod"} {
+	for _, f := range []string{"main.go", "code.go", "console.go", "pkg_std.go",
+		"loader_tpl.js", "index_tpl.html", "go.mod"} {
 		data, err := ioutil.ReadFile(f)
 		if err != nil {
 			return "", err
