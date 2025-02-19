@@ -11,11 +11,11 @@ let orglog = console.log;
 let wasmOverflowCallback;
 
 window.setIgopOverflowCallback = function(callback) {
-	wasmOverflowCallback = callback;
+    wasmOverflowCallback = callback;
 }
 
 window.isIgopLoaded = function() {
-	return isWasmLoaded;
+    return isWasmLoaded;
 }
 
 var script = document.createElement('script');
@@ -39,7 +39,7 @@ if (useWasm) {
 //            isWasmLoaded = true;
 //            run();
 //        })
-    
+
 //        async function run() {
 //            await go.run(inst);
 //            inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
@@ -60,7 +60,7 @@ function handleGlobalError(event) {
     event.preventDefault();
     console.error("Stack overflow detected, reload WASM module...");
     if (typeof wasmOverflowCallback === "function") {
-    	wasmOverflowCallback(event);
+        wasmOverflowCallback(event);
     }
     if (isWasmLoaded) {
        reloadWasm();
@@ -68,9 +68,7 @@ function handleGlobalError(event) {
   }
 }
 
-// 注册全局错误监听器
 window.addEventListener("error", handleGlobalError);
-
 
 async function loadWasm() {
     const go = new Go();
@@ -92,13 +90,11 @@ async function loadWasm() {
 
 async function reloadWasm() {
   isWasmLoaded = false;
-  
+
   if (currentGoInstance) {
     currentGoInstance.exit(0);
     currentGoInstance = null;
   }
 
-  // 重新加载WASM
   await loadWasm();
 }
-
