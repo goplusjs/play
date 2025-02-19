@@ -55,7 +55,6 @@ func main() {
 	})
 	js.Global().Set("gop_ajax", jsFunc)
 	fmt.Println("iGo+ ready.")
-
 	if supportWebWork() {
 		jsOnMessage := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 			data := args[0].Get("data")
