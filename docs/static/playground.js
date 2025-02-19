@@ -462,7 +462,7 @@ function PlaygroundOutput(el) {
     }
     function loading() {
       lineClear();
-      //if (running) running.Kill();
+      if (running) running.Kill();
       output.removeClass("error").text('Waiting for compilation...');
     }
     function setOutput(text) {
@@ -470,6 +470,7 @@ function PlaygroundOutput(el) {
     }
     
     setIgopOverflowCallback(function(event) {
+    	if (running) running.Kill();
     	setError("[Stack overflow] "+event.message+"\n\nPlease check your code.");
     })
 
