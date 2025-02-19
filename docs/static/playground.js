@@ -42,17 +42,16 @@ here's a skeleton implementation of a playground transport.
 
 const host = "https://play.goplus.org";
 
-var bIgop = false;
+var bIgopInit = false;
 
 function hasIgop() {
-    if (bIgop) { 
+    if (bIgopInit && isIgopLoaded()) { 
         return true;
     }
     if (typeof gop_ajax === "function") {
-    	console.log("jsplay.goplus.org: ready")
-        bIgop = true;
+        bIgopInit = true;
     }
-    return bIgop;
+    return bIgopInit;
 }
 
 function js_ajax(url,options) {
@@ -420,7 +419,7 @@ function PlaygroundOutput(el) {
     code.unbind('keydown').bind('keydown', keyHandler);
     var outdiv = $(opts.outputEl).empty();
     var output = $('<pre/>').appendTo(outdiv);
-
+   
     function body() {
       return $(opts.codeEl).val();
     }
@@ -469,6 +468,11 @@ function PlaygroundOutput(el) {
     function setOutput(text) {
       output.removeClass("error").text(text);
     }
+    
+    setIgopOverflowCallback(function(event) {
+    	setError("[Stack overflow] "+event.message+"\n\nPlease check your code.");
+    })
+
     function run() {
         loading();
         //if (!hasIgop()) {

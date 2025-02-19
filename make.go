@@ -44,7 +44,7 @@ func main() {
 	data, err = ioutil.ReadFile("./loader_tpl.js")
 	check(err)
 
-	data = bytes.Replace(data, []byte("igop"), []byte("igop_"+tag), 2)
+	data = bytes.Replace(data, []byte("$igop"), []byte("igop_"+tag), 2)
 	err = ioutil.WriteFile("./docs/loader_"+tag+".js", data, 0755)
 	check(err)
 

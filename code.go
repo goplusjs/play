@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go/format"
+	"runtime/debug"
 	"syscall/js"
 
 	gopformat "github.com/goplus/gop/format"
@@ -26,6 +27,8 @@ type Context struct {
 
 func NewContext(mode igop.Mode) *Context {
 	ctx := igop.NewContext(mode)
+	ctx.SetLeastCallForEnablePool(1)
+	debug.SetMaxStack(1024 * 1024 * 1024)
 	return &Context{ctx: ctx}
 }
 

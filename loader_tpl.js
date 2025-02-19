@@ -3,6 +3,21 @@ go_log = console.log;
 
 var useWasm = true;//location.href.includes("?wasm");
 
+let isWasmLoaded = false;
+let currentGoInstance = null;
+
+let orglog = console.log;
+
+let wasmOverflowCallback;
+
+window.setIgopOverflowCallback = function(callback) {
+	wasmOverflowCallback = callback;
+}
+
+window.isIgopLoaded = function() {
+	return isWasmLoaded;
+}
+
 var script = document.createElement('script');
 if (useWasm) {
     script.src = "wasm_exec.js";
@@ -14,22 +29,76 @@ if (useWasm) {
             return await WebAssembly.instantiate(source, importObject);
             };
         }
+        loadWasm();
+//        const go = new Go();
+//        currentGoInstance = go;
+//        let mod, inst;
+//        WebAssembly.instantiateStreaming(fetch("igop_1dd7d1c3.wasm"), go.importObject).then((result) => {
+//            mod = result.module;
+//            inst = result.instance;
+//            isWasmLoaded = true;
+//            run();
+//        })
     
-        const go = new Go();
-        let mod, inst;
-        WebAssembly.instantiateStreaming(fetch("igop.wasm"), go.importObject).then((result) => {
-            mod = result.module;
-            inst = result.instance;
-            run();
-        });
-    
-        async function run() {
-        console.clear();
-            await go.run(inst);
-            inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
-        }
+//        async function run() {
+//            await go.run(inst);
+//            inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+//        }
     };
 } else {
-    script.src = "igop.js";
+    script.src = "$igop.js";
 }
 document.head.appendChild(script);
+
+
+function handleGlobalError(event) {
+  if (
+    event.error instanceof RangeError &&
+    event.message.includes("Maximum call stack size exceeded")
+  ) {
+    console.log = orglog;
+    event.preventDefault();
+    console.error("Stack overflow detected, reload WASM module...");
+    if (typeof wasmOverflowCallback === "function") {
+    	wasmOverflowCallback(event);
+    }
+    if (isWasmLoaded) {
+       reloadWasm();
+    }
+  }
+}
+
+// 注册全局错误监听器
+window.addEventListener("error", handleGlobalError);
+
+
+async function loadWasm() {
+    const go = new Go();
+    currentGoInstance = go;
+    let mod, inst;
+    WebAssembly.instantiateStreaming(fetch("$igop.wasm"), go.importObject).then((result) => {
+        mod = result.module;
+        inst = result.instance;
+        isWasmLoaded = true;
+        console.log("Load WASM module.");
+        run();
+    })
+
+    async function run() {
+        await go.run(inst);
+        inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+    }
+}
+
+async function reloadWasm() {
+  isWasmLoaded = false;
+  
+  if (currentGoInstance) {
+    currentGoInstance.exit(0);
+    currentGoInstance = null;
+  }
+
+  // 重新加载WASM
+  await loadWasm();
+}
+
