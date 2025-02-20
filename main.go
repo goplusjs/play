@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"strings"
 	"syscall/js"
 )
 
@@ -11,19 +9,19 @@ func main() {
 	jsFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {
 		case "/compile":
-			output = nil
 			source := args[1].Get("data").Get("body").String()
 			enableGop := args[1].Get("data").Get("goplus").Bool()
 			go func(arg js.Value) {
 				code, err, emsg := ctx.runCode(source, enableGop)
 				v := js.Global().Get("Object").New()
+				v.Set("IsKeep", true)
 				v.Set("Status", code)
 				if err != nil {
 					v.Set("Errors", err.Error())
 				} else {
 					var events []interface{}
 					obj := js.Global().Get("Object").New()
-					obj.Set("Message", strings.Join(output, ""))
+					obj.Set("Message", "")
 					obj.Set("Kind", "stdout")
 					obj.Set("Deply", 0)
 					if emsg != "" {
@@ -54,40 +52,40 @@ func main() {
 		return nil
 	})
 	js.Global().Set("gop_ajax", jsFunc)
-	fmt.Println("iGo+ ready.")
-	if supportWebWork() {
-		jsOnMessage := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-			data := args[0].Get("data")
-			method := data.Get("method").String()
-			source := data.Get("body").String()
-			enabeGop := data.Get("goplus").Bool()
-			switch method {
-			case "/compile":
-				output = nil
-				_, err, _ := ctx.runCode(source, enabeGop)
-				v := js.Global().Get("Object").New()
-				v.Set("Method", method)
-				if err != nil {
-					v.Set("Error", err.Error())
-				} else {
-					v.Set("Body", strings.Join(output, ""))
-				}
-				js.Global().Get("self").Call("postMessage", v)
-			case "/fmt":
-				dst, err := formatCode([]byte(source), enabeGop)
-				v := js.Global().Get("Object").New()
-				v.Set("Method", method)
-				if err != nil {
-					v.Set("Error", err.Error())
-				} else {
-					v.Set("Body", string(dst))
-				}
-				js.Global().Get("self").Call("postMessage", v)
-			}
-			return nil
-		})
-		js.Global().Get("self").Call("addEventListener", "message", jsOnMessage)
-	}
+	js.Global().Get("console").Call("log", "iGo+ ready.")
+	// if supportWebWork() {
+	// 	jsOnMessage := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	// 		data := args[0].Get("data")
+	// 		method := data.Get("method").String()
+	// 		source := data.Get("body").String()
+	// 		enabeGop := data.Get("goplus").Bool()
+	// 		switch method {
+	// 		case "/compile":
+	// 			output = nil
+	// 			_, err, _ := ctx.runCode(source, enabeGop)
+	// 			v := js.Global().Get("Object").New()
+	// 			v.Set("Method", method)
+	// 			if err != nil {
+	// 				v.Set("Error", err.Error())
+	// 			} else {
+	// 				v.Set("Body", strings.Join(output, ""))
+	// 			}
+	// 			js.Global().Get("self").Call("postMessage", v)
+	// 		case "/fmt":
+	// 			dst, err := formatCode([]byte(source), enabeGop)
+	// 			v := js.Global().Get("Object").New()
+	// 			v.Set("Method", method)
+	// 			if err != nil {
+	// 				v.Set("Error", err.Error())
+	// 			} else {
+	// 				v.Set("Body", string(dst))
+	// 			}
+	// 			js.Global().Get("self").Call("postMessage", v)
+	// 		}
+	// 		return nil
+	// 	})
+	// 	js.Global().Get("self").Call("addEventListener", "message", jsOnMessage)
+	// }
 	select {}
 }
 

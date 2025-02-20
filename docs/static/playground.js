@@ -56,7 +56,7 @@ function hasIgop() {
 
 function js_ajax(url,options) {
     if (hasIgop()) {
-        gop_ajax(url,options);
+       gop_ajax(url,options);
     } else {
     	console.log("pass on play.goplus.org")
         $.ajax(host+url,options);
@@ -76,9 +76,12 @@ function HTTPTransport(enableVet, fnIsGop) {
 		var status = data.Status || 0;
 		var isTest = data.IsTest || false;
 		var testsFailed = data.TestsFailed || 0;
+        var isKeep = data.IsKeep || false;
 
 		var timeout;
-		output({Kind: 'start'});
+        if (!isKeep) {
+		    output({Kind: 'start'});
+        }
 		function next() {
 			if (!events || events.length === 0) {
 				if (isTest) {
@@ -460,19 +463,29 @@ function PlaygroundOutput(el) {
       lineHighlight(error);
       output.empty().addClass("error").text(error);
     }
+    let wait = false;
     function loading() {
+      wait = true;
       lineClear();
       if (running) running.Kill();
-      output.removeClass("error").text('Waiting for compilation...');
+      if (!hasIgop()) {
+         output.removeClass("error").text('Waiting for compilation...');
+      } else {
+         output.removeClass("error").text('');        
+      }
     }
-    function setOutput(text) {
-      output.removeClass("error").text(text);
-    }
-    
     setIgopOverflowCallback(function(event) {
+        gop_ajax = undefined;
     	if (running) running.Kill();
     	setError("[Stack overflow] "+event.message+"\n\nPlease check your code.");
     })
+    window.goWriteSync = function(s) {
+        if (wait && output.text() === 'Waiting for compilation...') {
+            wait = false;
+            output.text('');
+        }
+        highlightOutput(PlaygroundOutput(output[0]))({Kind: "stdout", Body: s+"\n"});
+    }
 
     function run() {
         loading();

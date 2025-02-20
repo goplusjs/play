@@ -18,9 +18,13 @@ window.isIgopLoaded = function() {
     return isWasmLoaded;
 }
 
+window.goWriteSync = function(text) {
+    console.log(text);
+}
+
 var script = document.createElement('script');
 if (useWasm) {
-    script.src = "wasm_exec.js";
+    script.src = "wasm_exec_rt.js";
     script.onload = function () {
          // polyfill
         if (!WebAssembly.instantiateStreaming) {

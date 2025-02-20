@@ -60,7 +60,7 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 	code, err = ctx.RunInterp(interp, "main", nil)
 	if err != nil {
 		if pe, ok := err.(igop.PanicError); ok {
-			emsg = fmt.Sprintf("panic: %v\n%s\n", pe.Value, pe.Stack())
+			emsg = fmt.Sprintf("panic: %v\n\n%s\n", pe.Value, pe.Stack())
 		} else {
 			emsg = err.Error()
 		}
