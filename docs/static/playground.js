@@ -484,7 +484,7 @@ function PlaygroundOutput(el) {
             wait = false;
             output.text('');
         }
-        highlightOutput(PlaygroundOutput(output[0]))({Kind: "stdout", Body: s+"\n"});
+        highlightOutput(PlaygroundOutput(output[0]))({Kind: "stdout", Body: s});
     }
 
     function run() {

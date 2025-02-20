@@ -16,12 +16,13 @@
 		globalThis.fs = {
 			constants: { O_WRONLY: -1, O_RDWR: -1, O_CREAT: -1, O_TRUNC: -1, O_APPEND: -1, O_EXCL: -1 }, // unused
 			writeSync(fd, buf) {
-				outputBuf += decoder.decode(buf);
-				const nl = outputBuf.lastIndexOf("\n");
-				if (nl != -1) {
-					goWriteSync(outputBuf.substring(0, nl));
-					outputBuf = outputBuf.substring(nl + 1);
-				}
+                goWriteSync(decoder.decode(buf));
+//				outputBuf += decoder.decode(buf);
+//				const nl = outputBuf.lastIndexOf("\n");
+//				if (nl != -1) {
+//					goWriteSync(outputBuf.substring(0, nl));
+//					outputBuf = outputBuf.substring(nl + 1);
+//				}
 				return buf.length;
 			},
 			write(fd, buf, offset, length, position, callback) {
