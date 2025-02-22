@@ -474,17 +474,19 @@ function PlaygroundOutput(el) {
          output.removeClass("error").text('');        
       }
     }
+    let playout = highlightOutput(PlaygroundOutput(output[0]));
     setIgopOverflowCallback(function(event) {
         gop_ajax = undefined;
-    	if (running) running.Kill();
-    	setError("[Stack overflow] "+event.message+"\n\nPlease check your code.");
+        if (running) running.Kill();
+        let s = "\n[Stack overflow] "+event.message+"\n\nPlease check your code.";
+        playout({Kind: "stderr", Body: s});
     })
     window.goWriteSync = function(s) {
         if (wait && output.text() === 'Waiting for compilation...') {
             wait = false;
             output.text('');
         }
-        highlightOutput(PlaygroundOutput(output[0]))({Kind: "stdout", Body: s});
+        playout({Kind: "stdout", Body: s});
     }
 
     function run() {
