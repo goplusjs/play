@@ -346,6 +346,22 @@ function PlaygroundOutput(el) {
     }
     var transport = opts['transport'] || new HTTPTransport(opts['enableVet'],isGoplus);
     var running;
+    
+    const search = location.search.substring(1); 
+    const params = new URLSearchParams(search);
+    if (params.has('p')) {
+      let snippetUrl = host+"/p/"+params.get('p')+".gop"
+      $.ajax(snippetUrl, {
+        method: 'GET',
+        dataType: 'text',
+        success: function(response) {
+           setBody(response);
+        },
+//        error: function(xhr, status, error) {
+//           console.error(status, error);
+//        }
+      })
+    } 
 
     // autoindent helpers.
     function insertTabs(n) {
