@@ -600,7 +600,7 @@ function PlaygroundOutput(el) {
             setBody(`// You can edit this code!
 // Click here and start typing.
 
-println "Hello, 世界"
+echo "Hello, 世界"
 `)
 		break;
         case "hellogop.txt":
@@ -610,57 +610,57 @@ println "Hello, 世界"
 	"and data science",
 ]
 
-println "The Go+ language for", fields.join(", ")
+echo "The Go+ language for", fields.join(", ")
 `)
 		break;
 		case "basic.txt":
-			setBody(`println("Hello, Go+")
+			setBody(`echo("Hello, Go+")
 
-println(1r << 129)
-println(1/3r + 2/7r*2)
+echo(1r << 129)
+echo(1/3r + 2/7r*2)
 
 arr := [1, 3, 5, 7, 11, 13, 17, 19]
-println(arr)
-println([x*x for x <- arr, x > 3])
+echo(arr)
+echo([x*x for x <- arr, x > 3])
 
 m := {"Hi": 1, "Go+": 2}
-println(m)
-println({v: k for k, v <- m})
-println([k for k, _ <- m])
-println([v for v <- m])
+echo(m)
+echo({v: k for k, v <- m})
+echo([k for k, _ <- m])
+echo([v for v <- m])
 `)
 		break;
 		case "range.txt":
 			setBody(`a := [1, 3, 5, 7, 11]
 b := [x*x for x <- a, x > 3]
-println(b) // output: [25 49 121]
+echo(b) // output: [25 49 121]
 
 mapData := {"Hi": 1, "Hello": 2, "Go+": 3}
 reversedMap := {v: k for k, v <- mapData}
-println(reversedMap) // output: map[1:Hi 2:Hello 3:Go+]
+echo(reversedMap) // output: map[1:Hi 2:Hello 3:Go+]
 
 sum := 0
 for x <- [1, 3, 5, 7, 11, 13, 17], x > 3 {
 	sum += x
 }
-println(sum)
+echo(sum)
 `)
 		break;
 		case "rational.txt":
 			setBody(`a := 1r << 65 // bigint, large than int64
 b := 4/5r     // bigrat
 c := b - 1/3r + 3*1/2r
-println(a, b, c)
+echo(a, b, c)
 `)
 		break;
 		case "slice.txt":
 			setBody(`// in Go we do:
 a := []float64{1, 2, 3.4}
-println a
+echo a
 
 // in GoPlus we do:
 b := [1, 2, 3.4]
-println b
+echo b
 
 //slice literal
 c := [1, 3.4] // []float64
@@ -687,24 +687,24 @@ printf "%#v %T\\n", empty, empty
 		break;
 		case "listmap.txt":
 		setBody(`a := [x*x for x <- [1, 3, 5, 7, 11]]
-println(a)
+echo(a)
 b := [x*x for x <- [1, 3, 5, 7, 11], x > 3]
-println(b)
+echo(b)
 c := [i+v for i, v <- [1, 3, 5, 7, 11], i%2 == 1]
-println(c)
+echo(c)
 d := [k+","+s for k, s <- {"Hello": "xsw", "Hi": "Go+"}]
-println(d)
+echo(d)
 
 arr := [1, 2, 3, 4, 5, 6]
 e := [[a, b] for a <- arr, a < b for b <- arr, b > 2]
-println(e)
+echo(e)
 
 x := {x: i for i, x <- [1, 3, 5, 7, 11]}
-println(x)
+echo(x)
 y := {x: i for i, x <- [1, 3, 5, 7, 11], i%2 == 1}
-println(y)
+echo(y)
 z := {v: k for k, v <- {1: "Hello", 3: "Hi", 5: "xsw", 7: "Go+"}, k > 3}
-println(z)
+echo(z)
 `)
 		break;
 		case "error.txt":
@@ -727,12 +727,12 @@ func addSafe(x, y string) int {
 // expr? // return if err
 // expr?:defval // use defval if err
 
-println add("100", "23")!
+echo add("100", "23")!
 
 sum, err := add("10", "abc")
-println sum, err
+echo sum, err
 
-println addSafe("10", "abc")
+echo addSafe("10", "abc")
 `)
 		break;
 		case "canvas.txt":
