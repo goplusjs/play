@@ -616,49 +616,49 @@ echo "The Go+ language for", fields.join(", ")
 `)
 		break;
 		case "basic.txt":
-			setBody(`echo("Hello, Go+")
+			setBody(`echo "Hello, Go+"
 
-echo(1r << 129)
-echo(1/3r + 2/7r*2)
+echo 1r<<129
+echo 1/3r+2/7r*2
 
 arr := [1, 3, 5, 7, 11, 13, 17, 19]
-echo(arr)
-echo([x*x for x <- arr, x > 3])
+echo arr
+echo [x*x for x <- arr if x > 3]
 
 m := {"Hi": 1, "Go+": 2}
-echo(m)
-echo({v: k for k, v <- m})
-echo([k for k, _ <- m])
-echo([v for v <- m])
+echo m
+echo {v: k for k, v <- m}
+echo [k for k, _ <- m]
+echo [v for v <- m]
 `)
 		break;
 		case "range.txt":
 			setBody(`a := [1, 3, 5, 7, 11]
-b := [x*x for x <- a, x > 3]
-echo(b) // output: [25 49 121]
+b := [x*x for x <- a if x > 3]
+echo b // output: [25 49 121]
 
 mapData := {"Hi": 1, "Hello": 2, "Go+": 3}
 reversedMap := {v: k for k, v <- mapData}
-echo(reversedMap) // output: map[1:Hi 2:Hello 3:Go+]
+echo reversedMap // output: map[1:Hi 2:Hello 3:Go+]
 
 sum := 0
-for x <- [1, 3, 5, 7, 11, 13, 17], x > 3 {
+for x <- [1, 3, 5, 7, 11, 13, 17] if x > 3 {
 	sum += x
 }
-echo(sum)
+echo sum
 `)
 		break;
 		case "rational.txt":
 			setBody(`a := 1r << 65 // bigint, large than int64
 b := 4/5r     // bigrat
 c := b - 1/3r + 3*1/2r
-echo(a, b, c)
+echo a, b, c
 `)
 		break;
 		case "slice.txt":
 			setBody(`// in Go we do:
 a := []float64{1, 2, 3.4}
-echo a
+println(a)
 
 // in GoPlus we do:
 b := [1, 2, 3.4]
@@ -689,24 +689,24 @@ printf "%#v %T\\n", empty, empty
 		break;
 		case "listmap.txt":
 		setBody(`a := [x*x for x <- [1, 3, 5, 7, 11]]
-echo(a)
-b := [x*x for x <- [1, 3, 5, 7, 11], x > 3]
-echo(b)
-c := [i+v for i, v <- [1, 3, 5, 7, 11], i%2 == 1]
-echo(c)
+echo a
+b := [x*x for x <- [1, 3, 5, 7, 11] if x > 3]
+echo b
+c := [i+v for i, v <- [1, 3, 5, 7, 11] if i%2 == 1]
+echo c
 d := [k+","+s for k, s <- {"Hello": "xsw", "Hi": "Go+"}]
-echo(d)
+echo d
 
 arr := [1, 2, 3, 4, 5, 6]
-e := [[a, b] for a <- arr, a < b for b <- arr, b > 2]
-echo(e)
+e := [[a, b] for a <- arr if a < b for b <- arr if b > 2]
+echo e
 
 x := {x: i for i, x <- [1, 3, 5, 7, 11]}
-echo(x)
-y := {x: i for i, x <- [1, 3, 5, 7, 11], i%2 == 1}
-echo(y)
-z := {v: k for k, v <- {1: "Hello", 3: "Hi", 5: "xsw", 7: "Go+"}, k > 3}
-echo(z)
+echo x
+y := {x: i for i, x <- [1, 3, 5, 7, 11] if i%2 == 1}
+echo y
+z := {v: k for k, v <- {1: "Hello", 3: "Hi", 5: "xsw", 7: "Go+"} if k > 3}
+echo z
 `)
 		break;
 		case "error.txt":
@@ -741,12 +741,12 @@ echo addSafe("10", "abc")
 		setBody(`import "syscall/js"
 
 document := js.global.get("document")
-canvas := document.call("getElementById","canvas")
-canvas.set("width",200)
-canvas.set("height",200)
-ctx := canvas.call("getContext","2d")
-ctx.set("fillStyle","rgba(128,0,0,0.3)")
-ctx.call("fillRect",10,10,100,100)
+canvas := document.call("getElementById", "canvas")
+canvas.set "width", 200
+canvas.set "height", 200
+ctx := canvas.call("getContext", "2d")
+ctx.set "fillStyle", "rgba(128,0,0,0.3)"
+ctx.call "fillRect", 10, 10, 100, 100
 `)
 		break;
         case "generic.txt":
