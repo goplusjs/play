@@ -36,6 +36,7 @@ func main() {
 	// err = ioutil.WriteFile("./docs/index.html", data, 0755)
 
 	data = bytes.Replace(data, []byte("loader.js"), []byte("loader_"+tag+".js"), 1)
+	data = bytes.Replace(data, []byte("playground.js"), []byte("playground_"+tag+".js"), 1)
 	data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
 	data = bytes.Replace(data, []byte("$iGopVersion"), []byte(igop.Version), 1)
 	err = ioutil.WriteFile("./docs/index.html", data, 0755)
@@ -46,6 +47,12 @@ func main() {
 
 	data = bytes.Replace(data, []byte("$igop"), []byte("igop_"+tag), 2)
 	err = ioutil.WriteFile("./docs/loader_"+tag+".js", data, 0755)
+	check(err)
+
+	// build playground.js
+	data, err = ioutil.ReadFile("./playground_tpl.js")
+	check(err)
+	err = ioutil.WriteFile("./docs/static/playground_"+tag+".js", data, 0755)
 	check(err)
 
 	// err = build_js("./docs", "igop_"+tag)
@@ -63,7 +70,7 @@ func check(err error) {
 func getHash() (string, error) {
 	h := md5.New()
 	for _, f := range []string{"main.go", "code.go", "console.go", "pkg_std.go",
-		"loader_tpl.js", "index_tpl.html", "go.mod"} {
+		"loader_tpl.js", "index_tpl.html", "playground_tpl.js", "go.mod"} {
 		data, err := ioutil.ReadFile(f)
 		if err != nil {
 			return "", err
