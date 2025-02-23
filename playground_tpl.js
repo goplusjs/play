@@ -40,7 +40,7 @@ here's a skeleton implementation of a playground transport.
         }
 */
 
-const host = "https://play.goplus.org";
+const seplayHost = "https://seplay.goplus.org";
 
 var bIgopInit = false;
 
@@ -58,8 +58,8 @@ function js_ajax(url,options) {
     if (hasIgop()) {
        gop_ajax(url,options);
     } else {
-    	console.log("pass on play.goplus.org")
-        $.ajax(host+url,options);
+    	console.log("pass on " + seplayHost);
+        $.ajax(seplayHost+url,options);
     }
 }
 
@@ -216,9 +216,9 @@ function SocketTransport() {
 	var started = {};
 	var websocket;
 	if (window.location.protocol == "http:") {
-		websocket = new WebSocket('ws://' + window.location.host + '/socket');
+		websocket = new WebSocket('ws://' + window.location.seplayHost + '/socket');
 	} else if (window.location.protocol == "https:") {
-		websocket = new WebSocket('wss://' + window.location.host + '/socket');
+		websocket = new WebSocket('wss://' + window.location.seplayHost + '/socket');
 	}
 
 	websocket.onclose = function() {
@@ -350,7 +350,7 @@ function PlaygroundOutput(el) {
     const search = location.search.substring(1); 
     const params = new URLSearchParams(search);
     if (params.has('p')) {
-      let snippetUrl = host+"/p/"+params.get('p')+".gop"
+      let snippetUrl = seplayHost+"/p/"+params.get('p')+".gop"
       $.ajax(snippetUrl, {
         method: 'GET',
         dataType: 'text',
@@ -562,7 +562,7 @@ function PlaygroundOutput(el) {
       sharing = true;
 
       var sharingData = body();
-      $.ajax("https://play.goplus.org/share", {
+      $.ajax(seplayHost+"/share", {
         processData: false,
         data: sharingData,
         type: "POST",
@@ -612,6 +612,8 @@ function PlaygroundOutput(el) {
 
     if (opts.toysEl !== null) {
       $(opts.toysEl).bind('change', function() {
+        lineClear();
+        output.text('');
         var toy = $(this).val();
         switch (toy) {
         case "hello.txt":
