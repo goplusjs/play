@@ -1,57 +1,56 @@
 // Set the default global log for use by wasm_exec.js
 go_log = console.log;
 
-var useWasm = true;//location.href.includes("?wasm");
+var useWasm = true; //location.href.includes("?wasm");
 
 let isWasmLoaded = false;
 let currentGoInstance = null;
 
 let wasmOverflowCallback;
 
-window.setIgopOverflowCallback = function(callback) {
-    wasmOverflowCallback = callback;
-}
+window.setIgopOverflowCallback = function (callback) {
+  wasmOverflowCallback = callback;
+};
 
-window.isIgopLoaded = function() {
-    return isWasmLoaded;
-}
+window.isIgopLoaded = function () {
+  return isWasmLoaded;
+};
 
-window.goWriteSync = function(text) {
-    console.log(text);
-}
+window.goWriteSync = function (text) {
+  console.log(text);
+};
 
-var script = document.createElement('script');
+var script = document.createElement("script");
 if (useWasm) {
-    script.src = "wasm_exec_rt.js";
-    script.onload = function () {
-         // polyfill
-        if (!WebAssembly.instantiateStreaming) {
-            WebAssembly.instantiateStreaming = async (resp, importObject) => {
-            const source = await (await resp).arrayBuffer();
-            return await WebAssembly.instantiate(source, importObject);
-            };
-        }
-        loadWasm();
-//        const go = new Go();
-//        currentGoInstance = go;
-//        let mod, inst;
-//        WebAssembly.instantiateStreaming(fetch("igop_1dd7d1c3.wasm"), go.importObject).then((result) => {
-//            mod = result.module;
-//            inst = result.instance;
-//            isWasmLoaded = true;
-//            run();
-//        })
+  script.src = "wasm_exec_rt.js";
+  script.onload = function () {
+    // polyfill
+    if (!WebAssembly.instantiateStreaming) {
+      WebAssembly.instantiateStreaming = async (resp, importObject) => {
+        const source = await (await resp).arrayBuffer();
+        return await WebAssembly.instantiate(source, importObject);
+      };
+    }
+    loadWasm();
+    //        const go = new Go();
+    //        currentGoInstance = go;
+    //        let mod, inst;
+    //        WebAssembly.instantiateStreaming(fetch("igop_1dd7d1c3.wasm"), go.importObject).then((result) => {
+    //            mod = result.module;
+    //            inst = result.instance;
+    //            isWasmLoaded = true;
+    //            run();
+    //        })
 
-//        async function run() {
-//            await go.run(inst);
-//            inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
-//        }
-    };
+    //        async function run() {
+    //            await go.run(inst);
+    //            inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+    //        }
+  };
 } else {
-    script.src = "$igop.js";
+  script.src = "$igop.js";
 }
 document.head.appendChild(script);
-
 
 function handleGlobalError(event) {
   if (
@@ -61,10 +60,10 @@ function handleGlobalError(event) {
     event.preventDefault();
     console.error("Stack overflow detected, reload WASM module...");
     if (typeof wasmOverflowCallback === "function") {
-        wasmOverflowCallback(event);
+      wasmOverflowCallback(event);
     }
     if (isWasmLoaded) {
-       reloadWasm();
+      reloadWasm();
     }
   }
 }
@@ -72,21 +71,23 @@ function handleGlobalError(event) {
 window.addEventListener("error", handleGlobalError);
 
 async function loadWasm() {
-    const go = new Go();
-    currentGoInstance = go;
-    let mod, inst;
-    WebAssembly.instantiateStreaming(fetch("$igop.wasm"), go.importObject).then((result) => {
-        mod = result.module;
-        inst = result.instance;
-        isWasmLoaded = true;
-        console.log("Load WASM module.");
-        run();
-    })
+  const go = new Go();
+  currentGoInstance = go;
+  let mod, inst;
+  WebAssembly.instantiateStreaming(fetch("$igop.wasm"), go.importObject).then(
+    (result) => {
+      mod = result.module;
+      inst = result.instance;
+      isWasmLoaded = true;
+      console.log("Load WASM module.");
+      run();
+    },
+  );
 
-    async function run() {
-        await go.run(inst);
-        inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
-    }
+  async function run() {
+    await go.run(inst);
+    inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+  }
 }
 
 async function reloadWasm() {
