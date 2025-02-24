@@ -40,7 +40,9 @@ here's a skeleton implementation of a playground transport.
         }
 */
 
-const seplayHost = "https://seplay.goplus.org";
+const remoteHost = "https://seplay.goplus.org";
+
+const waitMsg = "Wating for remote server...";
 
 var bIgopInit = false;
 
@@ -54,12 +56,12 @@ function hasIgop() {
     return bIgopInit;
 }
 
-function js_ajax(url,options) {
-    if (hasIgop()) {
+function js_ajax(wasm,url,options) {
+    if (wasm && hasIgop()) {
        gop_ajax(url,options);
     } else {
-    	console.log("pass on " + seplayHost);
-        $.ajax(seplayHost+url,options);
+        console.log("pass on " + remoteHost);
+        $.ajax(remoteHost+url,options);
     }
 }
 
@@ -131,8 +133,12 @@ function HTTPTransport(enableVet, fnIsGop) {
 
 	function buildFailed(output, msg) {
 		output({Kind: 'start'});
-		output({Kind: 'stderr', Body: msg});
-		output({Kind: 'system', Body: '\nGo+ build failed.'});
+		output({Kind: 'stderr', Body: msg+"\n"});
+        if (fnIsGop()) {
+		    output({Kind: 'system', Body: '\nGo+ build failed.'});
+        } else {
+            output({Kind: 'system', Body: '\nGo build failed.'});
+        }
 	}
 
 	var seq = 0;
@@ -141,7 +147,8 @@ function HTTPTransport(enableVet, fnIsGop) {
 			seq++;
 			var cur = seq;
 			var playing;
-			js_ajax('/compile', {
+            function compile(wasm) {
+			js_ajax(wasm, '/compile', {
 				type: 'POST',
 				data: {'version': 2, 'body': body, 'withVet': enableVet, 'goplus': fnIsGop()},
 				dataType: 'json',
@@ -154,6 +161,13 @@ function HTTPTransport(enableVet, fnIsGop) {
 							// Playback the output that was captured before the timeout.
 							playing = playback(output, data);
 						} else {
+                            if (data.IsKeep && data.Errors.includes("not found package")) {
+                                setTimeout(() => {
+                                    output({Kind: 'stdout',Body: waitMsg});
+                                    compile(false);
+                                },1);
+                                return;
+                            }
 							buildFailed(output, data.Errors);
 						}
 						return;
@@ -198,6 +212,8 @@ function HTTPTransport(enableVet, fnIsGop) {
 					error(output, 'Error communicating with remote server.');
 				}
 			});
+            }
+            compile(true);
 			return {
 				Kill: function() {
 					if (playing != null) playing.Stop();
@@ -216,9 +232,9 @@ function SocketTransport() {
 	var started = {};
 	var websocket;
 	if (window.location.protocol == "http:") {
-		websocket = new WebSocket('ws://' + window.location.seplayHost + '/socket');
+		websocket = new WebSocket('ws://' + window.location.remoteHost + '/socket');
 	} else if (window.location.protocol == "https:") {
-		websocket = new WebSocket('wss://' + window.location.seplayHost + '/socket');
+		websocket = new WebSocket('wss://' + window.location.remoteHost + '/socket');
 	}
 
 	websocket.onclose = function() {
@@ -308,7 +324,7 @@ function PlaygroundOutput(el) {
 
 (function() {
   function lineHighlight(error) {
-    var regex = /main.gop?:([0-9]+)/g;
+    var regex = /proj.gop?:([0-9]+)/g;
     var r = regex.exec(error);
     while (r) {
       $(".lines div").eq(r[1]-1).addClass("lineerror");
@@ -350,7 +366,7 @@ function PlaygroundOutput(el) {
     const search = location.search.substring(1); 
     const params = new URLSearchParams(search);
     if (params.has('p')) {
-      let snippetUrl = seplayHost+"/p/"+params.get('p')+".gop"
+      let snippetUrl = remoteHost+"/p/"+params.get('p')+".gop"
       $.ajax(snippetUrl, {
         method: 'GET',
         dataType: 'text',
@@ -485,7 +501,7 @@ function PlaygroundOutput(el) {
       lineClear();
       if (running) running.Kill();
       if (!hasIgop()) {
-         output.removeClass("error").text('Waiting for compilation...');
+         output.removeClass("error").text(waitMsg);
       } else {
          output.removeClass("error").text('');        
       }
@@ -498,7 +514,7 @@ function PlaygroundOutput(el) {
         playout({Kind: "stderr", Body: s});
     })
     window.goWriteSync = function(s) {
-        if (wait && output.text() === 'Waiting for compilation...') {
+        if (wait && output.text() === waitMsg) {
             wait = false;
             output.text('');
         }
@@ -562,7 +578,7 @@ function PlaygroundOutput(el) {
       sharing = true;
 
       var sharingData = body();
-      $.ajax(seplayHost+"/share", {
+      $.ajax(remoteHost+"/share", {
         processData: false,
         data: sharingData,
         type: "POST",

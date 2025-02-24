@@ -6,8 +6,6 @@ var useWasm = true;//location.href.includes("?wasm");
 let isWasmLoaded = false;
 let currentGoInstance = null;
 
-let orglog = console.log;
-
 let wasmOverflowCallback;
 
 window.setIgopOverflowCallback = function(callback) {
@@ -60,7 +58,6 @@ function handleGlobalError(event) {
     event.error instanceof RangeError &&
     event.message.includes("Maximum call stack size exceeded")
   ) {
-    console.log = orglog;
     event.preventDefault();
     console.error("Stack overflow detected, reload WASM module...");
     if (typeof wasmOverflowCallback === "function") {

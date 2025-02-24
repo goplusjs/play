@@ -26,6 +26,11 @@ type Context struct {
 
 func NewContext(mode igop.Mode) *Context {
 	ctx := igop.NewContext(mode)
+	console := js.Global().Get("console")
+	ctx.Lookup = func(root, path string) (dir string, found bool) {
+		console.Call("log", "not found package", path)
+		return "", false
+	}
 	return &Context{ctx: ctx}
 }
 
@@ -41,14 +46,14 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 		}
 	}()
 	if enableGoplus {
-		data, err := gopbuild.BuildFile(ctx, "main.gop", src)
+		data, err := gopbuild.BuildFile(ctx, "proj.gop", src)
 		if err != nil {
 			return 2, err, ""
 		}
 		src = string(data)
 	}
 	clearCanvas()
-	interp, err := ctx.LoadInterp("main.go", src)
+	interp, err := ctx.LoadInterp("proj.go", src)
 	if err != nil {
 		return 2, err, ""
 	}
@@ -70,7 +75,7 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 
 func formatCode(src []byte, enableGoplus bool) ([]byte, error) {
 	if enableGoplus {
-		return gopformat.Source(src, false, "main.gop")
+		return gopformat.Source(src, false, "proj.gop")
 	} else {
 		return format.Source(src)
 	}
