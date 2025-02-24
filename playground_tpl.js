@@ -590,7 +590,7 @@ function PlaygroundOutput(el) {
       if ($(opts.fmtImportEl).is(":checked")) {
         data["imports"] = "true";
       }
-      js_ajax("/fmt", {
+      js_ajax(true, "/fmt", {
         data: data,
         type: "POST",
         dataType: "json",
