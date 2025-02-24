@@ -34,7 +34,7 @@ func NewContext(mode igop.Mode) *Context {
 			var text []string
 			text = append(text, fmt.Sprintf("%v: %v", info.Position(), err))
 			for _, frame := range info.Frame.CallerFrames() {
-				text = append(text, fmt.Sprintf("%v()\n\t%v:%v +%v", frame.Function, frame.File, frame.Line, frame.PC))
+				text = append(text, fmt.Sprintf("%v()\n\t%v:%v +0x%x", frame.Function, frame.File, frame.Line, frame.PC-frame.Entry))
 			}
 			console.Call("log", strings.Join(text, "\n"))
 		}
