@@ -592,7 +592,7 @@ function PlaygroundOutput(el) {
           if (opts.shareRedirect) {
             window.location = opts.shareRedirect + xhr.responseText;
           }
-          var path = "/p/" + xhr.responseText;
+          var path = "/?p=" + xhr.responseText;
           //var url = origin(window.location) + path;
           var url = "https://play.goplus.org" + path;
 
