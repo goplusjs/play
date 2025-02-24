@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"go/format"
-	"runtime/debug"
+	"runtime"
+	"strings"
 	"syscall/js"
 
 	gopformat "github.com/goplus/gop/format"
@@ -27,8 +28,17 @@ type Context struct {
 
 func NewContext(mode igop.Mode) *Context {
 	ctx := igop.NewContext(mode)
-	ctx.SetLeastCallForEnablePool(1)
-	debug.SetMaxStack(1024 * 1024 * 1024)
+	console := js.Global().Get("console")
+	ctx.SetPanic(func(info *igop.PanicInfo) {
+		if err, ok := info.Error.(runtime.Error); ok {
+			var text []string
+			text = append(text, fmt.Sprintf("%v: %v", info.Position(), err))
+			for _, frame := range info.Frame.CallerFrames() {
+				text = append(text, fmt.Sprintf("%v()\n\t%v:%v +%v", frame.Function, frame.File, frame.Line, frame.PC))
+			}
+			console.Call("log", strings.Join(text, "\n"))
+		}
+	})
 	return &Context{ctx: ctx}
 }
 
