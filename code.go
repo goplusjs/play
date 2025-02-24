@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"go/format"
-	"runtime"
-	"strings"
 	"syscall/js"
 
 	gopformat "github.com/goplus/gop/format"
@@ -28,17 +26,6 @@ type Context struct {
 
 func NewContext(mode igop.Mode) *Context {
 	ctx := igop.NewContext(mode)
-	console := js.Global().Get("console")
-	ctx.SetPanic(func(info *igop.PanicInfo) {
-		if err, ok := info.Error.(runtime.Error); ok {
-			var text []string
-			text = append(text, fmt.Sprintf("%v: %v", info.Position(), err))
-			for _, frame := range info.Frame.CallerFrames() {
-				text = append(text, fmt.Sprintf("%v()\n\t%v:%v +0x%x", frame.Function, frame.File, frame.Line, frame.PC-frame.Entry))
-			}
-			console.Call("log", strings.Join(text, "\n"))
-		}
-	})
 	return &Context{ctx: ctx}
 }
 
@@ -69,9 +56,12 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 	ctx.RunContext, c.cancel = context.WithCancel(context.TODO())
 	code, err = ctx.RunInterp(interp, "main", nil)
 	if err != nil {
-		if pe, ok := err.(igop.PanicError); ok {
+		switch pe := err.(type) {
+		case igop.PanicError:
 			emsg = fmt.Sprintf("panic: %v\n\n%s\n", pe.Value, pe.Stack())
-		} else {
+		case igop.FatalError:
+			emsg = fmt.Sprintf("panic: %v\n\n%s\n", pe.Value, pe.Stack())
+		default:
 			emsg = err.Error()
 		}
 	}
