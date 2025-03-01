@@ -54,6 +54,7 @@ func init() {
 			"ComprehensionExpr": reflect.TypeOf((*q.ComprehensionExpr)(nil)).Elem(),
 			"DeclStmt":          reflect.TypeOf((*q.DeclStmt)(nil)).Elem(),
 			"DeferStmt":         reflect.TypeOf((*q.DeferStmt)(nil)).Elem(),
+			"DomainTextLit":     reflect.TypeOf((*q.DomainTextLit)(nil)).Elem(),
 			"ElemEllipsis":      reflect.TypeOf((*q.ElemEllipsis)(nil)).Elem(),
 			"Ellipsis":          reflect.TypeOf((*q.Ellipsis)(nil)).Elem(),
 			"EmptyStmt":         reflect.TypeOf((*q.EmptyStmt)(nil)).Elem(),
