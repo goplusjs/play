@@ -3,7 +3,7 @@ module github.com/goplusjs/play
 go 1.23
 
 require (
-	github.com/goplus/gop v1.3.2
+	github.com/goplus/gop v1.3.5
 	github.com/goplus/igop v0.32.1
 	github.com/goplus/reflectx v1.3.2
 )
