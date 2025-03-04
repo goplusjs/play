@@ -385,7 +385,12 @@ function PlaygroundOutput(el) {
     var transport =
       opts["transport"] || new HTTPTransport(opts["enableVet"], isGoplus);
     var running;
+    var demo = `// You can edit this code!
+// Click here and start typing.
 
+echo "Hello, 世界"
+`
+    
     const search = location.search.substring(1);
     const params = new URLSearchParams(search);
     if (params.has("p")) {
@@ -396,10 +401,12 @@ function PlaygroundOutput(el) {
         success: function (response) {
           setBody(response);
         },
-        //        error: function(xhr, status, error) {
-        //           console.error(status, error);
-        //        }
+        error: function(xhr, status, error) {
+          setBody(demo);
+        }
       });
+    } else {
+        setBody(demo)
     }
 
     // autoindent helpers.
@@ -556,10 +563,14 @@ function PlaygroundOutput(el) {
     };
 
     function run() {
+      let code = body();
+      if (code.trim() === "") {
+        return;
+      }
       loading();
       //if (!hasIgop()) {
       running = transport.Run(
-        body(),
+        code,
         highlightOutput(PlaygroundOutput(output[0])),
       );
       //        } else {
@@ -585,8 +596,12 @@ function PlaygroundOutput(el) {
     }
 
     function fmt() {
+      let code = body();
+      if (code.trim() === "") {
+        return;
+      }
       loading();
-      var data = { body: body(), goplus: $(opts.enableGoplus).is(":checked") };
+      var data = { body: code, goplus: $(opts.enableGoplus).is(":checked") };
       if ($(opts.fmtImportEl).is(":checked")) {
         data["imports"] = "true";
       }
