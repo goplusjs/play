@@ -75,9 +75,8 @@ github.com/gopherjs/gopherjs v0.0.0-20210803090616-8f023c250c89/go.mod h1:0RnbP5
 github.com/goplus/gogen v1.16.3/go.mod h1:6TQYbabXDF9LCdDkOOzHmfg1R4ENfXQ3XpHa9RhTSD8=
 github.com/goplus/gogen v1.16.6 h1:Zwv18HoTbPDk8s2ajxgVeqZE5i4/GMV722KHl6GS8Yk=
 github.com/goplus/gogen v1.16.6/go.mod h1:6TQYbabXDF9LCdDkOOzHmfg1R4ENfXQ3XpHa9RhTSD8=
-github.com/goplus/gop v1.3.0/go.mod h1:BnMzJG+PYoOWjKT4Q7CwxLUTBRnTFuuxW8W4O3vq/TU=
-github.com/goplus/gop v1.3.5 h1:WmkGpOnyANI/b0Oj/k3qkOPdlhEiBbpds/X/cgUVzDs=
-github.com/goplus/gop v1.3.5/go.mod h1:BnMzJG+PYoOWjKT4Q7CwxLUTBRnTFuuxW8W4O3vq/TU=
+github.com/goplus/gop v1.2.0-pre.1.0.20250303120052-edb11c689012 h1:ds9xf5sR9qwMhcJS9+dzXytzuFIKHGf6ZkcSzZVrwWo=
+github.com/goplus/gop v1.2.0-pre.1.0.20250303120052-edb11c689012/go.mod h1:BnMzJG+PYoOWjKT4Q7CwxLUTBRnTFuuxW8W4O3vq/TU=
 github.com/goplus/igop v0.32.1 h1:GbI9ThqEUDX9f18jO1xx9NWRb3XnTIgg+byr3JnCpAA=
 github.com/goplus/igop v0.32.1/go.mod h1:GCJA4qASZ1IU8MNNgDiW+Yf+eKf2G8fJWrx3arSBm8A=
 github.com/goplus/llgo v0.9.9/go.mod h1:udcq+s6tGOdhJq7I8fXPTv4qT2j17/KrlvtcJrMZAoM=
