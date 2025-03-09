@@ -72,16 +72,13 @@ github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1/go.mod h1:wJfORR
 github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00/go.mod h1:wJfORRmW1u3UXTncJ5qlYoELFm8eSnnEO6hX4iZ3EWY=
 github.com/gopherjs/gopherjs v0.0.0-20210803090616-8f023c250c89 h1:cuZTXJQ2J5mpT2gioa6NRVnuNsbisCGG5tRBG0tZpI4=
 github.com/gopherjs/gopherjs v0.0.0-20210803090616-8f023c250c89/go.mod h1:0RnbP5ioI0nqRf3R9iK3iQaUJgsn0htlZEHCMn8FSfw=
-github.com/goplus/gogen v1.16.3/go.mod h1:6TQYbabXDF9LCdDkOOzHmfg1R4ENfXQ3XpHa9RhTSD8=
 github.com/goplus/gogen v1.16.6 h1:Zwv18HoTbPDk8s2ajxgVeqZE5i4/GMV722KHl6GS8Yk=
 github.com/goplus/gogen v1.16.6/go.mod h1:6TQYbabXDF9LCdDkOOzHmfg1R4ENfXQ3XpHa9RhTSD8=
-github.com/goplus/gop v1.2.0-pre.1.0.20250303120052-edb11c689012 h1:ds9xf5sR9qwMhcJS9+dzXytzuFIKHGf6ZkcSzZVrwWo=
-github.com/goplus/gop v1.2.0-pre.1.0.20250303120052-edb11c689012/go.mod h1:BnMzJG+PYoOWjKT4Q7CwxLUTBRnTFuuxW8W4O3vq/TU=
+github.com/goplus/gop v1.2.0-pre.1.0.20250309051846-a2657cc3a7ae h1:Q47kKxN3bXZffrxEZIfq4Rx/U9HsElxqJu9Wx01yrkE=
+github.com/goplus/gop v1.2.0-pre.1.0.20250309051846-a2657cc3a7ae/go.mod h1:9ZLjRLEuNQat8QtHPkYgfltfh+QiIUN4sFzJaMr6HL8=
 github.com/goplus/igop v0.32.1 h1:GbI9ThqEUDX9f18jO1xx9NWRb3XnTIgg+byr3JnCpAA=
 github.com/goplus/igop v0.32.1/go.mod h1:GCJA4qASZ1IU8MNNgDiW+Yf+eKf2G8fJWrx3arSBm8A=
-github.com/goplus/llgo v0.9.9/go.mod h1:udcq+s6tGOdhJq7I8fXPTv4qT2j17/KrlvtcJrMZAoM=
-github.com/goplus/llvm v0.8.0/go.mod h1:PeVK8GgzxwAYCiMiUAJb5wJR6xbhj989tu9oulKLLT4=
-github.com/goplus/mod v0.13.13/go.mod h1:invR72Rz2+qpOOsXqxz830MX8/aR2GDR2EAow/WgfHI=
+github.com/goplus/llgo v0.10.0/go.mod h1:YfOHsT/g3lc9b4GclLj812YzdSsJr0kd3CCB830TqHE=
 github.com/goplus/mod v0.13.17 h1:aWp14xosENrh7t0/0qcIejDmQEiTgI3ou2+KoLDlSlE=
 github.com/goplus/mod v0.13.17/go.mod h1:XlHf8mnQ4QkRDX14Of2tpywuHDd+JVpPStvh3egog+0=
 github.com/goplus/reflectx v1.3.2 h1:M6JBeENB8CB0F3FnlCpLtIqhAkluuVbCYHFzSrCLF9w=
@@ -161,7 +158,6 @@ github.com/prometheus/common v0.4.0/go.mod h1:TNfzLD0ON7rHzMJeJkieUDPYmFC7Snx/y8
 github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d/go.mod h1:c3At6R/oaqEKCNdg8wHV1ftS6bRYblBhIjjI8uT2IGk=
 github.com/prometheus/procfs v0.0.0-20190507164030-5867b95ac084/go.mod h1:TjEm7ze935MbeOT/UhFTIMYKhuLP4wbCsTZCD3I8kEA=
 github.com/prometheus/tsdb v0.7.1/go.mod h1:qhTCs0VvXwvX/y3TZrWD7rabWM+ijKTux40TwIPHuXU=
-github.com/qiniu/x v1.13.10/go.mod h1:INZ2TSWSJVWO/RuELQROERcslBwVgFG7MkTfEdaQz9E=
 github.com/qiniu/x v1.13.12 h1:UyAwja6dgKUOYWZMzzc02wLodwnZ7wmK/0XzRd0e78g=
 github.com/qiniu/x v1.13.12/go.mod h1:INZ2TSWSJVWO/RuELQROERcslBwVgFG7MkTfEdaQz9E=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=
@@ -293,7 +289,6 @@ golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4/go.mod h1:RxMgew5VJxzue5/jJ
 golang.org/x/sync v0.1.0/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.3.0/go.mod h1:FU7BRWz2tNW+3quACPkgCx/L+uEAv1htQ0V83Z9Rj+Y=
 golang.org/x/sync v0.6.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
-golang.org/x/sync v0.7.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
 golang.org/x/sync v0.11.0 h1:GGz8+XQP4FvTTrjZPzNKTMFtSXH80RAzG+5ghFPgK9w=
 golang.org/x/sync v0.11.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
 golang.org/x/sys v0.0.0-20180823144017-11551d06cbcc/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=

@@ -117,7 +117,6 @@ func init() {
 		AliasTypes: map[string]reflect.Type{
 			"Comment":      reflect.TypeOf((*q.Comment)(nil)).Elem(),
 			"CommentGroup": reflect.TypeOf((*q.CommentGroup)(nil)).Elem(),
-			"FileType":     reflect.TypeOf((*int16)(nil)).Elem(),
 			"Node":         reflect.TypeOf((*q.Node)(nil)).Elem(),
 		},
 		Vars: map[string]reflect.Value{},
