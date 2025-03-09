@@ -22,4 +22,4 @@ require (
 	golang.org/x/tools v0.30.0 // indirect
 )
 
-replace github.com/goplus/gop => github.com/goplus/gop v1.2.0-pre.1.0.20250303120052-edb11c689012
+replace github.com/goplus/gop => github.com/goplus/gop v1.2.0-pre.1.0.20250309051846-a2657cc3a7ae
