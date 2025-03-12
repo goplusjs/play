@@ -74,10 +74,10 @@ github.com/gopherjs/gopherjs v0.0.0-20210803090616-8f023c250c89 h1:cuZTXJQ2J5mpT
 github.com/gopherjs/gopherjs v0.0.0-20210803090616-8f023c250c89/go.mod h1:0RnbP5ioI0nqRf3R9iK3iQaUJgsn0htlZEHCMn8FSfw=
 github.com/goplus/gogen v1.16.6 h1:Zwv18HoTbPDk8s2ajxgVeqZE5i4/GMV722KHl6GS8Yk=
 github.com/goplus/gogen v1.16.6/go.mod h1:6TQYbabXDF9LCdDkOOzHmfg1R4ENfXQ3XpHa9RhTSD8=
-github.com/goplus/gop v1.2.0-pre.1.0.20250309051846-a2657cc3a7ae h1:Q47kKxN3bXZffrxEZIfq4Rx/U9HsElxqJu9Wx01yrkE=
-github.com/goplus/gop v1.2.0-pre.1.0.20250309051846-a2657cc3a7ae/go.mod h1:9ZLjRLEuNQat8QtHPkYgfltfh+QiIUN4sFzJaMr6HL8=
-github.com/goplus/igop v0.32.1 h1:GbI9ThqEUDX9f18jO1xx9NWRb3XnTIgg+byr3JnCpAA=
-github.com/goplus/igop v0.32.1/go.mod h1:GCJA4qASZ1IU8MNNgDiW+Yf+eKf2G8fJWrx3arSBm8A=
+github.com/goplus/gop v1.2.0-pre.1.0.20250311130517-6b7030d1f550 h1:fai4L5aCTWlA6bDkLfLVfk00pKRZncAdPjXWKoUhq+E=
+github.com/goplus/gop v1.2.0-pre.1.0.20250311130517-6b7030d1f550/go.mod h1:9ZLjRLEuNQat8QtHPkYgfltfh+QiIUN4sFzJaMr6HL8=
+github.com/goplus/igop v0.33.0 h1:pRk5GB7SYB+ds+48hn+Izb7q0D/945ZJNzlVP6EdIv4=
+github.com/goplus/igop v0.33.0/go.mod h1:1OOBErKL70IwRUR/ovo/9xJN4wbwWtQNoF7DS3KyJIM=
 github.com/goplus/llgo v0.10.0/go.mod h1:YfOHsT/g3lc9b4GclLj812YzdSsJr0kd3CCB830TqHE=
 github.com/goplus/mod v0.13.17 h1:aWp14xosENrh7t0/0qcIejDmQEiTgI3ou2+KoLDlSlE=
 github.com/goplus/mod v0.13.17/go.mod h1:XlHf8mnQ4QkRDX14Of2tpywuHDd+JVpPStvh3egog+0=
