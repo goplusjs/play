@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -15,18 +16,32 @@ import (
 	"time"
 )
 
+var (
+	flagDomain = flag.String("domain", ".", "set domain")
+	flagHash   = flag.String("hash", "", "set js tag hash name")
+)
+
 func main() {
+	flag.Parse()
+
 	gop, err := getModule("github.com/goplus/gop")
 	check(err)
 	igop, _ := getModule("github.com/goplus/igop")
 	check(err)
 
-	tag, err := getHash()
+	domain := *flagDomain
+	if domain == "" {
+		domain = "."
+	}
+	tag := *flagHash
+	if tag == "" {
+		tag, err = getHash()
+		if err != nil {
+			panic(err)
+		}
+	}
 	fmt.Println(tag)
 
-	if err != nil {
-		panic(err)
-	}
 	// build index
 	data, err := ioutil.ReadFile("./index_tpl.html")
 	check(err)
@@ -35,10 +50,11 @@ func main() {
 	// data = bytes.Replace(data, []byte("goplus-play.js"), []byte("igop_"+tag+".js"), 1)
 	// err = ioutil.WriteFile("./docs/index.html", data, 0755)
 
-	data = bytes.Replace(data, []byte("loader.js"), []byte("loader_"+tag+".js"), 1)
-	data = bytes.Replace(data, []byte("playground.js"), []byte("playground_"+tag+".js"), 1)
+	data = bytes.Replace(data, []byte("$loader.js"), []byte("loader_"+tag+".js"), 1)
+	data = bytes.Replace(data, []byte("$playground.js"), []byte("playground_"+tag+".js"), 1)
 	data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
 	data = bytes.Replace(data, []byte("$iGopVersion"), []byte(igop.Version), 1)
+	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
 	err = ioutil.WriteFile("./docs/index.html", data, 0755)
 
 	// build loader.js
@@ -46,6 +62,7 @@ func main() {
 	check(err)
 
 	data = bytes.Replace(data, []byte("$igop"), []byte("igop_"+tag), 2)
+	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
 	err = ioutil.WriteFile("./docs/loader_"+tag+".js", data, 0755)
 	check(err)
 
