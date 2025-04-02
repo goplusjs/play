@@ -17,8 +17,9 @@ import (
 )
 
 var (
-	flagDomain = flag.String("domain", ".", "set domain")
-	flagHash   = flag.String("hash", "", "set js tag hash name")
+	flagBuildOnly = flag.Bool("buildonly", false, "build only, no write index.html")
+	flagDomain    = flag.String("domain", ".", "set domain")
+	flagHash      = flag.String("hash", "", "set js tag hash name")
 )
 
 func main() {
@@ -55,7 +56,9 @@ func main() {
 	data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
 	data = bytes.Replace(data, []byte("$iGopVersion"), []byte(igop.Version), 1)
 	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
-	err = ioutil.WriteFile("./docs/index.html", data, 0755)
+	if !*flagBuildOnly {
+		err = ioutil.WriteFile("./docs/index.html", data, 0644)
+	}
 
 	// build loader.js
 	data, err = ioutil.ReadFile("./loader_tpl.js")

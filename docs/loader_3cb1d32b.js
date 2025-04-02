@@ -74,7 +74,7 @@ async function loadWasm() {
   const go = new Go();
   currentGoInstance = go;
   let mod, inst;
-  WebAssembly.instantiateStreaming(fetch("https://go-res.dooquuequezi.com/igop_3cb1d32b.wasm"), go.importObject).then(
+  WebAssembly.instantiateStreaming(fetch("https://go-res.dooquuequezi.comgit/igop_3cb1d32b.wasm"), go.importObject).then(
     (result) => {
       mod = result.module;
       inst = result.instance;
