@@ -864,7 +864,23 @@ func main() {
 }
 `);
             break;
-        }
+            case "classfile.txt":
+                setBody(`pt := &point{3, 4}
+pt.move 1,2
+echo pt
+-- point.gox --
+var (
+	x int
+	y int
+)
+
+func Move(dx,dy int) {
+	x += dx
+	y += dy
+}
+`);
+		break;
+		}
         //        js_ajax("/doc/play/"+toy, {
         //          processData: false,
         //          type: "GET",
