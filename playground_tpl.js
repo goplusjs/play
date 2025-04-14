@@ -344,7 +344,7 @@ function PlaygroundOutput(el) {
 
 (function () {
   function lineHighlight(error) {
-    var regex = /proj.gop?:([0-9]+)/g;
+    var regex = /prog.gop?:([0-9]+)/g;
     var r = regex.exec(error);
     while (r) {
       $(".lines div")
@@ -865,7 +865,9 @@ func main() {
 `);
             break;
             case "classfile.txt":
-                setBody(`pt := &point{3, 4}
+                setBody(`// multiple files use -- file -- split
+
+pt := &point{3, 4}
 pt.move 1,2
 echo pt
 -- point.gox --
