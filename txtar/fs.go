@@ -9,7 +9,7 @@ import (
 )
 
 // FileSystem represents a file system.
-type FileSystem interface {
+type iFileSystem interface {
 	ReadDir(dirname string) ([]fs.DirEntry, error)
 	ReadFile(filename string) ([]byte, error)
 	Join(elem ...string) string
@@ -24,10 +24,10 @@ type FileSystem interface {
 	Abs(path string) (string, error)
 }
 
-func FS(fs *FileSet) (FileSystem, error) {
+func FS(fs *FileSet, filter func(file string) bool) (*FileSystem, error) {
 	a := new(txtar.Archive)
 	for _, f := range fs.Files {
-		if f == "go.mod" || f == "gop.mod" {
+		if filter != nil && !filter(f) {
 			continue
 		}
 		a.Files = append(a.Files, txtar.File{Name: f, Data: fs.M[f]})
@@ -36,31 +36,31 @@ func FS(fs *FileSet) (FileSystem, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &fileSystem{fs, fsys}, nil
+	return &FileSystem{fs, fsys}, nil
 }
 
-type fileSystem struct {
-	fs   *FileSet
-	fsys fs.FS
+type FileSystem struct {
+	Fset *FileSet
+	Sys  fs.FS
 }
 
-func (f *fileSystem) ReadDir(dirname string) ([]fs.DirEntry, error) {
-	dirs, err := fs.ReadDir(f.fsys, dirname)
+func (f *FileSystem) ReadDir(dirname string) ([]fs.DirEntry, error) {
+	dirs, err := fs.ReadDir(f.Sys, dirname)
 	return dirs, err
 }
 
-func (f *fileSystem) ReadFile(filename string) ([]byte, error) {
-	return fs.ReadFile(f.fsys, filename)
+func (f *FileSystem) ReadFile(filename string) ([]byte, error) {
+	return fs.ReadFile(f.Sys, filename)
 }
 
-func (f *fileSystem) Join(elem ...string) string {
+func (f *FileSystem) Join(elem ...string) string {
 	return path.Join(elem...)
 }
 
-func (f *fileSystem) Base(filename string) string {
+func (f *FileSystem) Base(filename string) string {
 	return path.Base(filename)
 }
 
-func (f *fileSystem) Abs(path string) (string, error) {
+func (f *FileSystem) Abs(path string) (string, error) {
 	return filepath.Abs(path)
 }

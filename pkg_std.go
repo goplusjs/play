@@ -3,6 +3,9 @@ package main
 import (
 	_ "github.com/goplus/igop/pkg/syscall/js"
 
+	_ "github.com/goplus/igop/pkg/github.com/goplus/igop/x/testdeps"
+	_ "github.com/goplus/igop/pkg/testing"
+
 	// _ "github.com/goplus/igop/pkg/archive/tar"
 	// _ "github.com/goplus/igop/pkg/archive/zip"
 

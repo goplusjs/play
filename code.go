@@ -1,19 +1,26 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"go/ast"
 	"go/format"
+	"path"
 	"path/filepath"
+	"strings"
 	"syscall/js"
 
-	"github.com/goplusjs/play/txtar"
+	"github.com/goplus/igop/gopbuild/goxtest"
 
+	"golang.org/x/mod/modfile"
+
+	"github.com/goplus/gogen"
 	gopformat "github.com/goplus/gop/format"
 	"github.com/goplus/igop"
 	"github.com/goplus/igop/gopbuild"
 	_ "github.com/goplus/reflectx/icall/icall4096"
+	"github.com/goplusjs/play/txtar"
 )
 
 func clearCanvas() {
@@ -35,6 +42,7 @@ func NewContext(mode igop.Mode) *Context {
 		console.Call("log", "not found package", path)
 		return "", false
 	}
+	goxtest.Register(ctx)
 	return &Context{ctx: ctx}
 }
 
@@ -53,6 +61,51 @@ func progName(goplus bool) string {
 	return "prog.go"
 }
 
+func (c *Context) buildGop(ar *txtar.FileSet) error {
+	var hasGop bool
+	fs, err := txtar.FS(ar, func(file string) bool {
+		switch filepath.Ext(file) {
+		case ".go":
+			return true
+		case ".gop", ".gox", ".gsh":
+			hasGop = true
+			return true
+		}
+		return false
+	})
+	if err != nil {
+		return err
+	}
+	if !hasGop {
+		return nil
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("build package error: %v", r)
+		}
+	}()
+	bp := gopbuild.NewContext(c.ctx)
+	pkg, err := bp.ParseFSDir(fs, ".")
+	if err != nil {
+		return err
+	}
+	var errors []error
+	pkg.ForEachFile(func(pkg *gogen.Package, name string) {
+		fname := pkg.Types.Name() + "_gop_autogen" + name + ".go"
+		var buf bytes.Buffer
+		err := pkg.WriteTo(&buf, name)
+		if err != nil {
+			errors = append(errors, err)
+		} else {
+			ar.AddFile(fname, buf.Bytes())
+		}
+	})
+	if errors != nil {
+		return errors[0]
+	}
+	return nil
+}
+
 func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, emsg string) {
 	if c.cancel != nil {
 		c.cancel()
@@ -69,30 +122,45 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 		return 2, err, ""
 	}
 	if enableGoplus {
-		fs, err := txtar.FS(ar)
+		err := c.buildGop(ar)
 		if err != nil {
 			return 2, err, ""
 		}
-		data, err := gopbuild.BuildFSDir(ctx, fs, ".")
-		if err != nil {
-			return 2, err, ""
+	}
+	var test bool
+	fsys, err := txtar.FS(ar, func(file string) bool {
+		if filepath.Ext(file) == ".go" {
+			if strings.HasSuffix(file, "_test.go") {
+				test = true
+			}
+			return true
 		}
-		ar.AddFile("gop_autogen.go", data)
-	}
-	apkg, err := parsePackage(ctx, "main", ar)
+		return false
+	})
 	if err != nil {
 		return 2, err, ""
 	}
-	pkg, err := ctx.LoadAstPackage("main", apkg)
+	pkg, err := ctx.LoadFileSystem(fsys, test, func(pkgName string, dir string) (string, bool) {
+		if ar.Contains("go.mod") {
+			if f, err := modfile.Parse("go.mod", ar.M["go.mod"], nil); err == nil {
+				return path.Join(f.Module.Mod.Path, dir, pkgName), true
+			}
+		}
+		return "main", true
+	})
 	if err != nil {
 		return 2, err, ""
+	}
+	clearCanvas()
+	if test {
+		err = ctx.TestPkg(pkg, "main", []string{"-test.v"})
+		return
 	}
 	interp, err := igop.NewInterp(ctx, pkg)
 	if err != nil {
 		return 2, err, ""
 	}
 	defer interp.UnsafeRelease()
-	clearCanvas()
 	ctx.RunContext, c.cancel = context.WithCancel(context.TODO())
 	code, err = ctx.RunInterp(interp, "main", nil)
 	if err != nil {

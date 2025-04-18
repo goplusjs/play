@@ -380,7 +380,7 @@ function PlaygroundOutput(el) {
   function playground(opts) {
     var code = $(opts.codeEl);
     function isGoplus() {
-      return $(opts.enableGoplus).is(":checked");
+      return true;// $(opts.enableGoplus).is(":checked");
     }
     var transport =
       opts["transport"] || new HTTPTransport(opts["enableVet"], isGoplus);
@@ -601,7 +601,7 @@ echo "Hello, 世界"
         return;
       }
       loading();
-      var data = { body: code, goplus: $(opts.enableGoplus).is(":checked") };
+      var data = { body: code, goplus: true };
       if ($(opts.fmtImportEl).is(":checked")) {
         data["imports"] = "true";
       }
@@ -839,7 +839,8 @@ ctx.call "fillRect", 10, 10, 100, 100
 `);
             break;
           case "generic.txt":
-            setBody(`
+            setBody(`// use txtar for go file -- file.go --
+-- main.go --
 package main
 
 import (
@@ -865,11 +866,12 @@ func main() {
 `);
             break;
             case "classfile.txt":
-                setBody(`// multiple files use -- file -- split
+                setBody(`// multiple files split by txtar -- file.gop[.gox .go] --
 
 pt := &point{3, 4}
 pt.move 1,2
 echo pt
+
 -- point.gox --
 var (
 	x int
@@ -882,6 +884,51 @@ func Move(dx,dy int) {
 }
 `);
 		break;
+        case "goxtest.txt":
+        setBody(`// gox test
+-- foo.gop --
+func foo(v int) int {
+	return v * 2
+}
+-- foo_test.gox --
+if v := foo(50); v != 100 {
+	t.error "foo(50) ret: ${v}"
+}
+
+t.run "foo -10", t => {
+	if foo(-10) != -20 {
+		t.fatal "foo(-10) != -20"
+	}
+}
+
+t.run "foo 0", t => {
+	if foo(0) != 0 {
+		t.fatal "foo(0) != 0"
+	}
+}
+`);
+        break;
+        case "mixedgo.txt":
+        setBody(`// mixed go generic -- index.go --
+
+s := [1, 3, 5, 2, 4]
+echo index(s, 3)
+echo index(s, 6)
+
+-- index.go --
+package main
+
+// The index function returns the index of the first occurrence of v in s,
+// or -1 if not present.
+func index[E comparable](s []E, v E) int {
+	for i, vs := range s {
+		if v == vs {
+			return i
+		}
+	}
+	return -1
+}
+`)
 		}
         //        js_ajax("/doc/play/"+toy, {
         //          processData: false,
