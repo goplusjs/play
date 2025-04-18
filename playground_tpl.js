@@ -892,7 +892,7 @@ func foo(v int) int {
 }
 -- foo_test.gox --
 if v := foo(50); v != 100 {
-	t.error "foo(50) ret: ${v}"
+	t.error "foo(50) ret: \${v}"
 }
 
 t.run "foo -10", t => {
