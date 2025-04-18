@@ -8,10 +8,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#00add8">
 <link rel="stylesheet" href="./static/styles.css">
-<script src="./loader_ab74fadf.js"></script>
+<script src="./loader_70a1db63.js"></script>
 <script src="https://go-res.dooquuequezi.com/static/jquery-3.5.1.min.js"></script>
 <script src="https://go-res.dooquuequezi.com/static/jquery-linedtextarea.js"></script>
-<script src="https://go-res.dooquuequezi.com/static/playground_ab74fadf.js"></script>
+<script src="https://go-res.dooquuequezi.com/static/playground_70a1db63.js"></script>
 <script src="https://go-res.dooquuequezi.com/static/playground-embed.js"></script>
 <script>
 $(document).ready(function() {
@@ -93,7 +93,6 @@ function readCookie(name) {
     <div class="Playground-buttons">
     <button id="run" class="Button Button--primary js-playgroundRunEl Playground-runButton" title="Run this code [shift-enter]">Run</button>
     <div class="Playground-secondaryButtons">
-      <input type="checkbox" id="enableGoplus">Go+ Mode</input>
       <button id="fmt" class="Button js-playgroundFmtEl" title="Format this code">Format</button>
       <button id="share" class="Button js-playgroundShareEl" title="Share this code">Share</button>
 			<input type="text" id="shareURL">
@@ -112,9 +111,11 @@ function readCookie(name) {
         <option value="slice.txt">Slice literal</option>
         <option value="listmap.txt">List/Map comprehension</option>
         <option value="error.txt">Error wrap</option>
-        <option value="classfile.txt">Multiple Files</option>
+        <option value="classfile.txt">Gox Class Files</option>
+        <option value="goxtest.txt">Gox Test Files</option>
+        <option value="generic.txt">Go Generic</option>
+        <option value="mixedgo.txt">Mixed Go Generic</option>
         <option value="canvas.txt">Canvas (2D Context)</option>
-        <option value="generic.txt">Generic index</option>
     </select>
     </div>
   </div>
@@ -130,7 +131,7 @@ function readCookie(name) {
 
 <div class="PlayAbout">
 <p><b>About the Playground</b></p>
-<p>iGo+ v0.37.0 ( Go+ v1.3.9 )</p>
+<p>iGo+ v0.38.0 ( Go+ v1.3.9 )</p>
 <p>
 The Go+ Playground is a web service that runs on
 <a href="https://goplus.org/">goplus.org</a>'s servers.
