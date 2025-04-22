@@ -11,16 +11,13 @@ import (
 	"strings"
 	"syscall/js"
 
-	"github.com/goplus/igop/gopbuild/goxtest"
-
-	"golang.org/x/mod/modfile"
-
 	"github.com/goplus/gogen"
 	gopformat "github.com/goplus/gop/format"
 	"github.com/goplus/igop"
 	"github.com/goplus/igop/gopbuild"
 	_ "github.com/goplus/reflectx/icall/icall4096"
 	"github.com/goplusjs/play/txtar"
+	"golang.org/x/mod/modfile"
 )
 
 func clearCanvas() {
@@ -42,7 +39,6 @@ func NewContext(mode igop.Mode) *Context {
 		console.Call("log", "not found package", path)
 		return "", false
 	}
-	goxtest.Register(ctx)
 	return &Context{ctx: ctx}
 }
 

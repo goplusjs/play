@@ -3,9 +3,9 @@ module github.com/goplusjs/play
 go 1.23
 
 require (
-	github.com/goplus/gogen v1.17.1
-	github.com/goplus/gop v1.3.9
-	github.com/goplus/igop v0.38.0
+	github.com/goplus/gogen v1.17.2
+	github.com/goplus/gop v1.4.0
+	github.com/goplus/igop v0.39.0
 	github.com/goplus/reflectx v1.3.2
 	golang.org/x/mod v0.23.0
 	golang.org/x/tools v0.30.0
@@ -13,8 +13,8 @@ require (
 
 require (
 	github.com/gopherjs/gopherjs v0.0.0-20210803090616-8f023c250c89 // indirect
-	github.com/goplus/mod v0.15.1 // indirect
-	github.com/qiniu/x v1.13.17 // indirect
+	github.com/goplus/mod v0.16.0 // indirect
+	github.com/qiniu/x v1.13.19 // indirect
 	github.com/timandy/routine v1.1.4 // indirect
 	github.com/visualfc/funcval v0.1.4 // indirect
 	github.com/visualfc/gid v0.2.0 // indirect
