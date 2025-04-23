@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"go/ast"
 	"go/format"
@@ -11,9 +10,7 @@ import (
 	"strings"
 	"syscall/js"
 
-	"github.com/goplus/igop/gopbuild/goxtest"
-
-	"golang.org/x/mod/modfile"
+	"github.com/goplus/reflectx"
 
 	"github.com/goplus/gogen"
 	gopformat "github.com/goplus/gop/format"
@@ -21,6 +18,7 @@ import (
 	"github.com/goplus/igop/gopbuild"
 	_ "github.com/goplus/reflectx/icall/icall4096"
 	"github.com/goplusjs/play/txtar"
+	"golang.org/x/mod/modfile"
 )
 
 func clearCanvas() {
@@ -42,7 +40,6 @@ func NewContext(mode igop.Mode) *Context {
 		console.Call("log", "not found package", path)
 		return "", false
 	}
-	goxtest.Register(ctx)
 	return &Context{ctx: ctx}
 }
 
@@ -107,9 +104,7 @@ func (c *Context) buildGop(ar *txtar.FileSet) error {
 }
 
 func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, emsg string) {
-	if c.cancel != nil {
-		c.cancel()
-	}
+	reflectx.ResetAll()
 	ctx := c.ctx
 	defer func() {
 		err := recover()
@@ -156,13 +151,14 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 		err = ctx.TestPkg(pkg, "main", []string{"-test.v"})
 		return
 	}
-	interp, err := igop.NewInterp(ctx, pkg)
-	if err != nil {
-		return 2, err, ""
-	}
-	defer interp.UnsafeRelease()
-	ctx.RunContext, c.cancel = context.WithCancel(context.TODO())
-	code, err = ctx.RunInterp(interp, "main", nil)
+	// interp, err := igop.NewInterp(ctx, pkg)
+	// if err != nil {
+	// 	return 2, err, ""
+	// }
+	// defer interp.UnsafeRelease()
+	// ctx.RunContext, c.cancel = context.WithCancel(context.TODO())
+	// code, err = ctx.RunInterp(interp, "main", nil)
+	code, err = ctx.RunPkg(pkg, "main", nil)
 	if err != nil {
 		switch pe := err.(type) {
 		case igop.PanicError:

@@ -929,6 +929,66 @@ func index[E comparable](s []E, v E) int {
 	return -1
 }
 `)
+	break;
+	case "mcptest.txt":
+		setBody(`// https://github.com/goplus/mcp
+-- main_mcp.gox --
+server "Tool Demo 🚀", "1.0.0"
+-- hello_tool.gox --
+tool "helloWorld", => {
+	description "Say hello to someone"
+	string "name", => {
+		required
+		description "Name of the person to greet"
+	}
+}
+
+name, ok := \${name}.(string)
+if !ok {
+	return newError("name must be a string")
+}
+
+return text("Hello, \${name}!")
+-- hello_mtest.gox --
+mock new(MCPApp)
+
+initialize nil
+ret {}
+
+list "tools"
+ret {
+	"tools": [
+		{
+			"description": "Say hello to someone",
+			"inputSchema": {
+				"properties": {
+					"name": {
+						"description": "Name of the person to greet",
+						"type":        "string",
+					},
+				},
+				"required": [
+					"name",
+				],
+				"type": "object",
+			},
+			"name": "helloWorld",
+		},
+	],
+}
+
+call "helloWorld", {"name": "Ken"}
+ret {
+	"content": [{"type": "text", "text": "Hello, Ken!"}],
+}
+
+call "helloWorld", {"name": "Ken"}
+ret
+dump resp
+match {
+	"content": [{"type": "text", "text": "Hello, Ken!"}],
+}, resp
+`)
 		}
         //        js_ajax("/doc/play/"+toy, {
         //          processData: false,

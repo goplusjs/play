@@ -1,11 +1,15 @@
 package main
 
 import (
+	"os"
 	"syscall/js"
+
+	"github.com/goplus/igop"
 )
 
 func main() {
-	ctx := NewContext(0)
+	os.Setenv("GODEBUG", "gotypesalias=0")
+	ctx := NewContext(igop.SupportMultipleInterp)
 	jsFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {
 		case "/compile":
