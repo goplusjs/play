@@ -67,6 +67,7 @@ func init() {
 			"OnErrorHookFunc":                   reflect.TypeOf((*q.OnErrorHookFunc)(nil)).Elem(),
 			"OnRegisterSessionHookFunc":         reflect.TypeOf((*q.OnRegisterSessionHookFunc)(nil)).Elem(),
 			"OnSuccessHookFunc":                 reflect.TypeOf((*q.OnSuccessHookFunc)(nil)).Elem(),
+			"OnUnregisterSessionHookFunc":       reflect.TypeOf((*q.OnUnregisterSessionHookFunc)(nil)).Elem(),
 			"PromptHandlerFunc":                 reflect.TypeOf((*q.PromptHandlerFunc)(nil)).Elem(),
 			"ResourceHandlerFunc":               reflect.TypeOf((*q.ResourceHandlerFunc)(nil)).Elem(),
 			"ResourceTemplateHandlerFunc":       reflect.TypeOf((*q.ResourceTemplateHandlerFunc)(nil)).Elem(),
@@ -80,7 +81,7 @@ func init() {
 			"StdioServer":                       reflect.TypeOf((*q.StdioServer)(nil)).Elem(),
 			"ToolHandlerFunc":                   reflect.TypeOf((*q.ToolHandlerFunc)(nil)).Elem(),
 			"ToolHandlerMiddleware":             reflect.TypeOf((*q.ToolHandlerMiddleware)(nil)).Elem(),
-			"UnparseableMessageError":           reflect.TypeOf((*q.UnparseableMessageError)(nil)).Elem(),
+			"UnparsableMessageError":            reflect.TypeOf((*q.UnparsableMessageError)(nil)).Elem(),
 		},
 		AliasTypes: map[string]reflect.Type{},
 		Vars: map[string]reflect.Value{

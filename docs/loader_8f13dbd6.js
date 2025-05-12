@@ -48,7 +48,7 @@ if (useWasm) {
     //        }
   };
 } else {
-  script.src = "igop_45bb2f9c.js";
+  script.src = "igop_8f13dbd6.js";
 }
 document.head.appendChild(script);
 
@@ -74,7 +74,7 @@ async function loadWasm() {
   const go = new Go();
   currentGoInstance = go;
   let mod, inst;
-  WebAssembly.instantiateStreaming(fetch("https://play-static.gopluscdn.com/igop_45bb2f9c.wasm"), go.importObject).then(
+  WebAssembly.instantiateStreaming(fetch("https://play-static.gopluscdn.com/igop_8f13dbd6.wasm"), go.importObject).then(
     (result) => {
       mod = result.module;
       inst = result.instance;
