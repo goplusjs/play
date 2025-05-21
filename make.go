@@ -78,6 +78,7 @@ func main() {
 	// err = build_js("./docs", "igop_"+tag)
 	// check(err)
 	err = build_wasm("./docs", "igop_"+tag)
+	//err = build_wasm_min("./docs", "igop_"+tag)
 	check(err)
 }
 
@@ -116,6 +117,15 @@ func build_js(dir, tag string) error {
 
 func build_wasm(dir, tag string) error {
 	cmd := exec.Command("go", "build", "-ldflags", "-checklinkname=0", "-o", filepath.Join(dir, tag+".wasm"))
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	env := os.Environ()
+	cmd.Env = append(env, "GOARCH=wasm", "GOOS=js")
+	return cmd.Run()
+}
+
+func build_wasm_min(dir, tag string) error {
+	cmd := exec.Command("go", "build", "-ldflags", "-checklinkname=0 -s -w", "-trimpath", "-o", filepath.Join(dir, tag+"_min.wasm"))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	env := os.Environ()
