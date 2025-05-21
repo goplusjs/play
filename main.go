@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	os.Setenv("GODEBUG", "gotypesalias=0")
+	os.Setenv("GODEBUG", "GOEXPERIMENT=aliastypeparams") // "gotypesalias=0")
 	ctx := NewContext(igop.SupportMultipleInterp)
 	jsFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {

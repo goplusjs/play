@@ -989,7 +989,38 @@ match {
 	"content": [{"type": "text", "text": "Hello, Ken!"}],
 }, resp
 `)
-		}
+		break;
+		case "tpldemo.txt":
+		setBody(`// a calculator with Go+ TPL 
+
+import "gop/tpl"
+
+cl := tpl\`
+expr = operand % ("*" | "/") % ("+" | "-") => {
+    return tpl.BinaryOp(true, self, (op, x, y) => {
+        switch op.Tok {
+        case '+': return x.(float64) + y.(float64)
+        case '-': return x.(float64) - y.(float64)
+        case '*': return x.(float64) * y.(float64)
+        case '/': return x.(float64) / y.(float64)
+        }
+        panic("unexpected")
+    })
+}
+
+operand = basicLit | unaryExpr
+
+unaryExpr = "-" operand => {
+    return -(self[1].(float64))
+}
+
+basicLit = INT | FLOAT => {
+    return self.(*tpl.Token).Lit.float!
+}
+\`!
+
+echo cl.parseExpr("1 + 2 * -3", nil)!  // Outputs: -5
+`)
         //        js_ajax("/doc/play/"+toy, {
         //          processData: false,
         //          type: "GET",
@@ -1001,6 +1032,7 @@ match {
         //            setBody(xhr.responseText);
         //          }
         //        });
+       }
       });
     }
   }
