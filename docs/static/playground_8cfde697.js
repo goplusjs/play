@@ -393,8 +393,10 @@ echo "Hello, 世界"
     
     const search = location.search.substring(1);
     const params = new URLSearchParams(search);
-    if (params.has("p")) {
-      let snippetUrl = remoteHost + "/p/" + params.get("p") + ".gop";
+    var pathMatch = window.location.pathname.match(/^\/p\/(.+)$/);
+    var shareID = pathMatch ? pathMatch[1] : (window.location.pathname == "/" && params.has("p") ? params.get("p") : null);
+    if (shareID) {
+      let snippetUrl = remoteHost + "/p/" + shareID + ".gop";
       $.ajax(snippetUrl, {
         method: "GET",
         dataType: "text",
@@ -644,7 +646,7 @@ echo "Hello, 世界"
           if (opts.shareRedirect) {
             window.location = opts.shareRedirect + xhr.responseText;
           }
-          var path = "/?p=" + xhr.responseText;
+          var path = "/p/" + xhr.responseText;
           //var url = origin(window.location) + path;
           var url = "https://play.xgo.dev" + path;
 

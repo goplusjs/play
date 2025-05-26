@@ -22,7 +22,7 @@ window.goWriteSync = function (text) {
 
 var script = document.createElement("script");
 if (useWasm) {
-  script.src = "https://play-static.gopluscdn.com/wasm_exec_rt.js";
+  script.src = "./wasm_exec_rt.js";
   script.onload = function () {
     // polyfill
     if (!WebAssembly.instantiateStreaming) {
@@ -48,7 +48,7 @@ if (useWasm) {
     //        }
   };
 } else {
-  script.src = "igop_bc08d1fd.js";
+  script.src = "igop_8cfde697.js";
 }
 document.head.appendChild(script);
 
@@ -74,7 +74,7 @@ async function loadWasm() {
   const go = new Go();
   currentGoInstance = go;
   let mod, inst;
-  WebAssembly.instantiateStreaming(fetch("https://play-static.gopluscdn.com/igop_bc08d1fd.wasm"), go.importObject).then(
+  WebAssembly.instantiateStreaming(fetch("./igop_8cfde697.wasm"), go.importObject).then(
     (result) => {
       mod = result.module;
       inst = result.instance;
