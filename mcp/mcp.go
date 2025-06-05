@@ -1,6 +1,6 @@
 package mcp
 
-//go:generate qexp -outdir . -code github.com/goplus/mcp/...
+//go:generate qexp -outdir . github.com/goplus/mcp/...
 //go:generate qexp -outdir . -code github.com/qiniu/x/test
 //go:generate qexp -outdir . github.com/mark3labs/mcp-go/...
 //go:generate qexp -outdir . github.com/qiniu/x/stringutil
@@ -10,7 +10,7 @@ package mcp
 import (
 	_ "github.com/goplus/mcp/server"
 
-	"github.com/goplus/igop/gopbuild"
+	"github.com/goplus/ixgo/xgobuild"
 
 	_ "github.com/goplusjs/play/mcp/github.com/qiniu/x/test"
 	_ "github.com/goplusjs/play/mcp/github.com/yosida95/uritemplate/v3"
@@ -45,13 +45,13 @@ class _mtest.gox CaseApp
 */
 
 func init() {
-	gopbuild.RegisterClassFileType("_mcp.gox", "MCPApp", []*gopbuild.Class{
+	xgobuild.RegisterClassFileType("_mcp.gox", "MCPApp", []*xgobuild.Class{
 		{Ext: "_res.gox", Class: "ResourceApp", Proto: "ResourceProto"},
 		{Ext: "_tool.gox", Class: "ToolApp", Proto: "ToolProto"},
 		{Ext: "_prompt.gox", Class: "PromptApp", Proto: "PromptProto"},
 	}, "github.com/goplus/mcp/server")
 
-	gopbuild.RegisterClassFileType("_mtest.gox", "MainApp", []*gopbuild.Class{
+	xgobuild.RegisterClassFileType("_mtest.gox", "MainApp", []*xgobuild.Class{
 		{Ext: "_mtest.gox", Class: "CaseApp"},
 	}, "github.com/goplus/mcp/mtest", "github.com/qiniu/x/test")
 }

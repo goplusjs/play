@@ -1,4 +1,4 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package uritemplate
 
@@ -8,11 +8,11 @@ import (
 	"go/constant"
 	"reflect"
 
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "uritemplate",
 		Path: "github.com/yosida95/uritemplate/v3",
 		Deps: map[string]string{
@@ -44,10 +44,10 @@ func init() {
 			"New":     reflect.ValueOf(q.New),
 			"String":  reflect.ValueOf(q.String),
 		},
-		TypedConsts: map[string]igop.TypedConst{
+		TypedConsts: map[string]ixgo.TypedConst{
 			"CompareVarname": {reflect.TypeOf(q.CompareVarname), constant.MakeInt64(int64(q.CompareVarname))},
 		},
-		UntypedConsts: map[string]igop.UntypedConst{
+		UntypedConsts: map[string]ixgo.UntypedConst{
 			"ValueTypeKV":     {"untyped int", constant.MakeInt64(int64(q.ValueTypeKV))},
 			"ValueTypeList":   {"untyped int", constant.MakeInt64(int64(q.ValueTypeList))},
 			"ValueTypeString": {"untyped int", constant.MakeInt64(int64(q.ValueTypeString))},

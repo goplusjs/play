@@ -25,9 +25,9 @@ var (
 func main() {
 	flag.Parse()
 
-	gop, err := getModule("github.com/goplus/gop")
+	gop, err := getModule("github.com/goplus/xgo")
 	check(err)
-	igop, _ := getModule("github.com/goplus/igop")
+	igop, _ := getModule("github.com/goplus/ixgo")
 	check(err)
 
 	domain := *flagDomain
@@ -64,7 +64,7 @@ func main() {
 	data, err = ioutil.ReadFile("./loader_tpl.js")
 	check(err)
 
-	data = bytes.Replace(data, []byte("$igop"), []byte("igop_"+tag), 2)
+	data = bytes.Replace(data, []byte("$igop"), []byte("ixgo_"+tag), 2)
 	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
 	err = ioutil.WriteFile("./docs/loader_"+tag+".js", data, 0755)
 	check(err)
@@ -75,10 +75,10 @@ func main() {
 	err = ioutil.WriteFile("./docs/static/playground_"+tag+".js", data, 0755)
 	check(err)
 
-	// err = build_js("./docs", "igop_"+tag)
+	// err = build_js("./docs", "ixgo_"+tag)
 	// check(err)
-	err = build_wasm("./docs", "igop_"+tag)
-	//err = build_wasm_min("./docs", "igop_"+tag)
+	err = build_wasm("./docs", "ixgo_"+tag)
+	//err = build_wasm_min("./docs", "ixgo_"+tag)
 	check(err)
 }
 
