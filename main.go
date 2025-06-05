@@ -4,12 +4,13 @@ import (
 	"os"
 	"syscall/js"
 
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 )
 
 func main() {
-	os.Setenv("GODEBUG", "GOEXPERIMENT=aliastypeparams") // "gotypesalias=0")
-	ctx := NewContext(igop.SupportMultipleInterp)
+	//os.Setenv("GODEBUG", "GOEXPERIMENT=aliastypeparams") // "gotypesalias=0")
+	os.Setenv("GODEBUG", "gotypesalias=0")
+	ctx := NewContext(ixgo.SupportMultipleInterp | ixgo.OptionLoadAllImethod)
 	jsFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		switch args[0].String() {
 		case "/compile":

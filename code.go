@@ -13,10 +13,10 @@ import (
 	"github.com/goplus/reflectx"
 
 	"github.com/goplus/gogen"
-	gopformat "github.com/goplus/gop/format"
-	"github.com/goplus/igop"
-	"github.com/goplus/igop/gopbuild"
+	"github.com/goplus/ixgo"
+	"github.com/goplus/ixgo/xgobuild"
 	_ "github.com/goplus/reflectx/icall/icall4096"
+	gopformat "github.com/goplus/xgo/format"
 	"github.com/goplusjs/play/txtar"
 	"golang.org/x/mod/modfile"
 )
@@ -29,12 +29,12 @@ func clearCanvas() {
 }
 
 type Context struct {
-	ctx    *igop.Context
+	ctx    *ixgo.Context
 	cancel func()
 }
 
-func NewContext(mode igop.Mode) *Context {
-	ctx := igop.NewContext(mode)
+func NewContext(mode ixgo.Mode) *Context {
+	ctx := ixgo.NewContext(mode)
 	console := js.Global().Get("console")
 	ctx.Lookup = func(root, path string) (dir string, found bool) {
 		console.Call("log", "not found package", path)
@@ -81,7 +81,7 @@ func (c *Context) buildGop(ar *txtar.FileSet) error {
 			err = fmt.Errorf("build package error: %v", r)
 		}
 	}()
-	bp := gopbuild.NewContext(c.ctx)
+	bp := xgobuild.NewContext(c.ctx)
 	pkg, err := bp.ParseFSDir(fs, ".")
 	if err != nil {
 		return err
@@ -161,9 +161,9 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 	code, err = ctx.RunPkg(pkg, "main", nil)
 	if err != nil {
 		switch pe := err.(type) {
-		case igop.PanicError:
+		case ixgo.PanicError:
 			emsg = fmt.Sprintf("panic: %v\n\n%s\n", pe.Value, pe.Stack())
-		case igop.FatalError:
+		case ixgo.FatalError:
 			emsg = fmt.Sprintf("panic: %v\n\n%s\n", pe.Value, pe.Stack())
 		default:
 			emsg = err.Error()
@@ -188,7 +188,7 @@ func formatCode(src []byte, enableGoplus bool) ([]byte, error) {
 		case ".gox":
 			data, err = gopformat.Source(ar.M[file], true, file)
 		default:
-			if _, ok := gopbuild.ClassKind(file); !ok {
+			if _, ok := xgobuild.ClassKind(file); !ok {
 				continue
 			}
 			data, err = gopformat.Source(ar.M[file], true, file)
@@ -206,7 +206,7 @@ func formatCode(src []byte, enableGoplus bool) ([]byte, error) {
 	// }
 }
 
-func parsePackage(ctx *igop.Context, name string, ar *txtar.FileSet) (*ast.Package, error) {
+func parsePackage(ctx *ixgo.Context, name string, ar *txtar.FileSet) (*ast.Package, error) {
 	pkg := &ast.Package{
 		Name:  name,
 		Files: make(map[string]*ast.File),

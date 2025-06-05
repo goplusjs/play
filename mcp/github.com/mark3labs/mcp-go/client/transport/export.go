@@ -1,4 +1,4 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package transport
 
@@ -7,11 +7,11 @@ import (
 
 	"reflect"
 
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "transport",
 		Path: "github.com/mark3labs/mcp-go/client/transport",
 		Deps: map[string]string{
@@ -59,7 +59,7 @@ func init() {
 			"WithHTTPTimeout":       reflect.ValueOf(q.WithHTTPTimeout),
 			"WithHeaders":           reflect.ValueOf(q.WithHeaders),
 		},
-		TypedConsts:   map[string]igop.TypedConst{},
-		UntypedConsts: map[string]igop.UntypedConst{},
+		TypedConsts:   map[string]ixgo.TypedConst{},
+		UntypedConsts: map[string]ixgo.UntypedConst{},
 	})
 }

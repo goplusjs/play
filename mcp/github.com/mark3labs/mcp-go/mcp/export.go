@@ -1,4 +1,4 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package mcp
 
@@ -8,11 +8,11 @@ import (
 	"go/constant"
 	"reflect"
 
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "mcp",
 		Path: "github.com/mark3labs/mcp-go/mcp",
 		Deps: map[string]string{
@@ -233,7 +233,7 @@ func init() {
 			"WithTitleAnnotation":            reflect.ValueOf(q.WithTitleAnnotation),
 			"WithToolAnnotation":             reflect.ValueOf(q.WithToolAnnotation),
 		},
-		TypedConsts: map[string]igop.TypedConst{
+		TypedConsts: map[string]ixgo.TypedConst{
 			"LoggingLevelAlert":            {reflect.TypeOf(q.LoggingLevelAlert), constant.MakeString(string(q.LoggingLevelAlert))},
 			"LoggingLevelCritical":         {reflect.TypeOf(q.LoggingLevelCritical), constant.MakeString(string(q.LoggingLevelCritical))},
 			"LoggingLevelDebug":            {reflect.TypeOf(q.LoggingLevelDebug), constant.MakeString(string(q.LoggingLevelDebug))},
@@ -255,7 +255,7 @@ func init() {
 			"RoleAssistant":                {reflect.TypeOf(q.RoleAssistant), constant.MakeString(string(q.RoleAssistant))},
 			"RoleUser":                     {reflect.TypeOf(q.RoleUser), constant.MakeString(string(q.RoleUser))},
 		},
-		UntypedConsts: map[string]igop.UntypedConst{
+		UntypedConsts: map[string]ixgo.UntypedConst{
 			"INTERNAL_ERROR":                         {"untyped int", constant.MakeInt64(int64(q.INTERNAL_ERROR))},
 			"INVALID_PARAMS":                         {"untyped int", constant.MakeInt64(int64(q.INVALID_PARAMS))},
 			"INVALID_REQUEST":                        {"untyped int", constant.MakeInt64(int64(q.INVALID_REQUEST))},

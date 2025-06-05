@@ -1,4 +1,4 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package client
 
@@ -7,11 +7,11 @@ import (
 
 	"reflect"
 
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "client",
 		Path: "github.com/mark3labs/mcp-go/client",
 		Deps: map[string]string{
@@ -49,7 +49,7 @@ func init() {
 			"WithHTTPClient":          reflect.ValueOf(q.WithHTTPClient),
 			"WithHeaders":             reflect.ValueOf(q.WithHeaders),
 		},
-		TypedConsts:   map[string]igop.TypedConst{},
-		UntypedConsts: map[string]igop.UntypedConst{},
+		TypedConsts:   map[string]ixgo.TypedConst{},
+		UntypedConsts: map[string]ixgo.UntypedConst{},
 	})
 }

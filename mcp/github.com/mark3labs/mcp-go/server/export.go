@@ -1,4 +1,4 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package server
 
@@ -7,11 +7,11 @@ import (
 
 	"reflect"
 
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "server",
 		Path: "github.com/mark3labs/mcp-go/server",
 		Deps: map[string]string{
@@ -145,7 +145,7 @@ func init() {
 			"WithToolHandlerMiddleware":        reflect.ValueOf(q.WithToolHandlerMiddleware),
 			"WithUseFullURLForMessageEndpoint": reflect.ValueOf(q.WithUseFullURLForMessageEndpoint),
 		},
-		TypedConsts:   map[string]igop.TypedConst{},
-		UntypedConsts: map[string]igop.UntypedConst{},
+		TypedConsts:   map[string]ixgo.TypedConst{},
+		UntypedConsts: map[string]ixgo.UntypedConst{},
 	})
 }

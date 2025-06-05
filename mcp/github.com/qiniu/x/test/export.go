@@ -1,4 +1,4 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package test
 
@@ -8,11 +8,11 @@ import (
 	"go/constant"
 	"reflect"
 
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "test",
 		Path: "github.com/qiniu/x/test",
 		Deps: map[string]string{
@@ -46,8 +46,8 @@ func init() {
 			"NewT":                  reflect.ValueOf(q.NewT),
 			"Set__2":                reflect.ValueOf(q.Set__2),
 		},
-		TypedConsts: map[string]igop.TypedConst{},
-		UntypedConsts: map[string]igop.UntypedConst{
+		TypedConsts: map[string]ixgo.TypedConst{},
+		UntypedConsts: map[string]ixgo.UntypedConst{
 			"GopPackage":           {"untyped bool", constant.MakeBool(bool(q.GopPackage))},
 			"Gopo_Gopt_Case_Match": {"untyped string", constant.MakeString(string(q.Gopo_Gopt_Case_Match))},
 		},

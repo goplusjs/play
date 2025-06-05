@@ -1,4 +1,4 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package uuid
 
@@ -8,11 +8,11 @@ import (
 	"go/constant"
 	"reflect"
 
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "uuid",
 		Path: "github.com/google/uuid",
 		Deps: map[string]string{
@@ -86,7 +86,7 @@ func init() {
 			"SetRand":              reflect.ValueOf(q.SetRand),
 			"Validate":             reflect.ValueOf(q.Validate),
 		},
-		TypedConsts: map[string]igop.TypedConst{
+		TypedConsts: map[string]ixgo.TypedConst{
 			"Future":    {reflect.TypeOf(q.Future), constant.MakeInt64(int64(q.Future))},
 			"Group":     {reflect.TypeOf(q.Group), constant.MakeInt64(int64(q.Group))},
 			"Invalid":   {reflect.TypeOf(q.Invalid), constant.MakeInt64(int64(q.Invalid))},
@@ -96,6 +96,6 @@ func init() {
 			"RFC4122":   {reflect.TypeOf(q.RFC4122), constant.MakeInt64(int64(q.RFC4122))},
 			"Reserved":  {reflect.TypeOf(q.Reserved), constant.MakeInt64(int64(q.Reserved))},
 		},
-		UntypedConsts: map[string]igop.UntypedConst{},
+		UntypedConsts: map[string]ixgo.UntypedConst{},
 	})
 }

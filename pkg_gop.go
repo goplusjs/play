@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "github.com/goplus/igop/gopbuild/pkg"
-	_ "github.com/goplus/igop/pkg/github.com/goplus/gop/test"
+	_ "github.com/goplus/ixgo/pkg/github.com/goplus/xgo/test"
+	_ "github.com/goplus/ixgo/xgobuild/pkg"
 	_ "github.com/goplusjs/play/mcp"
 )
