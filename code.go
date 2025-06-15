@@ -53,7 +53,7 @@ func dump(args ...interface{}) {
 
 func progName(goplus bool) string {
 	if goplus {
-		return "prog.gop"
+		return "prog.xgo"
 	}
 	return "prog.go"
 }
@@ -64,7 +64,7 @@ func (c *Context) buildGop(ar *txtar.FileSet) error {
 		switch filepath.Ext(file) {
 		case ".go":
 			return true
-		case ".gop", ".gox", ".gsh":
+		case ".gop", ".gox", ".gsh", ".xgo":
 			hasGop = true
 			return true
 		}
@@ -183,7 +183,7 @@ func formatCode(src []byte, enableGoplus bool) ([]byte, error) {
 		switch filepath.Ext(file) {
 		case ".go":
 			data, err = format.Source(ar.M[file])
-		case ".gop":
+		case ".gop", ".xgo":
 			data, err = gopformat.Source(ar.M[file], false, file)
 		case ".gox":
 			data, err = gopformat.Source(ar.M[file], true, file)
