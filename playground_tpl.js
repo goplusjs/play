@@ -344,11 +344,11 @@ function PlaygroundOutput(el) {
 
 (function () {
   function lineHighlight(error) {
-    var regex = /prog.gop?:([0-9]+)/g;
+    var regex = /prog.(xgo|gop)?:([0-9]+)/g;
     var r = regex.exec(error);
     while (r) {
       $(".lines div")
-        .eq(r[1] - 1)
+        .eq(r[2] - 1)
         .addClass("lineerror");
       r = regex.exec(error);
     }
@@ -396,7 +396,7 @@ echo "Hello, 世界"
     var pathMatch = window.location.pathname.match(/^\/p\/(.+)$/);
     var shareID = pathMatch ? pathMatch[1] : (window.location.pathname == "/" && params.has("p") ? params.get("p") : null);
     if (shareID) {
-      let snippetUrl = remoteHost + "/p/" + shareID + ".gop";
+      let snippetUrl = remoteHost + "/p/" + shareID + ".xgo";
       $.ajax(snippetUrl, {
         method: "GET",
         dataType: "text",
@@ -868,7 +868,7 @@ func main() {
 `);
             break;
             case "classfile.txt":
-                setBody(`// multiple files split by txtar -- file.gop[.gox .go] --
+                setBody(`// multiple files split by txtar -- file.xgo[.gox .go] --
 
 pt := &point{3, 4}
 pt.move 1,2
@@ -888,7 +888,7 @@ func Move(dx,dy int) {
 		break;
         case "goxtest.txt":
         setBody(`// gox test
--- foo.gop --
+-- foo.xgo --
 func foo(v int) int {
 	return v * 2
 }
