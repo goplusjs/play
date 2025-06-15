@@ -396,7 +396,7 @@ echo "Hello, 世界"
     var pathMatch = window.location.pathname.match(/^\/p\/(.+)$/);
     var shareID = pathMatch ? pathMatch[1] : (window.location.pathname == "/" && params.has("p") ? params.get("p") : null);
     if (shareID) {
-      let snippetUrl = remoteHost + "/p/" + shareID + ".xgo";
+      let snippetUrl = remoteHost + "/p/" + shareID + ".gop";
       $.ajax(snippetUrl, {
         method: "GET",
         dataType: "text",
