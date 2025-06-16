@@ -8,6 +8,10 @@ let currentGoInstance = null;
 
 let wasmOverflowCallback;
 
+// Track wasm_exec_rt.js loading state.
+let wasmExecRtLoaded = false;
+let wasmExecRtLoadPromise = null;
+
 window.setIgopOverflowCallback = function (callback) {
   wasmOverflowCallback = callback;
 };
@@ -23,30 +27,40 @@ window.goWriteSync = function (text) {
 var script = document.createElement("script");
 if (useWasm) {
   script.src = "$domain/wasm_exec_rt.js";
-  script.onload = function () {
-    // polyfill
-    if (!WebAssembly.instantiateStreaming) {
-      WebAssembly.instantiateStreaming = async (resp, importObject) => {
-        const source = await (await resp).arrayBuffer();
-        return await WebAssembly.instantiate(source, importObject);
-      };
-    }
-    loadWasm();
-    //        const go = new Go();
-    //        currentGoInstance = go;
-    //        let mod, inst;
-    //        WebAssembly.instantiateStreaming(fetch("igop_1dd7d1c3.wasm"), go.importObject).then((result) => {
-    //            mod = result.module;
-    //            inst = result.instance;
-    //            isWasmLoaded = true;
-    //            run();
-    //        })
 
-    //        async function run() {
-    //            await go.run(inst);
-    //            inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
-    //        }
-  };
+  // Create a promise to track wasm_exec_rt.js loading.
+  wasmExecRtLoadPromise = new Promise((resolve, reject) => {
+    script.onload = function () {
+      // polyfill
+      if (!WebAssembly.instantiateStreaming) {
+        WebAssembly.instantiateStreaming = async (resp, importObject) => {
+          const source = await (await resp).arrayBuffer();
+          return await WebAssembly.instantiate(source, importObject);
+        };
+      }
+      wasmExecRtLoaded = true;
+      resolve();
+      loadWasm();
+      //        const go = new Go();
+      //        currentGoInstance = go;
+      //        let mod, inst;
+      //        WebAssembly.instantiateStreaming(fetch("igop_1dd7d1c3.wasm"), go.importObject).then((result) => {
+      //            mod = result.module;
+      //            inst = result.instance;
+      //            isWasmLoaded = true;
+      //            run();
+      //        })
+
+      //        async function run() {
+      //            await go.run(inst);
+      //            inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+      //        }
+    };
+
+    script.onerror = function () {
+      reject(new Error("Failed to load wasm_exec_rt.js"));
+    };
+  });
 } else {
   script.src = "$igop.js";
 }
@@ -71,6 +85,11 @@ function handleGlobalError(event) {
 window.addEventListener("error", handleGlobalError);
 
 async function loadWasm() {
+  // Ensure wasm_exec_rt.js is loaded before proceeding.
+  if (!wasmExecRtLoaded) {
+      await wasmExecRtLoadPromise;
+  }
+
   const go = new Go();
   currentGoInstance = go;
   let mod, inst;
