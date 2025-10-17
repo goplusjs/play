@@ -4,11 +4,11 @@ go 1.24
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/goplus/gogen v1.19.0
-	github.com/goplus/ixgo v0.52.0
+	github.com/goplus/gogen v1.19.5
+	github.com/goplus/ixgo v0.56.0
 	github.com/goplus/mcp v0.9.5
-	github.com/goplus/reflectx v1.4.2
-	github.com/goplus/xgo v1.5.0
+	github.com/goplus/reflectx v1.4.3
+	github.com/goplus/xgo v1.5.2
 	github.com/mark3labs/mcp-go v0.29.0
 	github.com/qiniu/x v1.15.1
 	github.com/yosida95/uritemplate/v3 v3.0.2

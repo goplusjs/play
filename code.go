@@ -15,7 +15,8 @@ import (
 	"github.com/goplus/gogen"
 	"github.com/goplus/ixgo"
 	"github.com/goplus/ixgo/xgobuild"
-	_ "github.com/goplus/reflectx/icall/icall4096"
+
+	_ "github.com/goplus/reflectx/icall/icall1024"
 	gopformat "github.com/goplus/xgo/format"
 	"github.com/goplusjs/play/txtar"
 	"golang.org/x/mod/modfile"
