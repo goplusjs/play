@@ -3,11 +3,6 @@
 package stdio
 
 import (
-	q "github.com/goplus/mcp/server/stdio"
-
-	"go/constant"
-	"reflect"
-
 	"github.com/goplus/ixgo"
 )
 
@@ -20,16 +15,8 @@ func init() {
 			"github.com/mark3labs/mcp-go/server": "server",
 			"log":                                "log",
 		},
-		Interfaces: map[string]reflect.Type{},
-		NamedTypes: map[string]reflect.Type{},
-		AliasTypes: map[string]reflect.Type{},
-		Vars:       map[string]reflect.Value{},
-		Funcs: map[string]reflect.Value{
-			"ListenAndServe": reflect.ValueOf(q.ListenAndServe),
-		},
-		TypedConsts: map[string]ixgo.TypedConst{},
-		UntypedConsts: map[string]ixgo.UntypedConst{
-			"Scheme": {"untyped string", constant.MakeString(string(q.Scheme))},
-		},
+		Source: source,
 	})
 }
+
+var source = "package stdio\n\nimport (\n\t\"log\"\n\t\"github.com/goplus/mcp/server/svx\"\n\t\"github.com/mark3labs/mcp-go/server\"\n)\n\nconst (\n\tScheme = \"stdio\"\n)\n\nfunc init() {\n\tsvx.Register(Scheme, ListenAndServe)\n}\n\nfunc ListenAndServe(addr string, svr *server.MCPServer) error {\n\tlog.Println(\"Serving MCP server with stdio ...\")\n\treturn server.ServeStdio(svr)\n}\n"
