@@ -932,6 +932,22 @@ func index[E comparable](s []E, v E) int {
 }
 `)
 	break;
+	case "tupletype.txt":
+		setBody(`type Point (x, y int)
+
+pt := Point(2, 3)
+echo pt.x, pt.y
+
+pt = (100, 200)
+echo pt
+
+pt2 := Point(pt)
+echo pt2
+
+pt3 := Point(y = 5, x = 3)
+echo pt3.x, pt3.y
+`)
+	break;
 	case "mcptest.txt":
 		setBody(`// https://github.com/goplus/mcp
 -- main_mcp.gox --

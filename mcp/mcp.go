@@ -1,7 +1,7 @@
 package mcp
 
-//go:generate qexp -outdir . github.com/goplus/mcp/...
-//go:generate qexp -outdir . -code github.com/qiniu/x/test
+//go:generate qexp -outdir . -code github.com/goplus/mcp/...
+//go:generate qexp -outdir . github.com/qiniu/x/test
 //go:generate qexp -outdir . github.com/mark3labs/mcp-go/...
 //go:generate qexp -outdir . github.com/qiniu/x/stringutil
 //go:generate qexp -outdir . github.com/yosida95/uritemplate/v3
