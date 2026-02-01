@@ -26,7 +26,7 @@ window.goWriteSync = function (text) {
 
 var script = document.createElement("script");
 if (useWasm) {
-  script.src = "./wasm_exec_rt.js";
+  script.src = "https://play-static.gopluscdn.com/wasm_exec_rt.js";
 
   // Create a promise to track wasm_exec_rt.js loading.
   wasmExecRtLoadPromise = new Promise((resolve, reject) => {
@@ -93,7 +93,7 @@ async function loadWasm() {
   const go = new Go();
   currentGoInstance = go;
   let mod, inst;
-  WebAssembly.instantiateStreaming(fetch("./ixgo_53b91d10.wasm"), go.importObject).then(
+  WebAssembly.instantiateStreaming(fetch("https://play-static.gopluscdn.com/ixgo_53b91d10.wasm"), go.importObject).then(
     (result) => {
       mod = result.module;
       inst = result.instance;
