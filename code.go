@@ -5,21 +5,21 @@ import (
 	"fmt"
 	"go/ast"
 	"go/format"
-	"path"
 	"path/filepath"
 	"strings"
 	"syscall/js"
 
-	"github.com/goplus/reflectx"
+	"github.com/goplus/ixgo/fsys"
+	"github.com/goplus/ixgo/fsys/xgofsys"
 
 	"github.com/goplus/gogen"
 	"github.com/goplus/ixgo"
 	"github.com/goplus/ixgo/xgobuild"
+	"github.com/goplus/reflectx"
 
+	"github.com/goplus/ixgo/fsys/txtar"
 	_ "github.com/goplus/reflectx/icall/icall1024"
 	gopformat "github.com/goplus/xgo/format"
-	"github.com/goplusjs/play/txtar"
-	"golang.org/x/mod/modfile"
 )
 
 func clearCanvas() {
@@ -36,12 +36,8 @@ type Context struct {
 
 func NewContext(mode ixgo.Mode) *Context {
 	ctx := ixgo.NewContext(mode)
-	console := js.Global().Get("console")
-	ctx.Lookup = func(root, path string) (dir string, found bool) {
-		console.Call("log", "not found package", path)
-		return "", false
-	}
-	return &Context{ctx: ctx}
+	c := &Context{ctx: ctx}
+	return c
 }
 
 var (
@@ -61,15 +57,13 @@ func progName(goplus bool) string {
 
 func (c *Context) buildGop(ar *txtar.FileSet) error {
 	var hasGop bool
-	fs, err := txtar.FS(ar, func(file string) bool {
+	fs, err := txtar.FileSystem(ar, func(file string) bool {
 		switch filepath.Ext(file) {
 		case ".go":
-			return true
 		case ".gop", ".gox", ".gsh", ".xgo":
 			hasGop = true
-			return true
 		}
-		return false
+		return true
 	})
 	if err != nil {
 		return err
@@ -83,6 +77,10 @@ func (c *Context) buildGop(ar *txtar.FileSet) error {
 		}
 	}()
 	bp := xgobuild.NewContext(c.ctx)
+	err = xgofsys.SetBuildFileSystem(c.ctx, bp, fs, true)
+	if err != nil {
+		return err
+	}
 	pkg, err := bp.ParseFSDir(fs, ".")
 	if err != nil {
 		return err
@@ -106,7 +104,6 @@ func (c *Context) buildGop(ar *txtar.FileSet) error {
 
 func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, emsg string) {
 	reflectx.ResetAll()
-	ctx := c.ctx
 	defer func() {
 		err := recover()
 		if err != nil {
@@ -117,6 +114,10 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 	if err != nil {
 		return 2, err, ""
 	}
+	if ar.Contains("go.mod") {
+		c.ctx = ixgo.NewContext(ixgo.SupportMultipleInterp)
+	}
+	ctx := c.ctx
 	if enableGoplus {
 		err := c.buildGop(ar)
 		if err != nil {
@@ -124,7 +125,7 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 		}
 	}
 	var test bool
-	fsys, err := txtar.FS(ar, func(file string) bool {
+	tfs, err := txtar.FileSystem(ar, func(file string) bool {
 		if filepath.Ext(file) == ".go" {
 			if strings.HasSuffix(file, "_test.go") {
 				test = true
@@ -136,13 +137,9 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 	if err != nil {
 		return 2, err, ""
 	}
-	pkg, err := ctx.LoadFileSystem(fsys, test, func(pkgName string, dir string) (string, bool) {
-		if ar.Contains("go.mod") {
-			if f, err := modfile.Parse("go.mod", ar.M["go.mod"], nil); err == nil {
-				return path.Join(f.Module.Mod.Path, dir, pkgName), true
-			}
-		}
-		return "main", true
+	fsys.SetBuildFileSystem(ctx, tfs, true)
+	pkg, err := ctx.LoadDirEx(".", test, func(pkgName string, dir string) (string, bool) {
+		return pkgName, true
 	})
 	if err != nil {
 		return 2, err, ""

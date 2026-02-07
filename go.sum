@@ -83,8 +83,8 @@ github.com/gopherjs/gopherjs v0.0.0-20210803090616-8f023c250c89 h1:cuZTXJQ2J5mpT
 github.com/gopherjs/gopherjs v0.0.0-20210803090616-8f023c250c89/go.mod h1:0RnbP5ioI0nqRf3R9iK3iQaUJgsn0htlZEHCMn8FSfw=
 github.com/goplus/gogen v1.20.8 h1:ENpppvJESrI2JYe3hdHX1vpKEEh6cLw1Ts5DQ1juNM0=
 github.com/goplus/gogen v1.20.8/go.mod h1:87ZJD1mdljXx2pkvBrMGynGUz6m08brj9p6xhb5aq2Y=
-github.com/goplus/ixgo v0.61.0 h1:mJtCRLpkZ/wgDIc+FCi/geNnllkZwep+AUVttyhZwAY=
-github.com/goplus/ixgo v0.61.0/go.mod h1:T15sC7HRVpZw1bTTE0/JTySsZ840AGMZ071sRhKKM0w=
+github.com/goplus/ixgo v0.62.0 h1:TmqKfcdclZwTv3pcTC1Bhx+LLC7oCeQYNF8kZjYcFtY=
+github.com/goplus/ixgo v0.62.0/go.mod h1:T15sC7HRVpZw1bTTE0/JTySsZ840AGMZ071sRhKKM0w=
 github.com/goplus/mcp v0.9.6 h1:E4IBTQWCK7Xid6m5q0CHaSqZSapv4JXXoD2gtjz16MM=
 github.com/goplus/mcp v0.9.6/go.mod h1:c4x7mtueRA465GhxpcE67x2LMYvEwyCtCZHXOOlSxjw=
 github.com/goplus/mod v0.19.0 h1:VwTawpScUFXozTEhtA4WsdhG/5pa12gJeAK4EGOgM/I=
