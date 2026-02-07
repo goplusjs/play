@@ -948,6 +948,34 @@ pt3 := Point(y = 5, x = 3)
 echo pt3.x, pt3.y
 `)
 	break;
+	case "module.txt":
+	setBody(`import (
+	"play.ground/foo"
+)
+
+echo "xgo"
+foo.Bar()
+-- go.mod --
+module play.ground
+-- foo/foo.xgo --
+package foo
+
+import "fmt"
+import "play.ground/foo/bar"
+
+func Bar() {
+	bar.Demo()
+	echo "this is a foo!"
+}
+-- foo/bar/bar.go --
+package bar
+import "fmt"
+
+func Demo() {
+	fmt.Println("this is a bar!")
+}
+`)
+	break;
 	case "mcptest.txt":
 		setBody(`// https://github.com/goplus/mcp
 -- main_mcp.gox --
