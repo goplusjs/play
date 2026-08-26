@@ -44,20 +44,20 @@ const remoteHost = "https://seplay.xgo.dev";
 
 const waitMsg = "Wating for remote server...";
 
-var bIgopInit = false;
+var bIxgoInit = false;
 
-function hasIgop() {
-  if (bIgopInit && isIgopLoaded()) {
+function hasIxgo() {
+  if (bIxgoInit && isIxgoLoaded()) {
     return true;
   }
   if (typeof gop_ajax === "function") {
-    bIgopInit = true;
+    bIxgoInit = true;
   }
-  return bIgopInit;
+  return bIxgoInit;
 }
 
 function js_ajax(wasm, url, options) {
-  if (wasm && hasIgop()) {
+  if (wasm && hasIxgo()) {
     gop_ajax(url, options);
   } else {
     console.log("pass on " + remoteHost);
@@ -542,14 +542,14 @@ echo "Hello, 世界"
       wait = true;
       lineClear();
       if (running) running.Kill();
-      if (!hasIgop()) {
+      if (!hasIxgo()) {
         output.removeClass("error").text(waitMsg);
       } else {
         output.removeClass("error").text("");
       }
     }
     let playout = highlightOutput(PlaygroundOutput(output[0]));
-    setIgopOverflowCallback(function (event) {
+    setIxgoOverflowCallback(function (event) {
       gop_ajax = undefined;
       if (running) running.Kill();
       let s =
@@ -570,7 +570,7 @@ echo "Hello, 世界"
         return;
       }
       loading();
-      //if (!hasIgop()) {
+      //if (!hasIxgo()) {
       running = transport.Run(
         code,
         highlightOutput(PlaygroundOutput(output[0])),

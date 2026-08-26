@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -27,7 +28,7 @@ func main() {
 
 	gop, err := getModule("github.com/goplus/xgo")
 	check(err)
-	igop, _ := getModule("github.com/goplus/ixgo")
+	ixgo, err := getModule("github.com/goplus/ixgo")
 	check(err)
 
 	domain := *flagDomain
@@ -47,14 +48,15 @@ func main() {
 	data, err := ioutil.ReadFile("./index_tpl.html")
 	check(err)
 	// data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
-	// data = bytes.Replace(data, []byte("$iGopVersion"), []byte(igop.Version), 1)
-	// data = bytes.Replace(data, []byte("goplus-play.js"), []byte("igop_"+tag+".js"), 1)
+	// data = bytes.Replace(data, []byte("$ixgoVersion"), []byte(ixgo.Version), 1)
+	// data = bytes.Replace(data, []byte("goplus-play.js"), []byte("ixgo_"+tag+".js"), 1)
 	// err = ioutil.WriteFile("./docs/index.html", data, 0755)
 
 	data = bytes.Replace(data, []byte("$loader.js"), []byte("loader_"+tag+".js"), 1)
 	data = bytes.Replace(data, []byte("$playground.js"), []byte("playground_"+tag+".js"), 1)
 	data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
-	data = bytes.Replace(data, []byte("$iGopVersion"), []byte(igop.Version), 1)
+	data = bytes.Replace(data, []byte("$ixgoVersion"), []byte(ixgo.Version), 1)
+	data = bytes.Replace(data, []byte("$GoVersion"), []byte("Go "+goVersion()), 1)
 	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
 	if !*flagBuildOnly {
 		err = ioutil.WriteFile("./docs/index.html", data, 0644)
@@ -64,7 +66,7 @@ func main() {
 	data, err = ioutil.ReadFile("./loader_tpl.js")
 	check(err)
 
-	data = bytes.Replace(data, []byte("$igop"), []byte("ixgo_"+tag), 2)
+	data = bytes.Replace(data, []byte("$ixgo"), []byte("ixgo_"+tag), 2)
 	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
 	err = ioutil.WriteFile("./docs/loader_"+tag+".js", data, 0755)
 	check(err)
@@ -80,6 +82,14 @@ func main() {
 	err = build_wasm("./docs", "ixgo_"+tag)
 	//err = build_wasm_min("./docs", "ixgo_"+tag)
 	check(err)
+}
+
+func goVersion() string {
+	version := runtime.Version()
+	if len(version) > 2 && version[:2] == "go" {
+		return version[2:]
+	}
+	return version
 }
 
 func check(err error) {
@@ -103,8 +113,8 @@ func getHash() (string, error) {
 	// return cmd.Output()
 }
 
-// GOARCH=wasm GOOS=js go build -o igop.wasm
-// gopherjs build -v -m -o igop.js
+// GOARCH=wasm GOOS=js go build -o ixgo.wasm
+// gopherjs build -v -m -o ixgo.js
 
 func build_js(dir, tag string) error {
 	cmd := exec.Command("gopherjs", "build", "-a", "-v", "-m", "-o", filepath.Join(dir, tag+".js"))
@@ -139,11 +149,12 @@ type Module struct {
 	Time      time.Time
 	Dir       string
 	GoMod     string
-	GoVerison string
+	GoVersion string
 }
 
 func getModule(path string) (*Module, error) {
 	cmd := exec.Command("go", "list", "-m", "-json", path)
+	cmd.Env = append(os.Environ(), "GOWORK=off")
 	data, err := cmd.Output()
 	if err != nil {
 		return nil, err
@@ -153,5 +164,20 @@ func getModule(path string) (*Module, error) {
 	if err != nil {
 		return nil, err
 	}
+	if m.Version == "" {
+		m.Version = getLocalModuleVersion(m.Dir)
+	}
 	return &m, err
+}
+
+func getLocalModuleVersion(dir string) string {
+	if dir != "" {
+		cmd := exec.Command("git", "-C", dir, "describe", "--tags", "--always", "--dirty")
+		if data, err := cmd.Output(); err == nil {
+			if version := string(bytes.TrimSpace(data)); version != "" {
+				return version
+			}
+		}
+	}
+	return "(devel)"
 }

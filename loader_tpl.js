@@ -12,11 +12,11 @@ let wasmOverflowCallback;
 let wasmExecRtLoaded = false;
 let wasmExecRtLoadPromise = null;
 
-window.setIgopOverflowCallback = function (callback) {
+window.setIxgoOverflowCallback = function (callback) {
   wasmOverflowCallback = callback;
 };
 
-window.isIgopLoaded = function () {
+window.isIxgoLoaded = function () {
   return isWasmLoaded;
 };
 
@@ -44,7 +44,7 @@ if (useWasm) {
       //        const go = new Go();
       //        currentGoInstance = go;
       //        let mod, inst;
-      //        WebAssembly.instantiateStreaming(fetch("igop_1dd7d1c3.wasm"), go.importObject).then((result) => {
+      //        WebAssembly.instantiateStreaming(fetch("ixgo_1dd7d1c3.wasm"), go.importObject).then((result) => {
       //            mod = result.module;
       //            inst = result.instance;
       //            isWasmLoaded = true;
@@ -62,7 +62,7 @@ if (useWasm) {
     };
   });
 } else {
-  script.src = "$igop.js";
+  script.src = "$ixgo.js";
 }
 document.head.appendChild(script);
 
@@ -93,7 +93,7 @@ async function loadWasm() {
   const go = new Go();
   currentGoInstance = go;
   let mod, inst;
-  WebAssembly.instantiateStreaming(fetch("$domain/$igop.wasm"), go.importObject).then(
+  WebAssembly.instantiateStreaming(fetch("$domain/$ixgo.wasm"), go.importObject).then(
     (result) => {
       mod = result.module;
       inst = result.instance;

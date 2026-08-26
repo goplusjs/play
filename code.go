@@ -151,7 +151,7 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 		err = ctx.TestPkg(pkg, "main", []string{"-test.v"})
 		return
 	}
-	// interp, err := igop.NewInterp(ctx, pkg)
+	// interp, err := ixgo.NewInterp(ctx, pkg)
 	// if err != nil {
 	// 	return 2, err, ""
 	// }
@@ -172,6 +172,11 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 	return
 }
 
+func isclass(fname string) (autoLambdas map[string]int, isProj, ok bool) {
+	ok = true
+	return
+}
+
 func formatCode(src []byte, enableGoplus bool) ([]byte, error) {
 	ar, err := txtar.SplitFiles(src, progName(enableGoplus))
 	if err != nil {
@@ -184,16 +189,16 @@ func formatCode(src []byte, enableGoplus bool) ([]byte, error) {
 		case ".go":
 			data, err = format.Source(ar.M[file])
 		case ".gop", ".xgo":
-			data, err = xformat.XGoStyleSource(ar.M[file], false, file)
+			data, err = xformat.XGoStyleSource(ar.M[file], nil, file)
 			//gopformat.Source(ar.M[file], false, file)
 		case ".gox":
-			data, err = xformat.XGoStyleSource(ar.M[file], true, file)
+			data, err = xformat.XGoStyleSource(ar.M[file], isclass, file)
 			//data, err = gopformat.Source(ar.M[file], true, file)
 		default:
 			if _, ok := xgobuild.ClassKind(file); !ok {
 				continue
 			}
-			data, err = xformat.XGoStyleSource(ar.M[file], true, file)
+			data, err = xformat.XGoStyleSource(ar.M[file], isclass, file)
 			//data, err = gopformat.Source(ar.M[file], true, file)
 		}
 		if err != nil {
