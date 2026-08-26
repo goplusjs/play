@@ -126,7 +126,7 @@ func build_js(dir, tag string) error {
 }
 
 func build_wasm(dir, tag string) error {
-	cmd := exec.Command("go", "build", "-ldflags", "-checklinkname=0", "-o", filepath.Join(dir, tag+".wasm"))
+	cmd := exec.Command("go", "build", "-o", filepath.Join(dir, tag+".wasm"))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	env := os.Environ()
@@ -135,7 +135,7 @@ func build_wasm(dir, tag string) error {
 }
 
 func build_wasm_min(dir, tag string) error {
-	cmd := exec.Command("go", "build", "-ldflags", "-checklinkname=0 -s -w", "-trimpath", "-o", filepath.Join(dir, tag+"_min.wasm"))
+	cmd := exec.Command("go", "build", "-ldflags", "-s -w", "-trimpath", "-o", filepath.Join(dir, tag+"_min.wasm"))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	env := os.Environ()
