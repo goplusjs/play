@@ -1,0 +1,9 @@
+var (
+	x int
+	y int
+)
+
+func Move(dx,dy int) {
+	x += dx
+	y += dy
+}

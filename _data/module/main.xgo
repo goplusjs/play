@@ -1,0 +1,6 @@
+import (
+	"play.ground/foo"
+)
+
+echo "xgo"
+foo.Bar()

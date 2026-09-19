@@ -1,3 +1,5 @@
+//go:build js
+
 package main
 
 import (
@@ -5,6 +7,13 @@ import (
 
 	"github.com/goplus/ixgo"
 )
+
+func clearCanvas() {
+	document := js.Global().Get("document")
+	canvas := document.Call("getElementById", "canvas")
+	canvas.Set("width", 0)
+	canvas.Set("height", 0)
+}
 
 func main() {
 	ctx := NewContext(ixgo.SupportMultipleInterp | ixgo.OptionLoadRutimeImethod)
@@ -14,6 +23,7 @@ func main() {
 			source := args[1].Get("data").Get("body").String()
 			enableGop := args[1].Get("data").Get("goplus").Bool()
 			go func(arg js.Value) {
+				clearCanvas()
 				code, err, emsg := ctx.runCode(source, enableGop)
 				v := js.Global().Get("Object").New()
 				v.Set("IsKeep", true)

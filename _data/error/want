@@ -1,0 +1,8 @@
+123
+0 strconv.Atoi: parsing "abc": invalid syntax
+
+===> errors stack:
+main.add()
+	main.xgo:6 strconv.atoi(y)
+
+10

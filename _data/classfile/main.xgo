@@ -1,0 +1,3 @@
+pt := &point{3, 4}
+pt.move 1,2
+echo pt

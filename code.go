@@ -7,7 +7,6 @@ import (
 	"go/format"
 	"path/filepath"
 	"strings"
-	"syscall/js"
 
 	"github.com/goplus/ixgo/fsys"
 	"github.com/goplus/ixgo/fsys/xgofsys"
@@ -18,36 +17,28 @@ import (
 	"github.com/goplus/reflectx"
 
 	"github.com/goplus/ixgo/fsys/txtar"
-	_ "github.com/goplus/reflectx/icall/icall1024"
 
 	//gopformat "github.com/goplus/xgo/format"
 	xformat "github.com/goplus/xgo/x/format"
 )
 
-func clearCanvas() {
-	document := js.Global().Get("document")
-	canvas := document.Call("getElementById", "canvas")
-	canvas.Set("width", 0)
-	canvas.Set("height", 0)
-}
-
 type Context struct {
 	ctx    *ixgo.Context
+	mode   ixgo.Mode
 	cancel func()
 }
 
 func NewContext(mode ixgo.Mode) *Context {
-	ctx := ixgo.NewContext(mode)
-	c := &Context{ctx: ctx}
+	c := &Context{mode: mode}
+	c.resetCtx()
 	return c
 }
 
-var (
-	console = js.Global().Get("console").Get("log")
-)
-
-func dump(args ...interface{}) {
-	console.Invoke(fmt.Sprint(args...))
+func (c *Context) resetCtx() {
+	c.ctx = ixgo.NewContext(c.mode)
+	// mcp mtest imports "testing". Load the registered package before
+	// BuildContext is swapped to the txtar overlay.
+	_, _ = c.ctx.Loader.Import("testing")
 }
 
 func progName(goplus bool) string {
@@ -89,6 +80,10 @@ func (c *Context) buildGop(ar *txtar.FileSet) error {
 	}
 	var errors []error
 	pkg.ForEachFile(func(pkg *gogen.Package, name string) {
+		// "_" names are gogen-internal; keep "_test", skip overlays such as "_skip".
+		if strings.HasPrefix(name, "_") && name != "_test" {
+			return
+		}
 		fname := pkg.Types.Name() + "_gop_autogen" + name + ".go"
 		var buf bytes.Buffer
 		err := pkg.WriteTo(&buf, name)
@@ -112,12 +107,10 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 			e = fmt.Errorf("[PANIC] %v", err)
 		}
 	}()
+	c.resetCtx()
 	ar, err := txtar.SplitFiles([]byte(src), progName(enableGoplus))
 	if err != nil {
 		return 2, err, ""
-	}
-	if ar.Contains("go.mod") {
-		c.ctx = ixgo.NewContext(ixgo.SupportMultipleInterp)
 	}
 	ctx := c.ctx
 	if enableGoplus {
@@ -146,9 +139,8 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 	if err != nil {
 		return 2, err, ""
 	}
-	clearCanvas()
 	if test {
-		err = ctx.TestPkg(pkg, "main", []string{"-test.v"})
+		e = ctx.TestPkg(pkg, "main", []string{"-test.v"})
 		return
 	}
 	// interp, err := ixgo.NewInterp(ctx, pkg)

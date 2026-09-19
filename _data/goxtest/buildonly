@@ -1,0 +1,1 @@
+gox tests share host go test -test.run flags; only check buildGop
