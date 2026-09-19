@@ -10,6 +10,7 @@ package mcp
 import (
 	_ "github.com/goplus/mcp/server"
 
+	_ "github.com/goplus/ixgo/pkg/net/http/httptest"
 	"github.com/goplus/ixgo/xgobuild"
 
 	_ "github.com/goplusjs/play/mcp/github.com/qiniu/x/test"

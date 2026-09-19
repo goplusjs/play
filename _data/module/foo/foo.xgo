@@ -1,0 +1,9 @@
+package foo
+
+import "fmt"
+import "play.ground/foo/bar"
+
+func Bar() {
+	bar.Demo()
+	echo "this is a foo!"
+}

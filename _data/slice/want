@@ -1,0 +1,9 @@
+[1 2 3.4]
+[1 2 3.4]
+[]float64{1, 3.4} []float64
+[]int{1} []int
+[]interface {}{(1+2i), "xsw"} []interface {}
+[]complex128{(1+0i), (3.4+0i), (3+4i)} []complex128
+[]complex128{(5+6i)} []complex128
+[]interface {}{"xsw", 3} []interface {}
+[]interface {}{} []interface {}

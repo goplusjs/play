@@ -1,0 +1,13 @@
+a := [1, 3, 5, 7, 11]
+b := [x*x for x <- a if x > 3]
+echo b // output: [25 49 121]
+
+mapData := {"Hi": 1, "Hello": 2, "XGo": 3}
+reversedMap := {v: k for k, v <- mapData}
+echo reversedMap // output: map[1:Hi 2:Hello 3:XGo]
+
+sum := 0
+for x <- [1, 3, 5, 7, 11, 13, 17] if x > 3 {
+	sum += x
+}
+echo sum

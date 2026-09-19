@@ -1,0 +1,7 @@
+fields := [
+	"engineering",
+	"STEM education",
+	"and data science",
+]
+
+echo "The XGo language for", fields.join(", ")
