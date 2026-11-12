@@ -19,21 +19,29 @@ import (
 
 var (
 	flagBuildOnly = flag.Bool("buildonly", false, "build only, no write index.html")
-	flagDomain    = flag.String("domain", ".", "set domain")
+	flagDomain    = flag.String("domain", "https://play-static.gopluscdn.com", "CDN origin; local fallback is always .")
 	flagHash      = flag.String("hash", "", "set js tag hash name")
+	flagLLGo      = flag.Bool("llgo", false, "build for LLGo")
+)
+
+var (
+	gobin = "go"
 )
 
 func main() {
 	flag.Parse()
+	if *flagLLGo {
+		gobin = "llgo"
+	}
 
 	gop, err := getModule("github.com/goplus/xgo")
 	check(err)
 	ixgo, err := getModule("github.com/goplus/ixgo")
 	check(err)
 
-	domain := *flagDomain
-	if domain == "" {
-		domain = "."
+	cdn := *flagDomain
+	if cdn == "" {
+		cdn = "https://play-static.gopluscdn.com"
 	}
 	tag := *flagHash
 	if tag == "" {
@@ -52,12 +60,12 @@ func main() {
 	// data = bytes.Replace(data, []byte("goplus-play.js"), []byte("ixgo_"+tag+".js"), 1)
 	// err = ioutil.WriteFile("./docs/index.html", data, 0755)
 
-	data = bytes.Replace(data, []byte("$loader.js"), []byte("loader_"+tag+".js"), 1)
-	data = bytes.Replace(data, []byte("$playground.js"), []byte("playground_"+tag+".js"), 1)
+	data = bytes.Replace(data, []byte("$loader.js"), []byte("loader_"+tag+".js"), -1)
+	data = bytes.Replace(data, []byte("$playground.js"), []byte("playground_"+tag+".js"), -1)
 	data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
 	data = bytes.Replace(data, []byte("$ixgoVersion"), []byte(ixgo.Version), 1)
-	data = bytes.Replace(data, []byte("$GoVersion"), []byte("Go "+goVersion()), 1)
-	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
+	data = bytes.Replace(data, []byte("$GoVersion"), []byte(toolchainVersion()), 1)
+	data = bytes.Replace(data, []byte("$cdn"), []byte(cdn), -1)
 	if !*flagBuildOnly {
 		err = ioutil.WriteFile("./docs/index.html", data, 0644)
 	}
@@ -66,8 +74,7 @@ func main() {
 	data, err = ioutil.ReadFile("./loader_tpl.js")
 	check(err)
 
-	data = bytes.Replace(data, []byte("$ixgo"), []byte("ixgo_"+tag), 2)
-	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
+	data = bytes.Replace(data, []byte("$ixgo"), []byte("ixgo_"+tag), -1)
 	err = ioutil.WriteFile("./docs/loader_"+tag+".js", data, 0755)
 	check(err)
 
@@ -92,10 +99,28 @@ func goVersion() string {
 	return version
 }
 
+func toolchainVersion() string {
+	v := "Go " + goVersion()
+	if *flagLLGo {
+		v += " / LLGo"
+	}
+	return v
+}
+
 func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func buildID() string {
+	if *flagLLGo {
+		return "llgo"
+	}
+	if flags := os.Getenv("GOFLAGS"); flags != "" {
+		return flags
+	}
+	return "go"
 }
 
 func getHash() (string, error) {
@@ -108,6 +133,8 @@ func getHash() (string, error) {
 		}
 		h.Write(data)
 	}
+	h.Write([]byte{0})
+	h.Write([]byte(buildID()))
 	return fmt.Sprintf("%x", h.Sum(nil)[:4]), nil
 	// cmd := exec.Command("git", "describe", "--tag")
 	// return cmd.Output()
@@ -126,7 +153,18 @@ func build_js(dir, tag string) error {
 }
 
 func build_wasm(dir, tag string) error {
-	cmd := exec.Command("go", "build", "-o", filepath.Join(dir, tag+".wasm"))
+	var args []string
+	args = append(args, "build")
+	if *flagLLGo {
+		// -goroutine-stack-size=8MB
+		//-ldflags='-sSTACK_SIZE=8MB'
+		args = append(args, "-tags", "llgo.wasm.reflect.libffi")
+		args = append(args, "-ldflags", "-sSTACK_SIZE=8MB")
+		args = append(args, "-goroutine-stack-size", "8MB")
+		args = append(args, "-pclntab", "none", "-ldflags", "-s -w") //, "-lto", "full")
+	}
+	args = append(args, "-o", filepath.Join(dir, tag+".wasm"))
+	cmd := exec.Command(gobin, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	env := os.Environ()
@@ -135,7 +173,7 @@ func build_wasm(dir, tag string) error {
 }
 
 func build_wasm_min(dir, tag string) error {
-	cmd := exec.Command("go", "build", "-ldflags", "-s -w", "-trimpath", "-o", filepath.Join(dir, tag+"_min.wasm"))
+	cmd := exec.Command(gobin, "build", "-ldflags", "-s -w", "-trimpath", "-o", filepath.Join(dir, tag+"_min.wasm"))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	env := os.Environ()

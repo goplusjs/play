@@ -4,11 +4,11 @@ go 1.25.0
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/goplus/gogen v1.24.1
-	github.com/goplus/ixgo v1.2.1
+	github.com/goplus/gogen v1.24.7
+	github.com/goplus/ixgo v1.2.6
 	github.com/goplus/mcp v0.9.6
-	github.com/goplus/reflectx v1.8.2
-	github.com/goplus/xgo v1.7.6-0.20260914223547-753850a9f7e9
+	github.com/goplus/reflectx v1.8.3
+	github.com/goplus/xgo v1.7.6-0.20260925200949-51a44c58fd65
 	github.com/mark3labs/mcp-go v0.43.2
 	github.com/qiniu/x v1.18.3
 	github.com/yosida95/uritemplate/v3 v3.0.2
