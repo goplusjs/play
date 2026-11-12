@@ -19,7 +19,7 @@ import (
 
 var (
 	flagBuildOnly = flag.Bool("buildonly", false, "build only, no write index.html")
-	flagDomain    = flag.String("domain", ".", "set domain")
+	flagDomain    = flag.String("domain", "https://play-static.gopluscdn.com", "CDN origin; local fallback is always .")
 	flagHash      = flag.String("hash", "", "set js tag hash name")
 	flagLLGo      = flag.Bool("llgo", false, "build for LLGo")
 )
@@ -39,9 +39,9 @@ func main() {
 	ixgo, err := getModule("github.com/goplus/ixgo")
 	check(err)
 
-	domain := *flagDomain
-	if domain == "" {
-		domain = "."
+	cdn := *flagDomain
+	if cdn == "" {
+		cdn = "https://play-static.gopluscdn.com"
 	}
 	tag := *flagHash
 	if tag == "" {
@@ -60,12 +60,12 @@ func main() {
 	// data = bytes.Replace(data, []byte("goplus-play.js"), []byte("ixgo_"+tag+".js"), 1)
 	// err = ioutil.WriteFile("./docs/index.html", data, 0755)
 
-	data = bytes.Replace(data, []byte("$loader.js"), []byte("loader_"+tag+".js"), 1)
-	data = bytes.Replace(data, []byte("$playground.js"), []byte("playground_"+tag+".js"), 1)
+	data = bytes.Replace(data, []byte("$loader.js"), []byte("loader_"+tag+".js"), -1)
+	data = bytes.Replace(data, []byte("$playground.js"), []byte("playground_"+tag+".js"), -1)
 	data = bytes.Replace(data, []byte("$GopVersion"), []byte(gop.Version), 1)
 	data = bytes.Replace(data, []byte("$ixgoVersion"), []byte(ixgo.Version), 1)
-	data = bytes.Replace(data, []byte("$GoVersion"), []byte("Go "+goVersion()), 1)
-	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
+	data = bytes.Replace(data, []byte("$GoVersion"), []byte(toolchainVersion()), 1)
+	data = bytes.Replace(data, []byte("$cdn"), []byte(cdn), -1)
 	if !*flagBuildOnly {
 		err = ioutil.WriteFile("./docs/index.html", data, 0644)
 	}
@@ -74,8 +74,7 @@ func main() {
 	data, err = ioutil.ReadFile("./loader_tpl.js")
 	check(err)
 
-	data = bytes.Replace(data, []byte("$ixgo"), []byte("ixgo_"+tag), 2)
-	data = bytes.Replace(data, []byte("$domain"), []byte(domain), -1)
+	data = bytes.Replace(data, []byte("$ixgo"), []byte("ixgo_"+tag), -1)
 	err = ioutil.WriteFile("./docs/loader_"+tag+".js", data, 0755)
 	check(err)
 
@@ -100,10 +99,28 @@ func goVersion() string {
 	return version
 }
 
+func toolchainVersion() string {
+	v := "Go " + goVersion()
+	if *flagLLGo {
+		v += " / LLGo"
+	}
+	return v
+}
+
 func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func buildID() string {
+	if *flagLLGo {
+		return "llgo"
+	}
+	if flags := os.Getenv("GOFLAGS"); flags != "" {
+		return flags
+	}
+	return "go"
 }
 
 func getHash() (string, error) {
@@ -116,6 +133,8 @@ func getHash() (string, error) {
 		}
 		h.Write(data)
 	}
+	h.Write([]byte{0})
+	h.Write([]byte(buildID()))
 	return fmt.Sprintf("%x", h.Sum(nil)[:4]), nil
 	// cmd := exec.Command("git", "describe", "--tag")
 	// return cmd.Output()

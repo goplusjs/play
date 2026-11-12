@@ -1,6 +1,9 @@
 // Set the default global log for use by wasm_exec.js
 go_log = console.log;
 
+if (!window.__IXGO_LOADER_STARTED__) {
+window.__IXGO_LOADER_STARTED__ = true;
+
 var useWasm = true; //location.href.includes("?wasm");
 
 let isWasmLoaded = false;
@@ -11,6 +14,28 @@ let wasmOverflowCallback;
 // Track wasm_exec.js loading state.
 let wasmExecRtLoaded = false;
 let wasmExecRtLoadPromise = null;
+
+function assetURL(path) {
+  var base = window.__ASSET_BASE__ || ".";
+  if (path.charAt(0) !== "/") {
+    path = "/" + path;
+  }
+  return base + path;
+}
+
+async function fetchAsset(path) {
+  var primary = assetURL(path);
+  try {
+    var resp = await fetch(primary);
+    if (resp.ok) {
+      return resp;
+    }
+  } catch (e) {}
+  if ((window.__ASSET_BASE__ || ".") !== ".") {
+    return fetch("./" + path);
+  }
+  return fetch(primary);
+}
 
 window.setIxgoOverflowCallback = function (callback) {
   wasmOverflowCallback = callback;
@@ -59,46 +84,48 @@ window.goWriteSync = function (text) {
   }
 })();
 
-var script = document.createElement("script");
-if (useWasm) {
-  script.src = "https://play-static.gopluscdn.com/wasm_exec.js";
-
-  wasmExecRtLoadPromise = new Promise((resolve, reject) => {
-    script.onload = function () {
-      // polyfill
-      if (!WebAssembly.instantiateStreaming) {
-        WebAssembly.instantiateStreaming = async (resp, importObject) => {
-          const source = await (await resp).arrayBuffer();
-          return await WebAssembly.instantiate(source, importObject);
-        };
-      }
-      wasmExecRtLoaded = true;
-      resolve();
-      loadWasm();
-      //        const go = new Go();
-      //        currentGoInstance = go;
-      //        let mod, inst;
-      //        WebAssembly.instantiateStreaming(fetch("ixgo_1dd7d1c3.wasm"), go.importObject).then((result) => {
-      //            mod = result.module;
-      //            inst = result.instance;
-      //            isWasmLoaded = true;
-      //            run();
-      //        })
-
-      //        async function run() {
-      //            await go.run(inst);
-      //            inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
-      //        }
-    };
-
+function loadRuntimeScript(src, fallbackSrc) {
+  return new Promise(function (resolve, reject) {
+    var script = document.createElement("script");
+    script.onload = resolve;
     script.onerror = function () {
-      reject(new Error("Failed to load wasm_exec.js"));
+      if (!fallbackSrc || fallbackSrc === src) {
+        reject(new Error("Failed to load wasm_exec.js"));
+        return;
+      }
+      var retry = document.createElement("script");
+      retry.onload = resolve;
+      retry.onerror = function () {
+        reject(new Error("Failed to load wasm_exec.js"));
+      };
+      retry.src = fallbackSrc;
+      document.head.appendChild(retry);
     };
+    script.src = src;
+    document.head.appendChild(script);
+  });
+}
+
+if (useWasm) {
+  wasmExecRtLoadPromise = loadRuntimeScript(
+    assetURL("wasm_exec.js"),
+    "./wasm_exec.js",
+  ).then(function () {
+    // polyfill
+    if (!WebAssembly.instantiateStreaming) {
+      WebAssembly.instantiateStreaming = async (resp, importObject) => {
+        const source = await (await resp).arrayBuffer();
+        return await WebAssembly.instantiate(source, importObject);
+      };
+    }
+    wasmExecRtLoaded = true;
+    loadWasm();
   });
 } else {
-  script.src = "ixgo_ac578da5.js";
+  var script = document.createElement("script");
+  script.src = "ixgo_69b61ed2.js";
+  document.head.appendChild(script);
 }
-document.head.appendChild(script);
 
 function handleGlobalError(event) {
   if (
@@ -127,7 +154,7 @@ async function loadWasm() {
   const go = new Go();
   currentGoInstance = go;
   let mod, inst;
-  WebAssembly.instantiateStreaming(fetch("https://play-static.gopluscdn.com/ixgo_ac578da5.wasm"), go.importObject).then(
+  WebAssembly.instantiateStreaming(fetchAsset("ixgo_69b61ed2.wasm"), go.importObject).then(
     (result) => {
       mod = result.module;
       inst = result.instance;
@@ -152,4 +179,6 @@ async function reloadWasm() {
   }
 
   await loadWasm();
+}
+
 }
