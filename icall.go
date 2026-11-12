@@ -1,4 +1,4 @@
-//go:build !goplus.ifacefuncval
+//go:build !goplus.ifacefuncval && !llgo
 
 package main
 

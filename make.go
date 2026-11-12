@@ -21,10 +21,18 @@ var (
 	flagBuildOnly = flag.Bool("buildonly", false, "build only, no write index.html")
 	flagDomain    = flag.String("domain", ".", "set domain")
 	flagHash      = flag.String("hash", "", "set js tag hash name")
+	flagLLGo      = flag.Bool("llgo", false, "build for LLGo")
+)
+
+var (
+	gobin = "go"
 )
 
 func main() {
 	flag.Parse()
+	if *flagLLGo {
+		gobin = "llgo"
+	}
 
 	gop, err := getModule("github.com/goplus/xgo")
 	check(err)
@@ -126,7 +134,18 @@ func build_js(dir, tag string) error {
 }
 
 func build_wasm(dir, tag string) error {
-	cmd := exec.Command("go", "build", "-o", filepath.Join(dir, tag+".wasm"))
+	var args []string
+	args = append(args, "build")
+	if *flagLLGo {
+		// -goroutine-stack-size=8MB
+		//-ldflags='-sSTACK_SIZE=8MB'
+		args = append(args, "-tags", "llgo.wasm.reflect.libffi")
+		args = append(args, "-ldflags", "-sSTACK_SIZE=8MB")
+		args = append(args, "-goroutine-stack-size", "8MB")
+		args = append(args, "-pclntab", "none", "-ldflags", "-s -w") //, "-lto", "full")
+	}
+	args = append(args, "-o", filepath.Join(dir, tag+".wasm"))
+	cmd := exec.Command(gobin, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	env := os.Environ()
@@ -135,7 +154,7 @@ func build_wasm(dir, tag string) error {
 }
 
 func build_wasm_min(dir, tag string) error {
-	cmd := exec.Command("go", "build", "-ldflags", "-s -w", "-trimpath", "-o", filepath.Join(dir, tag+"_min.wasm"))
+	cmd := exec.Command(gobin, "build", "-ldflags", "-s -w", "-trimpath", "-o", filepath.Join(dir, tag+"_min.wasm"))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	env := os.Environ()

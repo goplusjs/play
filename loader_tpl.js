@@ -8,7 +8,7 @@ let currentGoInstance = null;
 
 let wasmOverflowCallback;
 
-// Track wasm_exec_rt.js loading state.
+// Track wasm_exec.js loading state.
 let wasmExecRtLoaded = false;
 let wasmExecRtLoadPromise = null;
 
@@ -24,11 +24,45 @@ window.goWriteSync = function (text) {
   console.log(text);
 };
 
+// Install fs before wasm_exec.js so Go and LLGo both route output here.
+(() => {
+  const decoder = new TextDecoder("utf-8");
+  const enosys = () => {
+    const err = new Error("not implemented");
+    err.code = "ENOSYS";
+    return err;
+  };
+  if (!globalThis.fs) {
+    globalThis.fs = {
+      constants: { O_WRONLY: -1, O_RDWR: -1, O_CREAT: -1, O_TRUNC: -1, O_APPEND: -1, O_EXCL: -1, O_DIRECTORY: -1 },
+      writeSync(fd, buf) {
+        const text = decoder.decode(buf);
+        if (typeof globalThis.goWriteSync === "function") {
+          globalThis.goWriteSync(text);
+        } else {
+          console.log(text);
+        }
+        return buf.length;
+      },
+      write(fd, buf, offset, length, position, callback) {
+        if (offset !== 0 || length !== buf.length || position !== null) {
+          callback(enosys());
+          return;
+        }
+        callback(null, this.writeSync(fd, buf));
+      },
+      fsync(fd, callback) { callback(null); },
+    };
+    for (const name of ["chmod", "chown", "close", "fchmod", "fchown", "fstat", "ftruncate", "lchown", "link", "lstat", "mkdir", "open", "read", "readdir", "readlink", "rename", "rmdir", "stat", "symlink", "truncate", "unlink", "utimes"]) {
+      globalThis.fs[name] = (...args) => args[args.length - 1](enosys());
+    }
+  }
+})();
+
 var script = document.createElement("script");
 if (useWasm) {
-  script.src = "$domain/wasm_exec_rt.js";
+  script.src = "$domain/wasm_exec.js";
 
-  // Create a promise to track wasm_exec_rt.js loading.
   wasmExecRtLoadPromise = new Promise((resolve, reject) => {
     script.onload = function () {
       // polyfill
@@ -58,7 +92,7 @@ if (useWasm) {
     };
 
     script.onerror = function () {
-      reject(new Error("Failed to load wasm_exec_rt.js"));
+      reject(new Error("Failed to load wasm_exec.js"));
     };
   });
 } else {
@@ -85,7 +119,7 @@ function handleGlobalError(event) {
 window.addEventListener("error", handleGlobalError);
 
 async function loadWasm() {
-  // Ensure wasm_exec_rt.js is loaded before proceeding.
+  // Ensure wasm_exec.js is loaded before proceeding.
   if (!wasmExecRtLoaded) {
       await wasmExecRtLoadPromise;
   }
