@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"io/fs"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -103,6 +104,9 @@ func captureOutput(t *testing.T, fn func()) string {
 	}
 	stdout, stderr := os.Stdout, os.Stderr
 	os.Stdout, os.Stderr = w, w
+	var logBuf bytes.Buffer
+	logPrev := log.Writer()
+	log.SetOutput(io.MultiWriter(w, &logBuf))
 	done := make(chan []byte, 1)
 	go func() {
 		b, _ := io.ReadAll(r)
@@ -111,11 +115,17 @@ func captureOutput(t *testing.T, fn func()) string {
 	defer func() {
 		w.Close()
 		os.Stdout, os.Stderr = stdout, stderr
+		log.SetOutput(logPrev)
 	}()
 	fn()
 	w.Close()
 	os.Stdout, os.Stderr = stdout, stderr
-	return string(<-done)
+	log.SetOutput(logPrev)
+	out := string(<-done)
+	if logBuf.Len() > 0 && !strings.Contains(out, logBuf.String()) {
+		out += logBuf.String()
+	}
+	return out
 }
 
 func TestBuildGopGoOnly(t *testing.T) {
@@ -278,6 +288,9 @@ func TestRunCodeMcptestTwice(t *testing.T) {
 		if err != nil || code != 0 {
 			t.Fatalf("run %d: code=%d err=%v emsg=%s out=%q", i, code, err, emsg, out)
 		}
+		if strings.Contains(out, "source error") {
+			t.Fatalf("run %d: ixgo source load warning: %s", i, out)
+		}
 	}
 	run(1)
 	run(2)
@@ -301,5 +314,8 @@ func TestRunCodeMcptestAfterModule(t *testing.T) {
 	})
 	if err != nil || code != 0 {
 		t.Fatalf("mcptest after module: code=%d err=%v emsg=%s out=%q", code, err, emsg, out)
+	}
+	if strings.Contains(out, "source error") {
+		t.Fatalf("mcptest after module: ixgo source load warning: %s", out)
 	}
 }

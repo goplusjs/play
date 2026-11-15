@@ -7,6 +7,7 @@ import (
 	"go/format"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/goplus/ixgo/fsys"
 	"github.com/goplus/ixgo/fsys/xgofsys"
@@ -23,9 +24,11 @@ import (
 )
 
 type Context struct {
-	ctx    *ixgo.Context
-	mode   ixgo.Mode
-	cancel func()
+	ctx         *ixgo.Context
+	mode        ixgo.Mode
+	cancel      func()
+	compileTime time.Duration
+	runTime     time.Duration
 }
 
 func NewContext(mode ixgo.Mode) *Context {
@@ -99,23 +102,38 @@ func (c *Context) buildGop(ar *txtar.FileSet) error {
 	return nil
 }
 
+func formatDuration(d time.Duration) string {
+	if d <= 0 {
+		return "0s"
+	}
+	if d >= time.Second {
+		return d.Round(time.Millisecond).String()
+	}
+	return d.Round(time.Microsecond).String()
+}
+
 func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, emsg string) {
 	reflectx.ResetAll()
+	c.compileTime = 0
+	c.runTime = 0
 	defer func() {
 		err := recover()
 		if err != nil {
 			e = fmt.Errorf("[PANIC] %v", err)
 		}
 	}()
+	compileStart := time.Now()
 	c.resetCtx()
 	ar, err := txtar.SplitFiles([]byte(src), progName(enableGoplus))
 	if err != nil {
+		c.compileTime = time.Since(compileStart)
 		return 2, err, ""
 	}
 	ctx := c.ctx
 	if enableGoplus {
 		err := c.buildGop(ar)
 		if err != nil {
+			c.compileTime = time.Since(compileStart)
 			return 2, err, ""
 		}
 	}
@@ -130,15 +148,21 @@ func (c *Context) runCode(src string, enableGoplus bool) (code int, e error, ems
 		return false
 	})
 	if err != nil {
+		c.compileTime = time.Since(compileStart)
 		return 2, err, ""
 	}
 	fsys.SetBuildFileSystem(ctx, tfs, true)
 	pkg, err := ctx.LoadDirEx(".", test, func(pkgName string, dir string) (string, bool) {
 		return pkgName, true
 	})
+	c.compileTime = time.Since(compileStart)
 	if err != nil {
 		return 2, err, ""
 	}
+	runStart := time.Now()
+	defer func() {
+		c.runTime = time.Since(runStart)
+	}()
 	if test {
 		e = ctx.TestPkg(pkg, "main", []string{"-test.v"})
 		return

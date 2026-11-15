@@ -159,9 +159,10 @@ func build_wasm(dir, tag string) error {
 		// -goroutine-stack-size=8MB
 		//-ldflags='-sSTACK_SIZE=8MB'
 		args = append(args, "-tags", "llgo.wasm.reflect.libffi")
-		args = append(args, "-ldflags", "-sSTACK_SIZE=8MB")
-		args = append(args, "-goroutine-stack-size", "8MB")
+		//args = append(args, "-ldflags", "-sSTACK_SIZE=2MB")
+		args = append(args, "-goroutine-stack-size", "2MB")
 		args = append(args, "-pclntab", "none", "-ldflags", "-s -w") //, "-lto", "full")
+		args = append(args, "-lto", "full")
 	}
 	args = append(args, "-o", filepath.Join(dir, tag+".wasm"))
 	cmd := exec.Command(gobin, args...)

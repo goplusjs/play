@@ -84,19 +84,24 @@ window.goWriteSync = function (text) {
   }
 })();
 
+function withCacheBust(path) {
+  var sep = path.indexOf("?") >= 0 ? "&" : "?";
+  return path + sep + "v=$ixgo";
+}
+
 function loadRuntimeScript(src, fallbackSrc) {
   return new Promise(function (resolve, reject) {
     var script = document.createElement("script");
     script.onload = resolve;
     script.onerror = function () {
       if (!fallbackSrc || fallbackSrc === src) {
-        reject(new Error("Failed to load wasm_exec.js"));
+        reject(new Error("Failed to load " + src));
         return;
       }
       var retry = document.createElement("script");
       retry.onload = resolve;
       retry.onerror = function () {
-        reject(new Error("Failed to load wasm_exec.js"));
+        reject(new Error("Failed to load " + src));
       };
       retry.src = fallbackSrc;
       document.head.appendChild(retry);
@@ -106,21 +111,55 @@ function loadRuntimeScript(src, fallbackSrc) {
   });
 }
 
-if (useWasm) {
-  wasmExecRtLoadPromise = loadRuntimeScript(
-    assetURL("wasm_exec.js"),
-    "./wasm_exec.js",
-  ).then(function () {
-    // polyfill
-    if (!WebAssembly.instantiateStreaming) {
-      WebAssembly.instantiateStreaming = async (resp, importObject) => {
-        const source = await (await resp).arrayBuffer();
-        return await WebAssembly.instantiate(source, importObject);
-      };
+async function loadWasmExecRuntime() {
+  await loadRuntimeScript(
+    withCacheBust(assetURL("wasm_exec.js")),
+    withCacheBust("./wasm_exec.js"),
+  );
+  if (typeof Go !== "function") {
+    throw new Error("wasm_exec.js loaded but global Go is not defined");
+  }
+}
+
+async function instantiateGoWasm(path, importObject) {
+  if (!importObject || typeof importObject !== "object") {
+    throw new Error("wasm_exec.js did not provide a valid importObject");
+  }
+  async function fromBuffer() {
+    const resp = await fetchAsset(path);
+    if (!resp.ok) {
+      throw new Error("failed to fetch " + path + " (" + resp.status + ")");
     }
-    wasmExecRtLoaded = true;
-    loadWasm();
-  });
+    return WebAssembly.instantiate(await resp.arrayBuffer(), importObject);
+  }
+  try {
+    const resp = await fetchAsset(path);
+    if (!resp.ok) {
+      throw new Error("failed to fetch " + path + " (" + resp.status + ")");
+    }
+    const ct = (resp.headers.get("Content-Type") || "").toLowerCase();
+    if (
+      typeof WebAssembly.instantiateStreaming === "function" &&
+      ct.indexOf("application/wasm") !== -1
+    ) {
+      return await WebAssembly.instantiateStreaming(resp, importObject);
+    }
+    return await WebAssembly.instantiate(await resp.arrayBuffer(), importObject);
+  } catch (e) {
+    console.warn("instantiateStreaming failed, fallback to ArrayBuffer", e);
+    return fromBuffer();
+  }
+}
+
+if (useWasm) {
+  wasmExecRtLoadPromise = loadWasmExecRuntime()
+    .then(function () {
+      wasmExecRtLoaded = true;
+      return loadWasm();
+    })
+    .catch(function (err) {
+      console.error("Load WASM module failed:", err);
+    });
 } else {
   var script = document.createElement("script");
   script.src = "$ixgo.js";
@@ -152,22 +191,20 @@ async function loadWasm() {
   }
 
   const go = new Go();
-  currentGoInstance = go;
-  let mod, inst;
-  WebAssembly.instantiateStreaming(fetchAsset("$ixgo.wasm"), go.importObject).then(
-    (result) => {
-      mod = result.module;
-      inst = result.instance;
-      isWasmLoaded = true;
-      console.log("Load WASM module.");
-      run();
-    },
-  );
-
-  async function run() {
-    await go.run(inst);
-    inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+  if (go._importsReady) {
+    await go._importsReady;
   }
+  if (!go.importObject || typeof go.importObject !== "object") {
+    throw new Error("wasm_exec.js did not provide importObject");
+  }
+  currentGoInstance = go;
+  const result = await instantiateGoWasm("$ixgo.wasm", go.importObject);
+  const inst = result.instance;
+  isWasmLoaded = true;
+  console.log("Load WASM module.");
+  Promise.resolve(go.run(inst)).catch(function (err) {
+    console.error("Go.run failed:", err);
+  });
 }
 
 async function reloadWasm() {
