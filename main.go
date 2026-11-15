@@ -28,6 +28,8 @@ func main() {
 				v := js.Global().Get("Object").New()
 				v.Set("IsKeep", true)
 				v.Set("Status", code)
+				v.Set("CompileTime", formatDuration(ctx.compileTime))
+				v.Set("RunTime", formatDuration(ctx.runTime))
 				if err != nil {
 					v.Set("Errors", err.Error())
 				} else {

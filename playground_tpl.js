@@ -79,10 +79,23 @@ function HTTPTransport(enableVet, fnIsGop) {
     var isTest = data.IsTest || false;
     var testsFailed = data.TestsFailed || 0;
     var isKeep = data.IsKeep || false;
+    var compileTime = data.CompileTime || "";
+    var runTime = data.RunTime || "";
 
     var timeout;
     if (!isKeep) {
       output({ Kind: "start" });
+    }
+    function emitEnd(body) {
+      var msg = { Kind: "end" };
+      if (body) {
+        msg.Body = body;
+      }
+      if (compileTime || runTime) {
+        msg.CompileTime = compileTime;
+        msg.RunTime = runTime;
+      }
+      output(msg);
     }
     function next() {
       if (!events || events.length === 0) {
@@ -102,13 +115,13 @@ function HTTPTransport(enableVet, fnIsGop) {
           }
         } else {
           if (status > 0) {
-            output({ Kind: "end", Body: "status " + status + "." });
+            emitEnd("status " + status + ".");
           } else {
             if (errors !== "") {
               // errors are displayed only in the case of timeout.
-              output({ Kind: "end", Body: errors + "." });
+              emitEnd(errors + ".");
             } else {
-              output({ Kind: "end" });
+              emitEnd();
             }
           }
         }
@@ -309,6 +322,14 @@ function PlaygroundOutput(el) {
     var m = write.Body;
     if (write.Kind == "end") {
       m = "\nProgram exited" + (m ? ": " + m : ".");
+      if (write.CompileTime || write.RunTime) {
+        m +=
+          " (compile: " +
+          (write.CompileTime || "0s") +
+          ", run: " +
+          (write.RunTime || "0s") +
+          ")";
+      }
     }
 
     if (m.indexOf("IMAGE:") === 0) {
