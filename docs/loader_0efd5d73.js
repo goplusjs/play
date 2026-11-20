@@ -86,7 +86,7 @@ window.goWriteSync = function (text) {
 
 function withCacheBust(path) {
   var sep = path.indexOf("?") >= 0 ? "&" : "?";
-  return path + sep + "v=ixgo_d634000f";
+  return path + sep + "v=ixgo_0efd5d73";
 }
 
 function loadRuntimeScript(src, fallbackSrc) {
@@ -162,7 +162,7 @@ if (useWasm) {
     });
 } else {
   var script = document.createElement("script");
-  script.src = "ixgo_d634000f.js";
+  script.src = "ixgo_0efd5d73.js";
   document.head.appendChild(script);
 }
 
@@ -198,7 +198,7 @@ async function loadWasm() {
     throw new Error("wasm_exec.js did not provide importObject");
   }
   currentGoInstance = go;
-  const result = await instantiateGoWasm("ixgo_d634000f.wasm", go.importObject);
+  const result = await instantiateGoWasm("ixgo_0efd5d73.wasm", go.importObject);
   const inst = result.instance;
   isWasmLoaded = true;
   console.log("Load WASM module.");
